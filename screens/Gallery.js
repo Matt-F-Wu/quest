@@ -12,78 +12,79 @@ import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
 
-export default class Inbox extends React.Component {
+export default class Gallery extends React.Component {
   static navigationOptions = {
-    title: 'Inbox',
+    title: 'Gallery',
   };
 
   render() {
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.contentContainer}>
           
           <View style={styles.rowStyle}>
-          <View style={styles.receivedQuest, styles.smallTile}>
+          <TouchableOpacity style={styles.receivedQuest, styles.smallTile} onPress={() => navigate('ViewQuest')}>
             <Image resizeMode='cover' blurRadius={blur.blurRadius}
               source={require('../assets/images/me.jpg')}
               style={styles.questImg}
             />
-            <Text style={styles.questInfo}>Get started by opening</Text>
-          </View>
+            <Text style={styles.questInfo}>Person E, 2 days ago</Text>
+          </TouchableOpacity>
 
-          <View style={styles.receivedQuest, styles.mediumTile}>
+          <TouchableOpacity style={styles.receivedQuest, styles.mediumTile} onPress={() => navigate('ViewQuest')}>
             <Image resizeMode='cover' blurRadius={blur.blurRadius}
               source={require('../assets/images/letter.jpg')}
               style={styles.questImg}
             />
-            <Text style={styles.questInfo}>Get started by opening</Text>
-          </View>
+            <Text style={styles.questInfo}>Person D, 6 days ago</Text>
+          </TouchableOpacity>
           </View>
 
           <View style={styles.rowStyle}>
-          <View style={styles.receivedQuest, styles.mediumTile}>
+          <TouchableOpacity style={styles.receivedQuest, styles.mediumTile} onPress={() => navigate('ViewQuest')}>
             <Image resizeMode='cover' blurRadius={blur.blurRadius}
               source={require('../assets/images/mother.jpg')}
               style={styles.questImg}
             />
-            <Text style={styles.questInfo}>Get started by opening</Text>
-          </View>
+            <Text style={styles.questInfo}>Person C, 12 days ago</Text>
+          </TouchableOpacity>
 
-          <View style={styles.receivedQuest, styles.smallTile}>
+          <TouchableOpacity style={styles.receivedQuest, styles.smallTile} onPress={() => navigate('ViewQuest')}>
             <Image resizeMode='cover' blurRadius={blur.blurRadius}
               source={require('../assets/images/fish.jpg')}
               style={styles.questImg}
             />
-            <Text style={styles.questInfo}>Get started by opening</Text>
-          </View>
+            <Text style={styles.questInfo}>Person B, 17 days ago</Text>
+          </TouchableOpacity>
           </View>
 
           <View style={styles.rowStyle}>
-          <View style={styles.receivedQuest, styles.bigTile}>
+          <TouchableOpacity style={styles.receivedQuest, styles.bigTile} onPress={() => navigate('ViewQuest')}>
             <Image resizeMode='cover' blurRadius={blur.blurRadius}
               source={require('../assets/images/landscape.jpg')}
               style={styles.questImg}
             />
-            <Text style={styles.questInfo}>Get started by opening</Text>
-          </View>
+            <Text style={styles.questInfo}>Person A, 32 days ago</Text>
+          </TouchableOpacity>
           </View>
 
           <View style={styles.rowStyle}>
-          <View style={styles.receivedQuest, styles.mediumTile}>
+          <TouchableOpacity style={styles.receivedQuest, styles.mediumTile} onPress={() => navigate('ViewQuest')}>
             <Image resizeMode='cover' blurRadius={blur.blurRadius}
               source={require('../assets/images/me.jpg')}
               style={styles.questImg}
             />
-            <Text style={styles.questInfo}>Get started by opening</Text>
-          </View>
+            <Text style={styles.questInfo}>Mr Coin, 51 days ago</Text>
+          </TouchableOpacity>
 
-          <View style={styles.receivedQuest, styles.smallTile}>
+          <TouchableOpacity style={styles.receivedQuest, styles.smallTile} onPress={() => navigate('ViewQuest')}>
             <Image resizeMode='cover' blurRadius={blur.blurRadius}
               source={require('../assets/images/me.jpg')}
               style={styles.questImg}
             />
-            <Text style={styles.questInfo}>Get started by opening</Text>
-          </View>
+            <Text style={styles.questInfo}>Lily Wang, 62 days ago</Text>
+          </TouchableOpacity>
           </View>
 
         </ScrollView>

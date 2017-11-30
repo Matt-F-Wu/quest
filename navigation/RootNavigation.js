@@ -3,12 +3,24 @@ import React from 'react';
 import { StackNavigator } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
+import CameraNav from '../screens/CameraNav';
+import CameraCompose from '../screens/CameraCompose';
+import ViewQuest from '../screens/ViewQuest';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
 
 const RootStackNavigator = StackNavigator(
   {
     Main: {
       screen: MainTabNavigator,
+    },
+    CameraNav: {
+      screen: CameraNav,
+    },
+    CameraCompose: {
+      screen: CameraCompose,
+    },
+    ViewQuest: {
+      screen: ViewQuest,
     },
   },
   {
@@ -48,3 +60,4 @@ export default class RootNavigator extends React.Component {
     console.log(`Push notification ${origin} with data: ${JSON.stringify(data)}`);
   };
 }
+

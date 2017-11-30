@@ -7,10 +7,18 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert
 } from 'react-native';
+import Touchables from '../components/Touchables';
 
 export default class ContactList extends React.Component {
 	/*TODO: make a contact list here*/
+
+	handleClick(){
+		//TODO: take to map interface
+		Alert.alert("Functionality Not Implemented, sorry!");
+	}
+
 	render() {
 
 		/*TODO: make up other users*/
@@ -18,117 +26,45 @@ export default class ContactList extends React.Component {
 			<View style={styles.container}>
 	        <ScrollView contentContainerStyle={styles.contentContainer}>
 	        
-	        <View style={styles.rowStyle}>
-	        	<View style={styles.imageContainer}>
-		        	<Image resizeMode='cover'
-		              source={require('../assets/images/lilyP.jpg')}
-		              style={styles.contactImg}
-		            />
-	            </View>
-	        	<View style={styles.cardStyle}>
-		        	<Text style={styles.contactName}>Lily Wang</Text>
-		        	<Text style={styles.location}>Toronto, ON, Canada</Text>
-		        	<Text style={styles.lastInteraction}>62 days ago</Text>
-	        	</View>
-	        </View>
+        	  <Touchables onClick={() => this.handleClick()} hasImage={true} 
+              title='Lily Wang' subTitle='Toronto, ON, Canada'
+              text='62 days ago' styles={styles} 
+              image={require('../assets/images/lilyP.jpg')}/>
 
-	        <View style={styles.rowStyle}>
-	        	<View style={styles.imageContainer}>
-		        	<Image resizeMode='cover'
-		              source={require('../assets/images/lilyP.jpg')}
-		              style={styles.contactImg}
-		            />
-	            </View>
-	        	<View style={styles.cardStyle}>
-		        	<Text style={styles.contactName}>Lily Wang</Text>
-		        	<Text style={styles.location}>Toronto, ON, Canada</Text>
-		        	<Text style={styles.lastInteraction}>62 days ago</Text>
-	        	</View>
-	        </View>
+              <Touchables onClick={() => this.handleClick()} hasImage={true} 
+              title='Mr. Coin' subTitle='Stanford, CA, USA'
+              text='51 days ago' styles={styles} 
+              image={require('../assets/images/coin.png')}/>
 
-	        <View style={styles.rowStyle}>
-	        	<View style={styles.imageContainer}>
-		        	<Image resizeMode='cover'
-		              source={require('../assets/images/lilyP.jpg')}
-		              style={styles.contactImg}
-		            />
-	            </View>
-	        	<View style={styles.cardStyle}>
-		        	<Text style={styles.contactName}>Lily Wang</Text>
-		        	<Text style={styles.location}>Toronto, ON, Canada</Text>
-		        	<Text style={styles.lastInteraction}>62 days ago</Text>
-	        	</View>
-	        </View>
+              <Touchables onClick={() => this.handleClick()} hasImage={true} 
+              title='Person A' subTitle='Toronto, ON, Canada'
+              text='32 days ago' styles={styles} 
+              image={require('../assets/images/lilyP.jpg')}/>
 
-	        <View style={styles.rowStyle}>
-	        	<View style={styles.imageContainer}>
-		        	<Image resizeMode='cover'
-		              source={require('../assets/images/lilyP.jpg')}
-		              style={styles.contactImg}
-		            />
-	            </View>
-	        	<View style={styles.cardStyle}>
-		        	<Text style={styles.contactName}>Lily Wang</Text>
-		        	<Text style={styles.location}>Toronto, ON, Canada</Text>
-		        	<Text style={styles.lastInteraction}>62 days ago</Text>
-	        	</View>
-	        </View>
+              <Touchables onClick={() => this.handleClick()} hasImage={true} 
+              title='Person B' subTitle='Toronto, ON, Canada'
+              text='22 days ago' styles={styles} 
+              image={require('../assets/images/lilyP.jpg')}/>
 
-	        <View style={styles.rowStyle}>
-	        	<View style={styles.imageContainer}>
-		        	<Image resizeMode='cover'
-		              source={require('../assets/images/lilyP.jpg')}
-		              style={styles.contactImg}
-		            />
-	            </View>
-	        	<View style={styles.cardStyle}>
-		        	<Text style={styles.contactName}>Lily Wang</Text>
-		        	<Text style={styles.location}>Toronto, ON, Canada</Text>
-		        	<Text style={styles.lastInteraction}>62 days ago</Text>
-	        	</View>
-	        </View>
+              <Touchables onClick={() => this.handleClick()} hasImage={true} 
+              title='Person C' subTitle='Toronto, ON, Canada'
+              text='17 days ago' styles={styles} 
+              image={require('../assets/images/lilyP.jpg')}/>
 
-	        <View style={styles.rowStyle}>
-	        	<View style={styles.imageContainer}>
-		        	<Image resizeMode='cover'
-		              source={require('../assets/images/lilyP.jpg')}
-		              style={styles.contactImg}
-		            />
-	            </View>
-	        	<View style={styles.cardStyle}>
-		        	<Text style={styles.contactName}>Lily Wang</Text>
-		        	<Text style={styles.location}>Toronto, ON, Canada</Text>
-		        	<Text style={styles.lastInteraction}>62 days ago</Text>
-	        	</View>
-	        </View>
+              <Touchables onClick={() => this.handleClick()} hasImage={true} 
+              title='Person D' subTitle='Toronto, ON, Canada'
+              text='12 days ago' styles={styles} 
+              image={require('../assets/images/lilyP.jpg')}/>
 
-	        <View style={styles.rowStyle}>
-	        	<View style={styles.imageContainer}>
-		        	<Image resizeMode='cover'
-		              source={require('../assets/images/lilyP.jpg')}
-		              style={styles.contactImg}
-		            />
-	            </View>
-	        	<View style={styles.cardStyle}>
-		        	<Text style={styles.contactName}>Lily Wang</Text>
-		        	<Text style={styles.location}>Toronto, ON, Canada</Text>
-		        	<Text style={styles.lastInteraction}>62 days ago</Text>
-	        	</View>
-	        </View>
+              <Touchables onClick={() => this.handleClick()} hasImage={true} 
+              title='Person E' subTitle='Toronto, ON, Canada'
+              text='6 days ago' styles={styles} 
+              image={require('../assets/images/lilyP.jpg')}/>
 
-	        <View style={styles.rowStyle}>
-	        	<View style={styles.imageContainer}>
-		        	<Image resizeMode='cover'
-		              source={require('../assets/images/lilyP.jpg')}
-		              style={styles.contactImg}
-		            />
-	            </View>
-	        	<View style={styles.cardStyle}>
-		        	<Text style={styles.contactName}>Lily Wang</Text>
-		        	<Text style={styles.location}>Toronto, ON, Canada</Text>
-		        	<Text style={styles.lastInteraction}>62 days ago</Text>
-	        	</View>
-	        </View>
+              <Touchables onClick={() => this.handleClick()} hasImage={true} 
+              title='Person F' subTitle='Toronto, ON, Canada'
+              text='2 days ago' styles={styles} 
+              image={require('../assets/images/lilyP.jpg')}/>
 
 	        </ScrollView>
 	      	</View>
@@ -156,15 +92,15 @@ const styles = StyleSheet.create({
   	flexDirection: 'column',
   	marginLeft: 20,
   },
-  contactName: {
+  title: {
   	color: 'orange',
   	fontWeight: 'bold',
   	fontSize: 14,
   },
-  location: {
+  subTitle: {
   	color: '#666666',
   },
-  lastInteraction: {
+  text: {
   	color: '#333333',
   },
   imageContainer: {
