@@ -84,7 +84,6 @@ const tl_styles = StyleSheet.create({
     padding: 15,
     height: 'auto',
     backgroundColor: Colors.noticeBackground,
-    marginBottom: 10
   },
   title: {
     fontWeight: 'bold',

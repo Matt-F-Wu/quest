@@ -7,7 +7,7 @@ const STEP_FLAG = {contact: 0, pin: 1, format: 2, compose: 3, send: 4};
 
 export default class Compose extends React.Component {
   static navigationOptions = {
-    title: 'Compose',
+    title: 'Send a Quest',
   };
 
   //Call constructor to store state information
