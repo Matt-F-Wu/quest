@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   Image,
   Platform,
@@ -14,26 +14,18 @@ import Touchables from '../components/Touchables';
 import Search from 'react-native-search-box';
 import Colors from '../constants/Colors';
 
-export default class ContactList extends React.Component {
+export default class ContactList extends Component {
 	/*TODO: make a contact list here*/
   data = [
-        {index: 1, name: 'Lily Wang', location: 'Toronto, ON, Canada', time: '62 days ago', image: require('../assets/images/lilyP.jpg')}, 
-        {index: 2, name: 'Mr Coins', location: 'Stanford, CA, USA', time: '51 days ago', image: require('../assets/images/coin.png')}, 
         {index: 3, name: 'A Wu', location: 'Beijing, China', time: '32 days ago', image: require('../assets/images/lilyP.jpg')}, 
         {index: 4, name: 'B Wu', location: 'Stanford, CA, USA', time: '22 days ago', image: require('../assets/images/lilyP.jpg')}, 
         {index: 5, name: 'C Wu', location: 'Stanford, CA, USA', time: '17 days ago', image: require('../assets/images/lilyP.jpg')}, 
         {index: 6, name: 'D Wu', location: 'Stanford, CA, USA', time: '12 days ago', image: require('../assets/images/coin.png')}, 
         {index: 7, name: 'E Wu', location: 'Stanford, CA, USA', time: '6 days ago', image: require('../assets/images/lilyP.jpg')}, 
         {index: 8, name: 'F Wu', location: 'Stanford, CA, USA', time: '2 days ago', image: require('../assets/images/lilyP.jpg')}, 
+        {index: 1, name: 'Lily Wang', location: 'Toronto, ON, Canada', time: '62 days ago', image: require('../assets/images/lilyP.jpg')}, 
+        {index: 2, name: 'Mr Coins', location: 'Stanford, CA, USA', time: '51 days ago', image: require('../assets/images/coin.png')}, 
         ];
-
-  constructor() {
-    super();
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    this.state = {
-      dataSource: ds.cloneWithRows(this.data),
-    };
-  }
 
   // Important: You must return a Promise
   beforeFocus = () => {
@@ -46,7 +38,7 @@ export default class ContactList extends React.Component {
   // Important: You must return a Promise
   onFocus = (text) => {
       return new Promise((resolve, reject) => {
-          console.log('onFocus', text);
+          console.log('onFocus!', text);
           resolve();
       });
   }
@@ -54,14 +46,18 @@ export default class ContactList extends React.Component {
   // Important: You must return a Promise
   afterFocus = () => {
       return new Promise((resolve, reject) => {
-          console.log('afterFocus');
+          console.log('afterFocus!');
           resolve();
       });
   }
 
   renderRow(item){
+    
     return (
-        <Touchables key={item.index} onClick={() => Alert.alert("Functionality Not Implemented, sorry!")} hasImage={true} 
+        <Touchables key={item.index} 
+              onClick={() => this.props.toMap(item)}
+              onLongPress={() => this.props.navigatorVal('Friend')} 
+              hasImage={true} 
               title={item.name} subTitle={item.location}
               text={item.time} styles={styles} 
               image={item.image}/>
@@ -69,6 +65,10 @@ export default class ContactList extends React.Component {
   }
 
 	render() {
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.state = {
+      dataSource: ds.cloneWithRows(this.data),
+    };
 
     return (
       <View style={{ flex: 1}}>
@@ -97,7 +97,7 @@ export default class ContactList extends React.Component {
         <ListView
           enableEmptySections={true}
           dataSource={this.state.dataSource}
-          renderRow={this.renderRow}
+          renderRow={this.renderRow.bind(this)}
           rowHeight={100}
           sectionHeaderHeight={40}
         />
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   rowStyle: {
     flexDirection: 'row',
     height: 100,
-    backgroundColor: 'rgba(100, 100, 100, 0.2)',
+    backgroundColor: 'white',
     borderBottomColor: '#333333',
     borderBottomWidth: 1,
     alignItems: 'center',

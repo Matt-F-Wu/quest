@@ -23,7 +23,7 @@ export default class Touchables extends Component {
   render() {
   	let styles = this.props.styles;
     return (
-      <TouchableHighlight onPress={this.props.onClick} underlayColor="white">
+      <TouchableHighlight onPress={this.props.onClick} onLongPress={this.props.onLongPress} underlayColor="white">
       <View style={styles.rowStyle}>
       		{this._renderImage()}
 	    	<View style={styles.cardStyle}>

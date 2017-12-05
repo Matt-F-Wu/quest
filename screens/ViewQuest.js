@@ -17,6 +17,7 @@ export default class ViewQuest extends React.Component {
 
   static navigationOptions = ({ navigation, screenProps }) => ({
     title:  'View Quest',
+    headerTintColor: Colors.tintColor,
     headerLeft: <Icon name={'md-close-circle'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
                             onPress={ () => { navigation.navigate('Gallery') }} />,
   });
@@ -25,7 +26,7 @@ export default class ViewQuest extends React.Component {
   	const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        <Image resizeMode='cover' blurRadius={blur.blurRadius}
+        <Image resizeMode='contain' blurRadius={blur.blurRadius}
           source={require('../assets/images/quest1.jpg')}
           style={styles.questImg}
         />

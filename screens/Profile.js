@@ -14,7 +14,8 @@ import Touchables from '../components/Touchables';
 
 export default class Profile extends React.Component {
   static navigationOptions = {
-    title: 'Account and Notifications',
+    title: 'Profile',
+    headerTintColor: Colors.tintColor,
   };
 
   constructor(props) {
@@ -61,8 +62,9 @@ export default class Profile extends React.Component {
         </RkTabView.Tab>
 
         <RkTabView.Tab title={(selected) => <ProfileTab selected={selected} name='' value='Account '/>}>
-          <View style={tl_styles.tabContent}>
-            <Text>Put some information here</Text>
+          <View style={tl_styles.tabContent2}>
+            <Text>Email: </Text>
+            <Text>My Location: </Text>
           </View>
         </RkTabView.Tab>
         
@@ -99,4 +101,8 @@ const tl_styles = StyleSheet.create({
     fontSize: 16,
     color: 'white'
   },
+  tabContent2: {
+    padding: 15,
+    backgroundColor: 'white',
+  }
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Image, TouchableOpacity, Button, StyleSheet,} from 'react-native';
+import { Text, View, Image, TouchableOpacity, Button, StyleSheet, Alert} from 'react-native';
 import { Camera, Permissions } from 'expo';
 import {RkButton} from 'react-native-ui-kitten';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -15,6 +15,7 @@ export default class CameraBase extends React.Component {
     objects: [],
     button_icon: 'camera',
     styles: null,
+    buttonPress: () => Alert.alert("Not Implemented!")
   };
 
   num_objs = 0;
@@ -51,7 +52,8 @@ export default class CameraBase extends React.Component {
       let styles = this.state.styles;
       return (
         
-        <RkButton style={[{position: 'absolute', left: '40%', top: '90%', width: '20%', height: '8%', marginBottom: '2%',}, styles.button]} >
+        <RkButton onPress={this.state.buttonPress.bind(this)} 
+          style={[{position: 'absolute', left: '40%', top: '90%', width: '20%', height: '8%', marginBottom: '2%',}, styles.button]} >
           <Icon name={this.state.button_icon} color='#fff' size={30} />
         </RkButton>
         
@@ -110,7 +112,7 @@ export default class CameraBase extends React.Component {
     } else {
       return (
         <View style={{ flex: 1, backgroundColor: 'red', }}>
-          <Camera style={{ flex: 1 }} type={this.state.type}>
+          <Camera style={{ flex: 1 }} type={this.state.type} ref={ref => { this.camera = ref; }} >
             <View
               style={{
                 flex: 1,

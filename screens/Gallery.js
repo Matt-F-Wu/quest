@@ -9,12 +9,13 @@ import {
   View,
 } from 'react-native';
 import { WebBrowser } from 'expo';
-
+import Colors from '../constants/Colors';
 import { MonoText } from '../components/StyledText';
 
 export default class Gallery extends React.Component {
   static navigationOptions = {
     title: 'Gallery',
+    headerTintColor: Colors.tintColor,
   };
 
   render() {

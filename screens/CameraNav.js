@@ -11,9 +11,10 @@ import Colors from '../constants/Colors';
 import CameraBase from '../components/CameraBase';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-export default class CameraCompose extends CameraBase {
+export default class CameraNav extends CameraBase {
   static navigationOptions = ({ navigation, screenProps }) => ({
     title:  'Navigate',
+    headerTintColor: Colors.tintColor,
     headerLeft: (
       <Icon name={'md-close-circle'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
                             onPress={ () => { navigation.navigate('Profile') }} />
@@ -29,8 +30,8 @@ export default class CameraCompose extends CameraBase {
       objectArray.push({
         x: (40+i*5) + '%',
         y: (70-i*10) + '%',
-        w: (12-2*i) + '%',
-        h: (12-2*i) + '%',
+        w: (120-8*i),
+        h: (120-8*i),
         image: require('../assets/images/coin.png'),
       });
     }
@@ -50,8 +51,8 @@ export default class CameraCompose extends CameraBase {
       objectArray.push({
         x: (Math.random()*88) + '%',
         y: (Math.random()*88) + '%',
-        w: '12%',
-        h: '12%',
+        w: 120,
+        h: 120,
         image: require('../assets/images/deceiver.png'),
       });
     }
@@ -59,8 +60,8 @@ export default class CameraCompose extends CameraBase {
     objectArray.push({
       x: (Math.random()*88) + '%',
       y: (Math.random()*88) + '%',
-      w: '12%',
-      h: '12%',
+      w: 120,
+      h: 120,
       image: require('../assets/images/goal.png'),
       onClick: () => {num_objs = 4; navigate('ViewQuest');},
     })
@@ -113,9 +114,11 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: '100%',
     height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   contactImg: {
-    width: '100%',
-    height: '100%',
+    width: '90%',
+    height: '90%',
   },
 });

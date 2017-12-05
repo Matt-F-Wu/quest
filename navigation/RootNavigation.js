@@ -4,8 +4,11 @@ import { StackNavigator } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
 import CameraNav from '../screens/CameraNav';
-import CameraCompose from '../screens/CameraCompose';
+import Friend from '../screens/Friend';
 import ViewQuest from '../screens/ViewQuest';
+import SelectLocation from '../screens/SelectLocation';
+import AddCaption from '../screens/AddCaption';
+import CapturePicture from '../screens/CapturePicture';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
 
 const RootStackNavigator = StackNavigator(
@@ -16,11 +19,20 @@ const RootStackNavigator = StackNavigator(
     CameraNav: {
       screen: CameraNav,
     },
-    CameraCompose: {
-      screen: CameraCompose,
+    Friend: {
+      screen: Friend,
     },
     ViewQuest: {
       screen: ViewQuest,
+    },
+    SelectLocation: {
+      screen: SelectLocation,
+    },
+    CapturePicture: {
+      screen: CapturePicture,
+    },
+    AddCaption: {
+      screen: AddCaption,
     },
   },
   {

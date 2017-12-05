@@ -23,6 +23,11 @@ export default TabNavigator(
   },
   {
     navigationOptions: ({ navigation }) => ({
+      tabBarLabel: ({ focused }) => {
+        const { routeName } = navigation.state;
+        var color_l = focused ? Colors.tabIconSelected : Colors.tabIconDefault;
+        return (<Text style={{color: color_l}}>{routeName}</Text>);
+      },
       tabBarIcon: ({ focused }) => {
         const { routeName } = navigation.state;
         let iconName;
