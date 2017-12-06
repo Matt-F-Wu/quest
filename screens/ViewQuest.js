@@ -58,6 +58,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   questInfo: {
     color: 'white',
@@ -68,19 +70,16 @@ const styles = StyleSheet.create({
   },
   questImg: {
     flex: 1,
-    borderWidth: 2,
-    borderRadius: 5,
-    borderColor: 'rgba(255, 255, 255, 0.7)',
   },
   buttonContainer: {
   	width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
+    backgroundColor: 'white',
   },
   button: {
-  	backgroundColor: Colors.tintColor,
-  	color: 'white',
+  	color: Colors.tintColor,
   	fontSize: 16,
   	fontWeight: 'bold',
   	padding: 20,

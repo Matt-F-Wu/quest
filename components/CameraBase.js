@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, Image, TouchableOpacity, Button, StyleSheet, Alert} from 'react-native';
-import { Camera, Permissions } from 'expo';
+import { Camera, Permissions, Location, Constants } from 'expo';
 import {RkButton} from 'react-native-ui-kitten';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Touchables from '../components/Touchables';
@@ -15,7 +15,9 @@ export default class CameraBase extends React.Component {
     objects: [],
     button_icon: 'camera',
     styles: null,
-    buttonPress: () => Alert.alert("Not Implemented!")
+    buttonPress: () => Alert.alert("Not Implemented!"),
+    mountCam: true,
+    locationResult: null,
   };
 
   num_objs = 0;
@@ -31,8 +33,48 @@ export default class CameraBase extends React.Component {
   async componentWillMount() {
     const { status_record } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ hasCameraPermission: status === 'granted' && (status_record === 'granted' || !status_record) });
+    this.setState({ mountCam: true, hasCameraPermission: status === 'granted' && (status_record === 'granted' || !status_record) });
     this.customize(this.num_objs);
+  }
+
+  componentDidMount() {
+    /*
+    Location.watchPositionAsync({enableHighAccuracy: true, distanceInterval: 0.5}, async function(location){
+      let prev_loc = this.state.locationResult;
+
+      if(prev_loc === null) {
+        this.setState({locationResult: location});
+        return;
+      }
+
+      let heading = await Location.getHeadingAsync();
+      //Find vector of phone's direction
+      let headY = Math.sin(heading.magHeading);
+      let headX = Math.cos(heading.magHeading);
+      //dot product find Y
+      let dx = location.coords.latitude - prev_loc.coords.latitude;
+      let dy = location.coords.longitude - prev_loc.coords.longitude;
+
+      let motionY = dx*headX + dy*headY;
+      let motionX = Math.pow(Math.pow(dx, 2) + Math.pow(dy, 2) - Math.pow(motionY, 2), 0.5);
+      
+      this.setState({locationResult: location});
+      
+      console.debug("MotionX: " + motionX + " MotionY: " + motionY);
+      
+      let stepSize = 150000;
+      let threshold = 0;
+      if(Math.abs(motionY*stepSize) > threshold || Math.abs(motionX*stepSize) > threshold){
+        for(i = 0; i < this.num_objs; i++){
+          if (this.state.objects[i]){ 
+            this.state.objects[i].x = parseInt(this.state.objects[i].x.slice(0, -1)) - motionX*stepSize + "%";
+            this.state.objects[i].y = parseInt(this.state.objects[i].y.slice(0, -1)) - motionY*stepSize + "%";
+            console.debug("X: " + this.state.objects[i].x + " Y: " + this.state.objects[i].y);
+          }
+        }
+      }
+    }.bind(this));
+    */
   }
 
   _renderTextLable(){
@@ -103,15 +145,9 @@ export default class CameraBase extends React.Component {
     
   }
 
-  render() {
-    const { hasCameraPermission } = this.state;
-    if (hasCameraPermission === null) {
-      return <View />;
-    } else if (hasCameraPermission === false) {
-      return <Text>No access to camera {this.st} and {this.str}</Text>;
-    } else {
+  _renderCam(){
+    if (this.state.mountCam){
       return (
-        <View style={{ flex: 1, backgroundColor: 'red', }}>
           <Camera style={{ flex: 1 }} type={this.state.type} ref={ref => { this.camera = ref; }} >
             <View
               style={{
@@ -137,6 +173,22 @@ export default class CameraBase extends React.Component {
               </TouchableOpacity>
             </View>
           </Camera>
+        );
+    } else{
+      return (<Text>Camera Unmounted</Text>);
+    }
+  }
+
+  render() {
+    const { hasCameraPermission } = this.state;
+    if (hasCameraPermission === null) {
+      return <View />;
+    } else if (hasCameraPermission === false) {
+      return <Text>No access to camera {this.st} and {this.str}</Text>;
+    } else {
+      return (
+        <View style={{ flex: 1, backgroundColor: 'white', }}>
+          {this._renderCam()}
           {this._renderObjects()}
           {this._renderButton()}
           {this._renderTextLable()}

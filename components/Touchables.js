@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Text, TouchableHighlight, View, Image} from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 export default class Touchables extends Component {
 
@@ -9,7 +10,7 @@ export default class Touchables extends Component {
   	if(this.props.hasImage){
   		return (
   				<View style={styles.imageContainer}>
-		        	<Image resizeMode='cover'
+		        	<FastImage resizeMode='cover'
 		              source={this.props.image}
 		              style={styles.contactImg}
 		            />

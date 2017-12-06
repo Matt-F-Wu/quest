@@ -10,16 +10,27 @@ import {
 import Colors from '../constants/Colors';
 import CameraBase from '../components/CameraBase';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+var self;
 export default class CameraNav extends CameraBase {
   static navigationOptions = ({ navigation, screenProps }) => ({
     title:  'Navigate',
     headerTintColor: Colors.tintColor,
     headerLeft: (
       <Icon name={'md-close-circle'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
-                            onPress={ () => { navigation.navigate('Profile') }} />
+                            onPress={ () => self.backToMain() } />
       ),
   });
+
+  constructor(props) {
+      super(props);
+      self = this;
+  }
+
+  backToMain(){
+    const { navigate } = self.props.navigation;
+    self.setState({mountCam: false});
+    navigate('Profile');
+  }
 
   num_objs = 4;
 
@@ -63,7 +74,7 @@ export default class CameraNav extends CameraBase {
       w: 120,
       h: 120,
       image: require('../assets/images/goal.png'),
-      onClick: () => {num_objs = 4; navigate('ViewQuest');},
+      onClick: () => {this.num_objs = 4; this.setState({mountCam: false}); navigate('ViewQuest');},
     })
     //This view does not have coins/objects
     this.setState({has_button: false, has_objects: true, 

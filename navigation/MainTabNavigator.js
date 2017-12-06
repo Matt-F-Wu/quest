@@ -26,7 +26,7 @@ export default TabNavigator(
       tabBarLabel: ({ focused }) => {
         const { routeName } = navigation.state;
         var color_l = focused ? Colors.tabIconSelected : Colors.tabIconDefault;
-        return (<Text style={{color: color_l}}>{routeName}</Text>);
+        return (<Text style={{color: color_l, width: '100%', textAlign: 'center'}}>{routeName}</Text>);
       },
       tabBarIcon: ({ focused }) => {
         const { routeName } = navigation.state;
