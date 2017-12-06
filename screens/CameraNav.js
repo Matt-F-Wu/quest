@@ -43,7 +43,7 @@ export default class CameraNav extends CameraBase {
         y: (70-i*10) + '%',
         w: (120-8*i),
         h: (120-8*i),
-        image: require('../assets/images/coin.png'),
+        image: require('../assets/images/coin.gif'),
       });
     }
     //This view does not have coins/objects
