@@ -23,10 +23,30 @@ export default class Friend extends Component {
   render(){
     return (
         <View style={{padding: 20, backgroundColor: 'white'}}>
-            <Text>Lily Wang</Text>
-            <Text>Toronto, ON, Canada</Text>
+            <Text style={tl_styles.title}>Lily Wang</Text>
+            <Text style={tl_styles.title}>Toronto, ON, Canada</Text>
+            <Text style={tl_styles.special}>Your Favourite Location with Lily:</Text>
+            <Text style={tl_styles.title}>St.Michaels Hall, University of Toronto, ON, Canada</Text>
+            <Icon name={'ios-create'} size={30} style={{color: Colors.tintColor,}} />
         </View>
       );
   }
 
 }
+
+const tl_styles = StyleSheet.create({
+  title: {
+    padding: 5,
+    marginBottom: 5,
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#666',
+  },
+  special: {
+    padding: 5,
+    marginBottom: 5,
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: Colors.tintColor,
+  },
+});

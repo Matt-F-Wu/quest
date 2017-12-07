@@ -39,10 +39,10 @@ export default class CameraNav extends CameraBase {
     var objectArray = [];
     for(i = 0; i < num; i++){
       objectArray.push({
-        x: (40+i*5) + '%',
-        y: (70-i*10) + '%',
-        w: (120-8*i),
-        h: (120-8*i),
+        x: (80-i*10) + '%',
+        y: (60-i*5) + '%',
+        w: (120-15*i),
+        h: (120-15*i),
         image: require('../assets/images/coin.gif'),
       });
     }
