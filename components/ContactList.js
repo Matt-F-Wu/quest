@@ -17,15 +17,23 @@ import Colors from '../constants/Colors';
 export default class ContactList extends Component {
 	/*TODO: make a contact list here*/
   data = [
-        {index: 3, name: 'A Wu', location: 'Beijing, China', time: '32 days ago', image: require('../assets/images/person7.jpg')}, 
-        {index: 4, name: 'B Wu', location: 'Stanford, CA, USA', time: '22 days ago', image: require('../assets/images/person1.jpg')}, 
-        {index: 5, name: 'C Wu', location: 'Stanford, CA, USA', time: '17 days ago', image: require('../assets/images/person2.jpg')}, 
-        {index: 6, name: 'D Wu', location: 'Stanford, CA, USA', time: '12 days ago', image: require('../assets/images/person3.jpg')}, 
-        {index: 7, name: 'E Wu', location: 'Stanford, CA, USA', time: '6 days ago', image: require('../assets/images/person5.jpg')}, 
-        {index: 8, name: 'F Wu', location: 'Stanford, CA, USA', time: '2 days ago', image: require('../assets/images/person6.jpg')}, 
+        {index: 3, name: 'Ariel', location: 'Beijing, China', time: '32 days ago', image: require('../assets/images/person7.jpg')}, 
+        {index: 4, name: 'Brian', location: 'Stanford, CA, USA', time: '22 days ago', image: require('../assets/images/person1.jpg')}, 
+        {index: 5, name: 'Christopher', location: 'Stanford, CA, USA', time: '17 days ago', image: require('../assets/images/person2.jpg')}, 
+        {index: 6, name: 'Dilu', location: 'Stanford, CA, USA', time: '12 days ago', image: require('../assets/images/person3.jpg')}, 
+        {index: 7, name: 'Eason', location: 'Stanford, CA, USA', time: '6 days ago', image: require('../assets/images/person5.jpg')}, 
+        {index: 8, name: 'Fanfan', location: 'Stanford, CA, USA', time: '2 days ago', image: require('../assets/images/person6.jpg')}, 
         {index: 1, name: 'Lily Wang', location: 'Toronto, ON, Canada', time: '62 days ago', image: require('../assets/images/lilyP.jpg')}, 
-        {index: 2, name: 'Mr Coins', location: 'Stanford, CA, USA', time: '51 days ago', image: require('../assets/images/person4.jpg')}, 
+        {index: 2, name: 'Mark', location: 'Stanford, CA, USA', time: '51 days ago', image: require('../assets/images/person4.jpg')}, 
         ];
+
+  constructor() {
+    super();
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.state = {
+      dataSource: ds.cloneWithRows(this.data),
+    };
+  }
 
   // Important: You must return a Promise
   beforeFocus = () => {
@@ -65,10 +73,6 @@ export default class ContactList extends Component {
   }
 
 	render() {
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    this.state = {
-      dataSource: ds.cloneWithRows(this.data),
-    };
 
     return (
       <View style={{ flex: 1}}>

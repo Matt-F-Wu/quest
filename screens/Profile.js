@@ -48,12 +48,12 @@ export default class Profile extends React.Component {
     return (
       <RkTabView tabsContainerStyle={tl_styles.tabView}>
         
-        <RkTabView.Tab title={(selected) => <ProfileTab selected={selected} name='2' value='New Quests! '/>}>
+        <RkTabView.Tab title={(selected) => <ProfileTab selected={selected} name='' value='New Quests! '/>}>
           <View style={tl_styles.tabContent}>
 
             <ScrollView contentContainerStyle={tl_styles.contentContainer}>
                 <Touchables onClick={() => navigate('CameraNav')} hasImage={false} 
-                title={'You have received a new quest!'} subTitle={'10 Minutes ago'}
+                title={'You have received a new quest!'} subTitle={'10 minutes ago'}
                 text={'Click to begin your quest'} styles={tl_styles} />
                 <Touchables onClick={() => navigate('CameraNav')} hasImage={false} 
                 title={'You have received a new quest!'} subTitle={'1 day ago'}
@@ -163,13 +163,14 @@ const tl_styles = StyleSheet.create({
     color: 'white'
   },
   row: {
+    flex: 1,
+    flexWrap: 'wrap',
     flexDirection: 'row',
     alignItems: 'center',
   },
   tabContent2: {
     padding: 15,
     backgroundColor: 'white',
-    margin: 10,
   },
   largeText: {
     fontSize: 20,

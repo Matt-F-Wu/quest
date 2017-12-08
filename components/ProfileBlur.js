@@ -20,9 +20,9 @@ export default class ProfileBlur extends Component {
             <Image source={user.avatar} style={styles.avatar}/>
           </View>
 
-          <View>
+          <View style={styles.textBox}>
             <RkText style={[styles.text, styles.specialText]}>
-              100 Coins Gathered
+              Coin Count: 100
             </RkText>
             <RkText
               style={[styles.text, styles.nameText]}>{user.name.first} {user.name.last}</RkText>
@@ -42,22 +42,27 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
+    borderColor: Colors.blurOrange,
+    borderWidth: 3,
     shadowColor: 'black',
     shadowRadius: 10,
   },
   shadowImage:{
     alignItems: 'center',
     justifyContent: 'center',
-    width: 130,
-    height: 130,
-    borderRadius: 65,
-    backgroundColor: Colors.blurOrange
+    flex: 1,
+  },
+  textBox: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   head: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    margin: 20
+    margin: 20,
+    height: 100,
   },
   button: {
     borderWidth: 1,

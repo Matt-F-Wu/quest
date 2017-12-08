@@ -43,7 +43,7 @@ export default class ViewQuest extends React.Component {
 			/>
 			<Button
 			  style={styles.button}
-			  onPress={() => navigate('Compose')}
+			  onPress={() => navigate('SelectLocation')}
 			  title="Reply"
 			  color={Colors.tintColor}
 			  accessibilityLabel="Reply to this Quest"
@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   button: {
+    flex: 1,
   	color: Colors.tintColor,
   	fontSize: 16,
   	fontWeight: 'bold',

@@ -46,11 +46,19 @@ export default class CameraNav extends CameraBase {
         image: require('../assets/images/coin.gif'),
       });
     }
+
+    objectArray.push({
+      x: (80-num*10) + '%',
+      y: (60-num*5) + '%',
+      w: 100,
+      h: 100,
+      image: require('../assets/images/star.gif'),
+    });
     //This view does not have coins/objects
     this.setState({has_button: false, has_objects: true, 
       objects: objectArray, styles: styles, has_lable: true,
       lx: 10, ly: 10, 
-      textLable: 'Coins count: ' + (100 + (4-num)) + ', 150 meters till destination'});
+      textLable: 'Coins count: ' + (100 + (4-num)) + ', 150 meters utill destination'});
   }
 
   arrived() {
@@ -78,8 +86,8 @@ export default class CameraNav extends CameraBase {
     })
     //This view does not have coins/objects
     this.setState({has_button: false, has_objects: true, 
-      objects: objectArray, styles: styles, 
-      textLable: 'Coins count: 104, at destination'});
+      objects: objectArray, styles: styles, has_lable: true,
+      textLable: 'Coins count: 104, at destination\nFind the odd ones out!'});
   }
 
 }
@@ -105,7 +113,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 24,
-    backgroundColor: Colors.tintColor,
+    padding: 5,
+    borderRadius: 4,
+    backgroundColor: Colors.blurOrange,
   },
   button: {
     borderWidth: 1,

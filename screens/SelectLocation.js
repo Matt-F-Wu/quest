@@ -4,14 +4,17 @@ import {
   Image,
   Text,
   Alert,
+  StyleSheet,
 } from 'react-native';
 import { MapView } from 'expo';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../constants/Colors';
+import FIcon from 'react-native-vector-icons/FontAwesome';
+import {RkButton} from 'react-native-ui-kitten';
 
 export default class SelectLocation extends React.Component {
   static navigationOptions = ({ navigation }) => ({
-    title: 'Hide it around: ' + `${navigation.state.params.name}`,
+    title: 'Choose a Location',
     headerRight: (
       <Icon name={'md-close-circle'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
                             onPress={ () => { navigation.navigate('Compose') }} />
@@ -51,7 +54,9 @@ export default class SelectLocation extends React.Component {
   }
 
   render() {
+    const { navigate } = this.props.navigation;
     return (
+      <View style={{ flex: 1 }}>
       <MapView
         style={{ flex: 1 }}
         initialRegion={{
@@ -81,6 +86,18 @@ export default class SelectLocation extends React.Component {
           image={require('../assets/images/person.png')}>
         </MapView.Marker>
       </MapView>
+      <RkButton onPress={() => navigate('CapturePicture')} 
+          style={[{position: 'absolute', left: '40%', top: '90%', width: '20%', height: '8%', marginBottom: '2%',}, styles.button]} >
+          <FIcon name={'check'} color='#ffffff' size={30} />
+      </RkButton>
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: Colors.tintColor,
+    borderRadius: 40,
+  },
+});

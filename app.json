@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "quest",
+    "name": "questmsg",
     "description": "No description",
     "slug": "quest",
     "privacy": "public",
@@ -15,7 +15,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
-    }
+      "supportsTablet": true,
+      "bundleIdentifier": "com.stanford.quest"
+    },
+    "android": {
+      "package": "com.stanford.quest"
+    },
+    "loading": {
+      "backgroundColor": "#FF8C00",
+      "icon": "./assets/images/icon.png"
+    },
   }
 }
