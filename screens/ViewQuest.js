@@ -36,18 +36,18 @@ export default class ViewQuest extends React.Component {
         <View style={styles.buttonContainer}>
 	        <Button
 	          style={styles.button}
-			  onPress={() => navigate('Compose')}
-			  title="Home"
-			  color={Colors.tintColor}
-			  accessibilityLabel="Return to Home"
-			/>
-			<Button
-			  style={styles.button}
-			  onPress={() => navigate('SelectLocation')}
-			  title="Reply"
-			  color={Colors.tintColor}
-			  accessibilityLabel="Reply to this Quest"
-			/>
+    			  onPress={() => navigate('Compose')}
+    			  title="Home"
+    			  color={Colors.tintColor}
+    			  accessibilityLabel="Return to Home"
+    			/>
+    			<Button
+    			  style={styles.button}
+    			  onPress={() => navigate('SelectLocation', {index: 1, name: 'Linda Fang', location: 'Toronto, ON, Canada', time: '1 day ago', image: require('../assets/images/lilyP.jpg')})}
+    			  title="Reply"
+    			  color={Colors.tintColor}
+    			  accessibilityLabel="Reply to this Quest"
+    			/>
 		</View>
       </View>
     );
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   button: {
-    flex: 1,
+    width: '50%',
   	color: Colors.tintColor,
   	fontSize: 16,
   	fontWeight: 'bold',

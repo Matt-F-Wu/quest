@@ -63,24 +63,25 @@ export default class Profile extends React.Component {
           </View>
         </RkTabView.Tab>
 
-        <RkTabView.Tab title={(selected) => <ProfileTab selected={selected} name='' value='Account '/>}>
+        <RkTabView.Tab title={(selected) => <ProfileTab selected={selected} name='' value='Account'/>}>
            <View style={tl_styles.tabContent2}>
           
           <View style={tl_styles.row}>
             <Text style={[tl_styles.largeText, tl_styles.orangeText]}>Email: </Text>
             <Text style={tl_styles.largeText}>wuhao20@stanford.edu</Text>
-            <Icon name={'edit'} size={30} style={{marginLeft: 10, color: Colors.tintColor,}} />
+            <Icon name={'edit'} size={20} style={{marginLeft: 10, color: Colors.tintColor,}} />
           </View>
           <View style={tl_styles.row}>
             <Text style={[tl_styles.largeText, tl_styles.orangeText]}>Status: </Text>
-            <Text style={tl_styles.largeText}>CS Master Student at Stanford University</Text>
-            <Icon name={'edit'} size={30} style={{marginLeft: 10, color: Colors.tintColor,}} />
+            <Text style={tl_styles.largeText}>CS MS at Stanford University</Text>
+            <Icon name={'edit'} size={20} style={{marginLeft: 10, color: Colors.tintColor,}} />
           </View>
           
           
           <View style={tl_styles.row}>
             <Text style={[tl_styles.largeText, tl_styles.orangeText]}>Vehicles Owned:</Text>
             <Text style={[tl_styles.largeText, tl_styles.textBox]}>bike   ×</Text>
+            <Icon name={'add'} size={20} style={{marginLeft: 10, color: Colors.tintColor,}} />
           </View>
           
           <View style={tl_styles.row}>
@@ -90,11 +91,11 @@ export default class Profile extends React.Component {
           <View>
           
           <View style={[tl_styles.row, tl_styles.rowGray]}>
-            <Image
-              source={require('../assets/images/mushroom.jpg')}
-              style={{ height: 140, width: 200, margin: '2%' }}
+            <Image resizeMode="contain"
+              source={require('../assets/images/mushroom.gif')}
+              style={{ margin: '2%', flex: 1 }}
             />
-            <View>
+            <View style={{flex: 1}}>
             <Text style={[tl_styles.largeText]}>Mushroom Picking</Text >
             <Text style={[tl_styles.largeText, tl_styles.orangeText]}>[Navigation Game]</Text >
             <Text style={[tl_styles.largeText, tl_styles.orangeText]}>70 coins</Text >
@@ -102,23 +103,23 @@ export default class Profile extends React.Component {
           </View>
       
           <View style={[tl_styles.row, tl_styles.rowGray]}>
-            <Image
-              source={require('../assets/images/robot-dev.png')}
-              style={{ height: 140, width: 200, margin: '2%' }}
+            <Image resizeMode="contain"
+              source={require('../assets/images/bird.gif')}
+              style={{ margin: '2%', flex: 1 }}
             />
-            <View>
-            <Text style={[tl_styles.largeText]}>Robot Birds</Text>
+            <View style={{flex: 1}}>
+            <Text style={[tl_styles.largeText]}>Bird Catch</Text>
             <Text style={[tl_styles.largeText, tl_styles.orangeText]}>[Open-Message Game]</Text >
             <Text style={[tl_styles.largeText, tl_styles.orangeText]}>50 coins</Text >
             </View>
           </View>
       
           <View style={[tl_styles.row, tl_styles.rowGray]}>
-            <Image
-              source={require('../assets/images/snowman.jpg')}
-              style={{ height: 140, width: 200, margin: '2%' }}
+            <Image resizeMode="contain"
+              source={require('../assets/images/snowman.gif')}
+              style={{ margin: '2%', flex: 1 }}
             />
-            <View>
+            <View style={{flex: 1}}>
             <Text style={[tl_styles.largeText]}>Smash the Snowman</Text >
             <Text style={[tl_styles.largeText, tl_styles.orangeText]}>[Navigation Game]</Text >
             <Text style={[tl_styles.largeText, tl_styles.orangeText]}>60 coins</Text >
@@ -173,9 +174,8 @@ const tl_styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   largeText: {
-    fontSize: 20,
+    fontSize: 16,
     padding: 5,
-    marginBottom: '3%',
   },
   textBox: {
     color: 'white',
@@ -186,6 +186,7 @@ const tl_styles = StyleSheet.create({
     color: 'orange',
   },
   rowGray: {
+   height: 200,
    alignItems: 'center', 
    backgroundColor: '#ccc',
    marginBottom: 2,

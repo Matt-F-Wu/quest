@@ -39,7 +39,7 @@ export default TabNavigator(
                 : 'md-create';
             break;
           case 'Gallery':
-            iconName = Platform.OS === 'ios' ? `ios-mail${focused ? '' : '-outline'}` : 'md-mail';
+            iconName = Platform.OS === 'ios' ? `ios-images${focused ? '' : '-outline'}` : 'md-image';
             break;
           case 'Profile':
             iconName =
@@ -58,7 +58,7 @@ export default TabNavigator(
           <View style={{flexDirection: 'row', justifyContent: 'center', width: '20%'}}>
           <Ionicons
             name={iconName}
-            size={32}
+            size={30}
             style={{ marginBottom: -3}}
             color={focused ? Colors.tabIconSelected : Colors.tabIconDefault}
           />

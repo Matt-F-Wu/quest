@@ -5,6 +5,7 @@ import {
   Image,
   Text,
   Alert,
+  Dimensions,
 } from 'react-native';
 
 import Colors from '../constants/Colors';
@@ -32,46 +33,48 @@ export default class CameraNav extends CameraBase {
     navigate('Profile');
   }
 
-  num_objs = 4;
+  num_objs = 5;
 
   customize(num) {
     var i;
     var objectArray = [];
+    var deviceWidth = Dimensions.get("window").width;
     for(i = 0; i < num; i++){
       objectArray.push({
         x: (80-i*10) + '%',
         y: (60-i*5) + '%',
-        w: (120-15*i),
-        h: (120-15*i),
+        w: (20-2*i)/100*deviceWidth,
+        h: (20-2*i)/100*deviceWidth,
         image: require('../assets/images/coin.gif'),
       });
     }
 
     objectArray.push({
-      x: (80-num*10) + '%',
-      y: (60-num*5) + '%',
-      w: 100,
-      h: 100,
+      x: (50 - (25 - i*5)/2) + '%',
+      y: (50 - (25 - i*5)/2) + '%',
+      w: (25 - i*5)/100*deviceWidth,
+      h: (25 - i*5)/100*deviceWidth,
       image: require('../assets/images/star.gif'),
     });
     //This view does not have coins/objects
     this.setState({has_button: false, has_objects: true, 
       objects: objectArray, styles: styles, has_lable: true,
       lx: 10, ly: 10, 
-      textLable: 'Coins count: ' + (100 + (4-num)) + ', 150 meters utill destination'});
+      textLable: 'Coins count: ' + (100 + (5-num)) + ', 150 meters utill destination'});
   }
 
   arrived() {
-    Alert.alert("You have arrived at your destination! Point your camera to the sky!");
+    Alert.alert("You have arrived at your destination! \nPoint your camera to the sky!");
     var i;
     var objectArray = [];
     var num_deceiver = 9;
+    var deviceWidth = Dimensions.get("window").width;
     for(i = 0; i < num_deceiver; i++){
       objectArray.push({
         x: (Math.random()*88) + '%',
         y: (Math.random()*88) + '%',
-        w: 120,
-        h: 120,
+        w: 12/100*deviceWidth,
+        h: 12/100*deviceWidth,
         image: require('../assets/images/deceiver.png'),
       });
     }
@@ -79,15 +82,15 @@ export default class CameraNav extends CameraBase {
     objectArray.push({
       x: (Math.random()*88) + '%',
       y: (Math.random()*88) + '%',
-      w: 120,
-      h: 120,
+      w: 12/100*deviceWidth,
+      h: 12/100*deviceWidth,
       image: require('../assets/images/goal.png'),
-      onClick: () => {this.num_objs = 4; this.setState({mountCam: false}); navigate('ViewQuest');},
+      onClick: () => {this.num_objs = 5; this.setState({mountCam: false}); navigate('ViewQuest');},
     })
     //This view does not have coins/objects
     this.setState({has_button: false, has_objects: true, 
       objects: objectArray, styles: styles, has_lable: true,
-      textLable: 'Coins count: 104, at destination\nFind the odd ones out!'});
+      textLable: 'Coins count: 105, at destination\nFind the odd ones out!'});
   }
 
 }
