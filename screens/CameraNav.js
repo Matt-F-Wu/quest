@@ -59,11 +59,16 @@ export default class App extends React.Component {
     const coinTexture = await ExpoTHREE.createTextureAsync({
       asset: Asset.fromModule(require('../assets/images/coin.png')),
     });
-
-    const material = new THREE.MeshBasicMaterial( { map: coinTexture } );
+    
+    const top_material = new THREE.MeshBasicMaterial( { map: coinTexture } );
+    // show copy to save memory, same as using clone()
+    const bottom_material = top_material;
+    const side_material = new THREE.MeshBasicMaterial( { color: 0xFFD700 } );
+    //array of materials
+    const materials = [side_material, top_material, bottom_material];
     //TODO: take 1/10 of the screen roughly, tune later
-    const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.015, 100);
-    const cube = new THREE.Mesh(geometry, material);
+    const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.02, 100);
+    const cube = new THREE.Mesh(geometry, materials);
     cube.position.z = -0.4;
     scene.add(cube);
 
@@ -71,8 +76,8 @@ export default class App extends React.Component {
       requestAnimationFrame(animate);
 
       //x direction is pointing right, y axis is pointing upword
-      //cube.rotation.x += 0.01;
-      cube.rotation.x = 0.5;
+      cube.rotation.x += 0.01;
+      //cube.rotation.x = Math.PI / 5.0 * 2.0;
       cube.rotation.y += 0.02;
 
       renderer.render(scene, camera);
