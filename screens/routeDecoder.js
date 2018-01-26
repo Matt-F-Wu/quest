@@ -7,7 +7,7 @@ module.exports = {
 		console.debug("cur loc: " + point.latitude + " " + point.longitude);
 		var i;
 		for(i = 0; i < arr.length - 1; i++){
-			console.debug("point1: " + arr[i].latitude + " " + arr[i].longitude + " - point2: " + arr[i+1].latitude + " " + arr[i].longitude);
+			//console.debug("point1: " + arr[i].latitude + " " + arr[i].longitude + " - point2: " + arr[i+1].latitude + " " + arr[i].longitude);
 			if( point.latitude <= Math.max(arr[i].latitude, arr[i+1].latitude) &&
 			 	point.latitude >= Math.min(arr[i].latitude, arr[i+1].latitude) &&
 			 	point.longitude <= Math.max(arr[i].longitude, arr[i+1].longitude) &&
@@ -39,6 +39,10 @@ module.exports = {
 	    var cos = Math.cos(ang);
 	    var sin = Math.sin(ang);
 	    return new Array(Math.round(10000*(vec[0] * cos - vec[1] * sin))/10000, Math.round(10000*(vec[0] * sin + vec[1] * cos))/10000);
+	},
+
+	vectorLength(vec){
+		return Math.pow((Math.pow(vec.x, 2) + Math.pow(vec.y, 2) + Math.pow(vec.z, 2)), 0.5);
 	},
 };
 

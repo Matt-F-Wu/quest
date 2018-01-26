@@ -7,12 +7,15 @@ import ExpoTHREE from 'expo-three'; // 2.0.2
 
 console.disableYellowBox = true;
 var routeDecoder = require('./routeDecoder');
+var nextStop;
+var obj_per_scene = 3;
 export default class App extends React.Component {
   state = {
     loaded: false,
+    cur_location: null,
     coords: [],
-    init_angle: 0.0,
-    got_angle: false,
+    got_route: false,
+    obj_list: [],
   }
 
   //before mounting view, do these things
@@ -27,6 +30,7 @@ export default class App extends React.Component {
       require('../assets/textures/coin/side.png'),
       require('../assets/textures/coin/bottom.png')
     ].map((module) => Expo.Asset.fromModule(module).downloadAsync()));
+
     this.setState({ loaded: true });
   }
 
@@ -47,11 +51,10 @@ export default class App extends React.Component {
       });
     }
     //update every 500 milliseconds and every 0.2 meter movement
-    var first_point = true;
     Location.watchPositionAsync({enableHighAccuracy : true, timeInterval: 500, distanceInterval: 0.2}, 
       (location) => {
-        if(first_point){
-          first_point = false;
+        this.state.cur_location = location;
+        if(!this.state.got_route){
           //Get the route to destination with Google Map Directions API
           const mode = 'walking'; // other modes like 'driving';
           const origin = location.coords.latitude + ',' + location.coords.longitude;
@@ -77,19 +80,17 @@ export default class App extends React.Component {
                           coords: c_arr,
                       });
                       //Utilize the coords somehow
-                      console.debug("CUR: " + location.coords.latitude + " " + location.coords.longitude);
-                      const nextStop = routeDecoder.inBetween(this.state.coords, {latitude: location.coords.latitude, longitude: location.coords.longitude});
-                      console.debug("nextStop: " + nextStop);
+                      //console.debug("CUR: " + location.coords.latitude + " " + location.coords.longitude);
+                      nextStop = routeDecoder.inBetween(this.state.coords, {latitude: location.coords.latitude, longitude: location.coords.longitude});
+                      //console.debug("nextStop: " + nextStop);
                       if(nextStop){
-                        var angle2N = routeDecoder.findHeading({latitude: location.coords.latitude, longitude: location.coords.longitude}, nextStop);
-                        var angle_diff = angle2N - location.coords.heading;
-                        this.setState({init_angle: angle_diff, got_angle: true});
+                        this.setState({got_route: true});
                       }else{
                         /*
-                        receiver deviated from route, set first point to true
+                        receiver deviated from route, set got_route to false
                         to re-request the route
                         */
-                        first_point = true;
+                        this.setState({got_route: false});
                       }
                   }
               }).catch(e => {console.warn(e)});
@@ -99,14 +100,45 @@ export default class App extends React.Component {
       });
   };
 
-  render() {
-    return this.state.loaded && this.state.got_angle ? (
-      <Expo.GLView
-        ref={(ref) => this._glView = ref}
-        style={{ flex: 1 }}
-        onContextCreate={this._onGLContextCreate}
-      />
-    ) : <Expo.AppLoading />;
+  _addARNavObj(scene, num, coinTexture){
+    
+    var angle2N = routeDecoder.findHeading({latitude: this.state.cur_location.coords.latitude, 
+      longitude: this.state.cur_location.coords.longitude}, nextStop);
+    var angle_diff = angle2N - this.state.cur_location.coords.heading;
+    const start_z = -0.5;
+    //Put the first coin in the direction you are going to. Calculated based on GPS readings, probably not the best
+    var matched_position = routeDecoder.rotateVector([start_z, 0], angle_diff);
+    console.debug("angle is: " + angle_diff + "x is: " + matched_position[1] + "z is: " + matched_position[0]);
+    //Get the current objects
+    const cube_list = this.state.obj_list;
+    /*
+      Object custimization begins:
+      Defines what the AR object is, for now, it is just coins
+    */
+    
+    const top_material = new THREE.MeshBasicMaterial( { map: coinTexture } );
+    // show copy to save memory, same as using clone()
+    const bottom_material = top_material;
+    const side_material = new THREE.MeshBasicMaterial( { color: 0xFFD700 } );
+    //array of materials
+    const materials = [side_material, top_material, bottom_material];
+    //TODO: take 1/10 of the screen roughly, tune later
+    const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.02, 100);
+    /*
+      Object custimization ends
+    */
+    var i;
+    for(i = 0; i < num; i++){
+      let cube = new THREE.Mesh(geometry, materials);
+      cube.position.x = matched_position[1] * (1.0 + i);
+      cube.position.z = matched_position[0] * (1.0 + i);
+      cube.rotation.x = Math.PI / 5.0 * 2.0;
+      scene.add(cube);
+      cube_list.push(cube);
+    }
+
+    this.setState({obj_list: cube_list});
+    
   }
 
   _onGLContextCreate = async (gl) => {
@@ -130,27 +162,16 @@ export default class App extends React.Component {
 
     scene.background = ExpoTHREE.createARBackgroundTexture(arSession, renderer);
     
+    /* Create obj texture here because await requires async parent, 
+    might need to create other textures too
+    */
+    
     const coinTexture = await ExpoTHREE.createTextureAsync({
       asset: Asset.fromModule(require('../assets/images/coin.png')),
     });
+
     
-    const top_material = new THREE.MeshBasicMaterial( { map: coinTexture } );
-    // show copy to save memory, same as using clone()
-    const bottom_material = top_material;
-    const side_material = new THREE.MeshBasicMaterial( { color: 0xFFD700 } );
-    //array of materials
-    const materials = [side_material, top_material, bottom_material];
-    //TODO: take 1/10 of the screen roughly, tune later
-    const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.02, 100);
-    const cube = new THREE.Mesh(geometry, materials);
-    cube.position.z = -0.5;
-    //Put the first coin in the direction you are going to. Calculated based on GPS readings, probably not the best
-    var matched_position = routeDecoder.rotateVector([cube.position.z, 0], this.state.init_angle);
-    cube.position.x = matched_position[1];
-    cube.position.z = matched_position[0];
-    
-    console.debug("angle is: " + this.state.init_angle + "x is: " + cube.position.x + "z is: " + cube.position.z);
-    scene.add(cube);
+    this._addARNavObj(scene, 3, coinTexture);
 
     const animate = () => {
       requestAnimationFrame(animate);
@@ -158,12 +179,43 @@ export default class App extends React.Component {
       //x direction is pointing right, y axis is pointing upword
       //cube.rotation.x += 0.01;
       //cube.rotation.x = Math.PI / 5.0 * 2.0;
-      cube.rotation.y += 0.04;
+      var n_obj_list = [];
+      var i;
+      for(i = 0; i < this.state.obj_list.length; i++){
+        if(routeDecoder.vectorLength(this.state.obj_list[i].position) < 0.05){
+          //got close enough to the object, object is "collected", aka removed
+          //TODO: what does collecting an object do?
+          scene.remove(this.state.obj_list[i]);
+          console.debug("Collect!");
+        }else{
+          this.state.obj_list[i].rotation.y += 0.04;
+          n_obj_list.push(this.state.obj_list[i]);
+        }
+      }
+
+      if(n_obj_list.length < obj_per_scene){
+        //Need to add new object!
+        this._addARNavObj(scene, obj_per_scene - n_obj_list.length, coinTexture);
+      }
+
+      this.setState({obj_list: n_obj_list});
 
       renderer.render(scene, camera);
       gl.endFrameEXP();
     }
     animate();   
   }
+
+  render() {
+    
+    return this.state.loaded && this.state.got_route ? (
+      <Expo.GLView
+        ref={(ref) => this._glView = ref}
+        style={{ flex: 1 }}
+        onContextCreate={this._onGLContextCreate}
+      />
+    ) : <Expo.AppLoading />;
+  }
+
 }
 
