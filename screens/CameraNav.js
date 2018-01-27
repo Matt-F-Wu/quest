@@ -9,6 +9,8 @@ console.disableYellowBox = true;
 var routeDecoder = require('./routeDecoder');
 var nextStop;
 var obj_per_scene = 3;
+var capture_radius = 0.1;
+var msg_shown = false;
 export default class App extends React.Component {
   state = {
     loaded: false,
@@ -28,7 +30,9 @@ export default class App extends React.Component {
     await Promise.all([
       require('../assets/textures/coin/front.png'),
       require('../assets/textures/coin/side.png'),
-      require('../assets/textures/coin/bottom.png')
+      require('../assets/textures/coin/bottom.png'),
+      //require('../assets/objects/low-poly-chest.obj'),
+      //require('../assets/objects/low-poly-chest.png'),
     ].map((module) => Expo.Asset.fromModule(module).downloadAsync()));
 
     this.setState({ loaded: true });
@@ -108,7 +112,7 @@ export default class App extends React.Component {
     const start_z = -0.5;
     //Put the first coin in the direction you are going to. Calculated based on GPS readings, probably not the best
     var matched_position = routeDecoder.rotateVector([start_z, 0], angle_diff);
-    console.debug("angle is: " + angle_diff + "x is: " + matched_position[1] + "z is: " + matched_position[0]);
+    //console.debug("angle is: " + angle_diff + "x is: " + matched_position[1] + "z is: " + matched_position[0]);
     //Get the current objects
     const cube_list = this.state.obj_list;
     /*
@@ -157,6 +161,8 @@ export default class App extends React.Component {
     //three init
     const scene = new THREE.Scene();
     const camera = ExpoTHREE.createARCamera(arSession, width, height, 0.01, 1000);
+    console.debug("camera position: " + camera.position.x + " " + camera.position.y + " " + camera.position.z);
+
     const renderer = ExpoTHREE.createRenderer({ gl });
     renderer.setSize(width, height);
 
@@ -173,20 +179,64 @@ export default class App extends React.Component {
     
     this._addARNavObj(scene, 3, coinTexture);
 
+    const chest = {
+      'low-poly-chest.obj': require('../assets/objects/low-poly-chest.obj'),
+      'low-poly-chest.mtl': require('../assets/objects/low-poly-chest.mtl'),
+      'low-poly-chest.png': require('../assets/objects/low-poly-chest.png'),
+    };
+
+    /// Load chest!
+    const assetProvider = (name) => {
+      return chest[name];
+    };
+
+    const chestObj = await ExpoTHREE.loadAsync(
+      [chest['low-poly-chest.obj'], chest['low-poly-chest.mtl']],
+      null,
+      assetProvider,
+    );
+
+    //chestObj.material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+
+    ExpoTHREE.utils.scaleLongestSideToSize(chestObj, 0.5);
+    
+    /*
+    Adding the final treasure chest, for testing, shouldn't be this simple
+    */
+    /*
+    const chestAsset = Asset.fromModule(require('../assets/objects/low-poly-chest.obj'));
+    const chestGeo = await ExpoTHREE.loadAsync(chestAsset);
+
+    const chestTexture = await ExpoTHREE.createTextureAsync({
+      asset: Asset.fromModule(require('../assets/objects/low-poly-chest.png')),
+    });
+    
+    const chestMaterial = new THREE.MeshBasicMaterial( { map: chestTexture } );
+    const chest = new THREE.Mesh(chestGeo, chestMaterials);
+    */
+
     const animate = () => {
       requestAnimationFrame(animate);
+
+      camera.updateMatrixWorld();
+      var camera_position = new THREE.Vector3();
+      camera_position.setFromMatrixPosition( camera.matrixWorld );
 
       //x direction is pointing right, y axis is pointing upword
       //cube.rotation.x += 0.01;
       //cube.rotation.x = Math.PI / 5.0 * 2.0;
       var n_obj_list = [];
       var i;
+      var obj_position = new THREE.Vector3();
+      scene.updateMatrixWorld();
       for(i = 0; i < this.state.obj_list.length; i++){
-        if(routeDecoder.vectorLength(this.state.obj_list[i].position) < 0.05){
+        obj_position.setFromMatrixPosition(this.state.obj_list[i].matrixWorld);
+        if(routeDecoder.distance(obj_position, camera_position) < capture_radius){
           //got close enough to the object, object is "collected", aka removed
           //TODO: what does collecting an object do?
           scene.remove(this.state.obj_list[i]);
           console.debug("Collect!");
+          //Add screen flash effect for collecting an object
         }else{
           this.state.obj_list[i].rotation.y += 0.04;
           n_obj_list.push(this.state.obj_list[i]);
@@ -194,9 +244,21 @@ export default class App extends React.Component {
       }
 
       if(n_obj_list.length < obj_per_scene){
-        //Need to add new object!
-        this._addARNavObj(scene, obj_per_scene - n_obj_list.length, coinTexture);
+        /*
+        TODO: Need to add new object, below function call does something weird, need fixing
+        */
+        //this._addARNavObj(scene, obj_per_scene - n_obj_list.length, coinTexture);
       }
+
+      
+      if(n_obj_list.length == 0 && !msg_shown){
+        //collected all object, show final message
+        scene.updateMatrix();
+        ExpoTHREE.utils.alignMesh(chestObj, { z: -1.0 });
+        scene.add(chestObj);
+        msg_shown = true;
+      }
+      
 
       this.setState({obj_list: n_obj_list});
 

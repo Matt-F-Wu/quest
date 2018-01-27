@@ -41,8 +41,8 @@ module.exports = {
 	    return new Array(Math.round(10000*(vec[0] * cos - vec[1] * sin))/10000, Math.round(10000*(vec[0] * sin + vec[1] * cos))/10000);
 	},
 
-	vectorLength(vec){
-		return Math.pow((Math.pow(vec.x, 2) + Math.pow(vec.y, 2) + Math.pow(vec.z, 2)), 0.5);
+	distance: function(a, b){
+		return Math.pow((Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2) + Math.pow(a.z - b.z, 2)), 0.5);
 	},
 };
 
