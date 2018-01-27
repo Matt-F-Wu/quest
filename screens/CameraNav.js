@@ -1,6 +1,7 @@
 import Expo, { Asset, Location, Permissions } from 'expo';
+import { View } from 'react-native';
 import React from 'react';
-
+import FastImage from 'react-native-fast-image';
 const THREE = require('three');
 global.THREE = THREE;
 import ExpoTHREE from 'expo-three'; // 2.0.2
@@ -11,6 +12,8 @@ var nextStop;
 var obj_per_scene = 3;
 var capture_radius = 0.1;
 var msg_shown = false;
+const start_z = -0.8;
+var animation_time;
 export default class App extends React.Component {
   state = {
     loaded: false,
@@ -18,6 +21,7 @@ export default class App extends React.Component {
     coords: [],
     got_route: false,
     obj_list: [],
+    animation_on: false,
   }
 
   //before mounting view, do these things
@@ -109,7 +113,7 @@ export default class App extends React.Component {
     var angle2N = routeDecoder.findHeading({latitude: this.state.cur_location.coords.latitude, 
       longitude: this.state.cur_location.coords.longitude}, nextStop);
     var angle_diff = angle2N - this.state.cur_location.coords.heading;
-    const start_z = -0.5;
+    
     //Put the first coin in the direction you are going to. Calculated based on GPS readings, probably not the best
     var matched_position = routeDecoder.rotateVector([start_z, 0], angle_diff);
     //console.debug("angle is: " + angle_diff + "x is: " + matched_position[1] + "z is: " + matched_position[0]);
@@ -220,11 +224,19 @@ export default class App extends React.Component {
           //TODO: what does collecting an object do?
           scene.remove(this.state.obj_list[i]);
           console.debug("Collect!");
+          //200 drawing cycles
+          animation_time = 100;
+          this.setState({animation_on: true});
           //Add screen flash effect for collecting an object
         }else{
           this.state.obj_list[i].rotation.y += 0.04;
           n_obj_list.push(this.state.obj_list[i]);
         }
+      }
+
+      animation_time--;
+      if(animation_time == 0){
+        this.setState({animation_on: false});
       }
 
       if(n_obj_list.length < obj_per_scene){
@@ -257,14 +269,27 @@ export default class App extends React.Component {
     animate();   
   }
 
+  _renderAnimation(){
+    if(this.state.animation_on){
+      return (
+          <FastImage style={{position: 'absolute', width: '100%', height: '100%'}} resizeMode='cover'
+              source={require('../assets/images/burst.gif')}
+          />
+        );
+    }
+  }
+
   render() {
     
     return this.state.loaded && this.state.got_route ? (
+      <View style={{ flex: 1 }}>
       <Expo.GLView
         ref={(ref) => this._glView = ref}
         style={{ flex: 1 }}
         onContextCreate={this._onGLContextCreate}
       />
+      {this._renderAnimation()}
+      </View>
     ) : <Expo.AppLoading />;
   }
 
