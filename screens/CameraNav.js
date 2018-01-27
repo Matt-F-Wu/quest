@@ -32,7 +32,7 @@ export default class App extends React.Component {
       require('../assets/textures/coin/side.png'),
       require('../assets/textures/coin/bottom.png'),
       //require('../assets/objects/low-poly-chest.obj'),
-      //require('../assets/objects/low-poly-chest.png'),
+      require('../assets/objects/low-poly-chest.png'),
     ].map((module) => Expo.Asset.fromModule(module).downloadAsync()));
 
     this.setState({ loaded: true });
@@ -179,13 +179,16 @@ export default class App extends React.Component {
     
     this._addARNavObj(scene, 3, coinTexture);
 
+    /*
+    Adding the final treasure chest, for testing, shouldn't be this simple
+    */
+    
     const chest = {
       'low-poly-chest.obj': require('../assets/objects/low-poly-chest.obj'),
       'low-poly-chest.mtl': require('../assets/objects/low-poly-chest.mtl'),
       'low-poly-chest.png': require('../assets/objects/low-poly-chest.png'),
     };
 
-    /// Load chest!
     const assetProvider = (name) => {
       return chest[name];
     };
@@ -195,25 +198,6 @@ export default class App extends React.Component {
       null,
       assetProvider,
     );
-
-    //chestObj.material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
-
-    ExpoTHREE.utils.scaleLongestSideToSize(chestObj, 0.5);
-    
-    /*
-    Adding the final treasure chest, for testing, shouldn't be this simple
-    */
-    /*
-    const chestAsset = Asset.fromModule(require('../assets/objects/low-poly-chest.obj'));
-    const chestGeo = await ExpoTHREE.loadAsync(chestAsset);
-
-    const chestTexture = await ExpoTHREE.createTextureAsync({
-      asset: Asset.fromModule(require('../assets/objects/low-poly-chest.png')),
-    });
-    
-    const chestMaterial = new THREE.MeshBasicMaterial( { map: chestTexture } );
-    const chest = new THREE.Mesh(chestGeo, chestMaterials);
-    */
 
     const animate = () => {
       requestAnimationFrame(animate);
@@ -253,8 +237,13 @@ export default class App extends React.Component {
       
       if(n_obj_list.length == 0 && !msg_shown){
         //collected all object, show final message
-        scene.updateMatrix();
-        ExpoTHREE.utils.alignMesh(chestObj, { z: -1.0 });
+        //console.debug(camera_position.x + ' ' +  camera_position.y + ' ' + camera_position.z);
+        ExpoTHREE.utils.scaleLongestSideToSize(chestObj, 0.4);
+        let camera_direction = camera.getWorldDirection();
+        chestObj.position.set(camera_position.x + camera_direction.x * 1.2, 
+                    camera_position.y, 
+                    camera_position.z + camera_direction.z * 1.2);
+        console.log(chestObj.position.x + " " + chestObj.position.y + " " + chestObj.position.z );
         scene.add(chestObj);
         msg_shown = true;
       }
