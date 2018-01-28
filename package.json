@@ -10,7 +10,7 @@
   "dependencies": {
     "@expo/samples": "2.1.1",
     "expo": "^23.0.0",
-    "expo-three": "^2.2.0",
+    "expo-three": "2.2.2-alpha.0",
     "react": "16.0.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-23.0.0.tar.gz",
     "react-native-atoz-listview": "0.0.7",
