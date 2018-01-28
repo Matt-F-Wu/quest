@@ -14,6 +14,8 @@ var capture_radius = 0.1;
 var msg_shown = false;
 const start_z = -0.8;
 var animation_time;
+var self;
+var exiting = false;
 export default class App extends React.Component {
   state = {
     loaded: false,
@@ -21,7 +23,12 @@ export default class App extends React.Component {
     coords: [],
     got_route: false,
     obj_list: [],
-    animation_on: false,
+    animation_opacity: 0.0,
+  }
+
+  constructor(props) {
+    super(props);
+    self = this;
   }
 
   //before mounting view, do these things
@@ -236,7 +243,7 @@ export default class App extends React.Component {
           console.debug("Collect!");
           //200 drawing cycles
           animation_time = 100;
-          this.setState({animation_on: true});
+          this.setState({animation_opacity: 1.0});
           //Add screen flash effect for collecting an object
         }else{
           this.state.obj_list[i].rotation.y += 0.04;
@@ -246,7 +253,7 @@ export default class App extends React.Component {
 
       animation_time--;
       if(animation_time == 0){
-        this.setState({animation_on: false});
+        this.setState({animation_opacity: 0.0});
       }
 
       if(n_obj_list.length < obj_per_scene){
@@ -269,6 +276,17 @@ export default class App extends React.Component {
         scene.add(chestObj);
         msg_shown = true;
       }
+
+      if(n_obj_list.length == 0){
+        // Detecting whether you have captured the final treasure
+        obj_position.setFromMatrixPosition(chestObj.matrixWorld);
+        if(routeDecoder.distance(obj_position, camera_position) < capture_radius && !exiting){
+          //Go to viewing message
+          exiting = true;
+          const { navigate } = self.props.navigation;
+          navigate('ViewQuest');
+        }
+      }
       
 
       this.setState({obj_list: n_obj_list});
@@ -279,18 +297,7 @@ export default class App extends React.Component {
     animate();   
   }
 
-  _renderAnimation(){
-    if(this.state.animation_on){
-      return (
-          <FastImage style={{position: 'absolute', width: '100%', height: '100%'}} resizeMode='cover'
-              source={require('../assets/images/burst.gif')}
-          />
-        );
-    }
-  }
-
   render() {
-    
     return this.state.loaded && this.state.got_route ? (
       <View style={{ flex: 1 }}>
       <Expo.GLView
@@ -298,7 +305,9 @@ export default class App extends React.Component {
         style={{ flex: 1 }}
         onContextCreate={this._onGLContextCreate}
       />
-      {this._renderAnimation()}
+      <FastImage style={{position: 'absolute', width: '100%', height: '100%', opacity: this.state.animation_opacity}} resizeMode='cover'
+          source={require('../assets/images/burst.gif')}
+      />
       </View>
     ) : <Expo.AppLoading />;
   }
