@@ -3,14 +3,16 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
-const Lookback = require('react-native-lookback');
+//import Lookback from 'react-native-lookback';
 
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
   };
 
+  /*
   componentWillMount() {
+    console.debug(typeof Lookback.startWithAppToken);
     Lookback.startWithAppToken('DivR8acjx4HDf5HXA');
     // Start Recording
     Lookback.startRecordingWithOptions({
@@ -24,6 +26,7 @@ export default class App extends React.Component {
     // Stop Recording
     Lookback.stopRecording();
   }
+  */
 
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
