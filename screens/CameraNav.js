@@ -187,6 +187,8 @@ export default class App extends React.Component {
     Adding the final treasure chest, for testing, shouldn't be this simple
     */
     
+    /*
+    //Until Evan figures out what's wrong with loadAsync
     const chest = {
       'low-poly-chest.obj': require('../assets/objects/low-poly-chest.obj'),
       'low-poly-chest.mtl': require('../assets/objects/low-poly-chest.mtl'),
@@ -202,6 +204,14 @@ export default class App extends React.Component {
       null,
       assetProvider,
     );
+    */
+
+    var b_texture = await ExpoTHREE.createTextureAsync({
+      asset: Asset.fromModule(require('../assets/textures/crate/crate.gif')),
+    });
+    var b_geometry = new THREE.BoxBufferGeometry( 200, 200, 200 );
+    var b_material = new THREE.MeshBasicMaterial( { map: b_texture } );
+    const chestObj = new THREE.Mesh( b_geometry, b_material );
 
     const animate = () => {
       requestAnimationFrame(animate);

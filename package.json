@@ -16,6 +16,7 @@
     "react-native-atoz-listview": "0.0.7",
     "react-native-camera": "^0.12.0",
     "react-native-fast-image": "^2.0.1",
+    "react-native-lookback": "^2.2.0",
     "react-native-maps": "^0.18.3",
     "react-native-search-box": "0.0.13",
     "react-native-ui-kitten": "^2.0.1",

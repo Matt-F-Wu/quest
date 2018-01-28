@@ -3,11 +3,27 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
+const Lookback = require('react-native-lookback');
 
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
   };
+
+  componentWillMount() {
+    Lookback.startWithAppToken('DivR8acjx4HDf5HXA');
+    // Start Recording
+    Lookback.startRecordingWithOptions({
+      showPreview: true, // When true, will show the Lookback interface for the user to watch / upload the recording.
+      cameraEnabled: true, // When true, will record the user using the front facing camera.
+      microphoneEnabled: true, // When true, will record audio with the recording.
+    });
+  }
+
+  componentWillUnmount() {
+    // Stop Recording
+    Lookback.stopRecording();
+  }
 
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
