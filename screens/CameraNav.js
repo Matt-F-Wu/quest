@@ -5,6 +5,7 @@ import FastImage from 'react-native-fast-image';
 const THREE = require('three');
 global.THREE = THREE;
 import ExpoTHREE from 'expo-three'; // 2.0.2
+var secret = require('./secret');
 
 console.disableYellowBox = true;
 var routeDecoder = require('./routeDecoder');
@@ -85,7 +86,7 @@ export default class App extends React.Component {
           right now hard code to be somewhere in main quad
           */
           const destination = '37.4274821,-122.1702636';
-          const APIKEY = 'AIzaSyDigh9mURxqbuujMNcZMVGmzG5oFoYWNSA';
+          const APIKEY = secret.GMapAPIKey;
           const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${APIKEY}&mode=${mode}`;
 
           fetch(url)
