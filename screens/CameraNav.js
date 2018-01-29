@@ -10,7 +10,7 @@ console.disableYellowBox = true;
 var routeDecoder = require('./routeDecoder');
 var nextStop;
 var obj_per_scene = 3;
-var capture_radius = 0.1;
+var capture_radius = 0.15;
 var msg_shown = false;
 const start_z = -0.8;
 var animation_time;
@@ -33,8 +33,15 @@ export default class App extends React.Component {
 
   //before mounting view, do these things
   componentWillMount() {
+    exiting = false;
     this.preloadAssetsAsync();
     this._getLocationAsync();
+    console.debug("Will mount...")
+  }
+
+  //reset class variables
+  componentWillUnmount(){
+    console.debug("Component unmounting...");
   }
 
   async preloadAssetsAsync() {
@@ -172,7 +179,7 @@ export default class App extends React.Component {
     //three init
     const scene = new THREE.Scene();
     const camera = ExpoTHREE.createARCamera(arSession, width, height, 0.01, 1000);
-    console.debug("camera position: " + camera.position.x + " " + camera.position.y + " " + camera.position.z);
+    //console.debug("camera position: " + camera.position.x + " " + camera.position.y + " " + camera.position.z);
 
     const renderer = ExpoTHREE.createRenderer({ gl });
     renderer.setSize(width, height);
@@ -189,6 +196,7 @@ export default class App extends React.Component {
 
     
     this._addARNavObj(scene, 3, coinTexture);
+    console.debug(" msg_shown: " + msg_shown + " animation_opacity: " + this.state.animation_opacity);
 
     /*
     Adding the final treasure chest, for testing, shouldn't be this simple
@@ -220,7 +228,9 @@ export default class App extends React.Component {
     var b_material = new THREE.MeshBasicMaterial( { map: b_texture } );
     const chestObj = new THREE.Mesh( b_geometry, b_material );
 
-    const animate = () => {
+    const { navigate } = self.props.navigation;
+
+    let animate = () => {
       requestAnimationFrame(animate);
 
       camera.updateMatrixWorld();
@@ -240,7 +250,7 @@ export default class App extends React.Component {
           //got close enough to the object, object is "collected", aka removed
           //TODO: what does collecting an object do?
           scene.remove(this.state.obj_list[i]);
-          console.debug("Collect!");
+          console.debug("Collect! " + "length: " + n_obj_list.length + " msg_shown: " + msg_shown);
           //200 drawing cycles
           animation_time = 100;
           this.setState({animation_opacity: 1.0});
@@ -251,7 +261,7 @@ export default class App extends React.Component {
         }
       }
 
-      animation_time--;
+      if(animation_time > 0) {animation_time--;}
       if(animation_time == 0){
         this.setState({animation_opacity: 0.0});
       }
@@ -262,9 +272,8 @@ export default class App extends React.Component {
         */
         //this._addARNavObj(scene, obj_per_scene - n_obj_list.length, coinTexture);
       }
-
       
-      if(n_obj_list.length == 0 && !msg_shown){
+      if(n_obj_list.length == 0 && !msg_shown && !exiting){
         //collected all object, show final message
         //console.debug(camera_position.x + ' ' +  camera_position.y + ' ' + camera_position.z);
         ExpoTHREE.utils.scaleLongestSideToSize(chestObj, 0.4);
@@ -275,15 +284,21 @@ export default class App extends React.Component {
         console.log(chestObj.position.x + " " + chestObj.position.y + " " + chestObj.position.z );
         scene.add(chestObj);
         msg_shown = true;
-      }
-
-      if(n_obj_list.length == 0){
+      }else if(n_obj_list.length == 0 && msg_shown){
         // Detecting whether you have captured the final treasure
         obj_position.setFromMatrixPosition(chestObj.matrixWorld);
         if(routeDecoder.distance(obj_position, camera_position) < capture_radius && !exiting){
           //Go to viewing message
           exiting = true;
-          const { navigate } = self.props.navigation;
+          msg_shown = false;
+          scene.remove(chestObj);
+          console.debug("Exiting this view! msg_shown: " + msg_shown);
+          /*
+          Resetting animate function 
+          makes sure that returning to GL view 
+          doesn't call previous animate function
+          */
+          animate = () => {};
           navigate('ViewQuest');
         }
       }
