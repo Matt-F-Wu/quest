@@ -1,3 +1,4 @@
 node_modules/**/*
 .expo/**/*
 screens/secret.js
+Certificates.p12
