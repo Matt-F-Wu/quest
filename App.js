@@ -9,6 +9,7 @@ import Touchables from './components/Touchables';
 const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/register';
 var isShown = false;
 const notification_h = 100;
+var mounted = false;
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
@@ -40,6 +41,8 @@ export default class App extends React.Component {
   componentWillMount() {
     console.debug("Main frame mount!");
 
+    mounted = true;
+
     this.registerForPushNotificationsAsync();
     
     this._notificationSubscription = Notifications.addListener((receivedNotification) => {
@@ -49,7 +52,17 @@ export default class App extends React.Component {
       });
       //TODO: Notification received, do something
       this._showNotification();
+      //Auto collapsing the notification after 2 seconds
+      setTimeout(() => {
+        if(mounted && isShown){
+          this._showNotification();
+        }
+      }, 3000);
     });
+  }
+
+  componentWillUnmount(){
+    mounted = false;
   }
   
   registerForPushNotificationsAsync = async () => {
