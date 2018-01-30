@@ -15,7 +15,10 @@ import {RkButton} from 'react-native-ui-kitten';
 import Icon from 'react-native-vector-icons/FontAwesome';
 //flags used to denote which step we are at during the sending process
 const STEP_FLAG = {contact: 0, pin: 1, format: 2, compose: 3, send: 4};
+const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/sendq/';
 
+//This should be determined after user login/registration
+const username = 'HaoWu';
 export default class AddCaption extends React.Component {
   state = {
     captionText: '',
@@ -32,6 +35,18 @@ export default class AddCaption extends React.Component {
   }
 
   sendQuest(){
+    fetch(PUSH_ENDPOINT + username, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        data: {
+          value: 'Some data',
+        },
+      }),
+    });
     const { navigate } = this.props.navigation;
     Alert.alert("Quest sent successfully!");
     navigate('Compose');

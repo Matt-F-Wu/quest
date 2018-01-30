@@ -1,8 +1,10 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View, Animated } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Animated, Text } from 'react-native';
 import { AppLoading, Asset, Font, Permissions, Notifications } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
+import Colors from './constants/Colors';
+import Touchables from './components/Touchables';
 
 const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/register';
 var isShown = false;
@@ -36,6 +38,8 @@ export default class App extends React.Component {
   }
   
   componentWillMount() {
+    console.debug("Main frame mount!");
+
     this.registerForPushNotificationsAsync();
     
     this._notificationSubscription = Notifications.addListener((receivedNotification) => {
@@ -69,7 +73,9 @@ export default class App extends React.Component {
     }
 
     // Get the token that uniquely identifies this device
+    console.debug("Getting token...");
     let token = await Notifications.getExpoPushTokenAsync();
+    console.debug("Push token: " + token);
 
     // POST the token to your backend server from where you can retrieve it to send push notifications.
     return fetch(PUSH_ENDPOINT, {
@@ -90,6 +96,7 @@ export default class App extends React.Component {
   };
 
   render() {
+    console.debug("Rendering main frame");
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
         <AppLoading
@@ -101,15 +108,19 @@ export default class App extends React.Component {
     } else {
       return (
         <View style={styles.container}>
-          <Animated.View
-            style={[styles.subView,
-              {transform: [{translateY: this.state.bounceValue}]}]}
-            onPress={this._showNotification}>
-            <Text>Someone just sent you a new Quest!</Text>
-          </Animated.View>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
           <RootNavigation />
+          <Animated.View
+            style={[styles.subView,
+              {transform: [{translateY: this.state.bounceValue}]}]}>
+            <Touchables 
+              onClick={this._showNotification}
+              hasImage={true} 
+              title={'Notification!'} subTitle={'Someone just sent you a new Quest!'}
+              text={'Click to embark on your journey'} styles={styles} 
+              image={require('./assets/images/icon.png')}/>
+          </Animated.View>
         </View>
       );
     }
@@ -155,8 +166,40 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    width: "100%",
-    backgroundColor: "#FF0000",
+    width: "90%",
+    marginLeft: "5%",
+    marginRight: "5%",
+    backgroundColor: Colors.tintColor,
     height: notification_h,
+    borderRadius: 10,
+  },
+  rowStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: '100%',
+    margin: '1%',
+  },
+  cardStyle: {
+    flexDirection: 'column',
+    marginLeft: "1%",
+  },
+  title: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  subTitle: {
+    color: 'white',
+  },
+  text: {
+    color: 'white',
+  },
+  imageContainer: {
+    width: 80,
+    height: 80,
+  },
+  contactImg: {
+    width: 80,
+    height: 80,
   },
 });
