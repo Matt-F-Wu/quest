@@ -1,5 +1,5 @@
 import Expo, { Asset, Location, Permissions } from 'expo';
-import { View } from 'react-native';
+import { View, Dimensions } from 'react-native';
 import React from 'react';
 import FastImage from 'react-native-fast-image';
 const THREE = require('three');
@@ -17,6 +17,11 @@ const start_z = -0.8;
 var animation_time;
 var self;
 var exiting = false;
+var point_of_touch = new THREE.Vector2();
+var ray_casted = false;
+var ray_line = {obj: null, steps: 0, direction: null};
+var scene;
+const step_size = 0.05;
 export default class App extends React.Component {
   state = {
     loaded: false,
@@ -178,7 +183,7 @@ export default class App extends React.Component {
     const arSession = await this._glView.startARSessionAsync();
 
     //three init
-    const scene = new THREE.Scene();
+    scene = new THREE.Scene();
     const camera = ExpoTHREE.createARCamera(arSession, width, height, 0.01, 1000);
     //console.debug("camera position: " + camera.position.x + " " + camera.position.y + " " + camera.position.z);
 
@@ -231,6 +236,11 @@ export default class App extends React.Component {
 
     const { navigate } = self.props.navigation;
 
+    /*
+    Raycaster object capture, used to handle user touches to interact with 3D objects
+    */
+    var raycaster = new THREE.Raycaster();
+    
     let animate = () => {
       requestAnimationFrame(animate);
 
@@ -307,15 +317,91 @@ export default class App extends React.Component {
 
       this.setState({obj_list: n_obj_list});
 
+      if (ray_casted) {
+        ray_casted = false;
+        raycaster.setFromCamera( point_of_touch, camera );
+        let intersects = raycaster.intersectObjects( scene.children );
+
+        /*
+          Ray animation
+        */
+        /*
+        let origin = camera_position;
+        console.debug("Ray origin: " + origin.x + " " + origin.y + " " + origin.z);
+        // make a copy, so we don't mess up the original vector
+        let direction = raycaster.ray.direction.clone();
+        let end_point = new THREE.Vector3();
+        let distance = 3;
+        if (intersects.length >= 1 ) {
+          distance = intersects[0].distance;
+        }
+        //end_point.addVectors(origin, direction.multiplyScalar( distance ));
+
+        let ray_geometry = new THREE.SphereGeometry( 0.025, 32, 32 );
+        let ray_material = new THREE.MeshBasicMaterial( {color: 0xFF8C00} );
+        
+        //If there was a ray_line object, remove it first
+        if(ray_line.obj){
+          scene.remove(ray_line.obj);
+        }
+
+        ray_line.obj = new THREE.Mesh( ray_geometry, ray_material );
+        // start at the origin, going to end_point
+        ray_line.obj.position = origin;
+        ray_line.steps = distance / step_size;
+        ray_line.direction = direction;
+
+        scene.add(ray_line.obj);
+
+        if(ray_line.steps != 0){
+          ray_line.obj.position.add(ray_line.direction.multiplyScalar(step_size));
+          ray_line.steps --;
+          if (ray_line.steps === 0){
+            scene.remove(ray_line.obj);
+            ray_line.obj = null;
+          }
+        }
+        */
+
+        if (intersects.length >= 1 ) {
+          for (let j = 0; j < this.state.obj_list.length; j++){
+            if(this.state.obj_list[j] === intersects[0].object){
+              console.debug("caught one here!");
+              this.state.obj_list.splice(j, 1);
+              scene.remove(intersects[0].object);
+              break;
+            }
+          }
+          animation_time = 100;
+          this.setState({animation_opacity: 1.0});
+        }
+      }
+      
       renderer.render(scene, camera);
       gl.endFrameEXP();
     }
     animate();   
   }
 
+  fingerDown(event){
+    point_of_touch.x = (event.nativeEvent.locationX / Dimensions.get('window').width) * 2 - 1;
+    point_of_touch.y = -(event.nativeEvent.locationY / Dimensions.get('window').height) * 2 + 1;
+    ray_casted = true;
+  }
+
+  fingerRelease(event){
+    ray_casted = false;
+  }
+
   render() {
     return this.state.loaded && this.state.got_route ? (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}
+        onStartShouldSetResponder={(evt) => true}
+        onMoveShouldSetResponder={(evt) => true}
+        onResponderTerminationRequest={(evt) => true}
+        onResponderGrant={(evt) => this.fingerDown(evt)}
+        onResponderRelease={(evt) => this.fingerRelease(evt)}
+        >
       <Expo.GLView
         ref={(ref) => this._glView = ref}
         style={{ flex: 1 }}
