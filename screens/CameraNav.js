@@ -5,9 +5,10 @@ import FastImage from 'react-native-fast-image';
 const THREE = require('three');
 global.THREE = THREE;
 import ExpoTHREE from 'expo-three'; // 2.0.2
-var secret = require('./secret');
+import userTriggeredAnimation from './userTriggeredAnimation.js';
 
 console.disableYellowBox = true;
+var secret = require('./secret');
 var routeDecoder = require('./routeDecoder');
 var nextStop;
 var obj_per_scene = 3;
@@ -240,7 +241,11 @@ export default class App extends React.Component {
     Raycaster object capture, used to handle user touches to interact with 3D objects
     */
     var raycaster = new THREE.Raycaster();
-    
+    // construct userTriggeredAnimation object's geometry and metarial, save memory
+    let uta_geometry = new THREE.SphereGeometry( 0.015, 32, 32 );
+    let uta_material = new THREE.MeshBasicMaterial( {color: 0xFF8C00} );
+    let utas = [];
+
     let animate = () => {
       requestAnimationFrame(animate);
 
@@ -272,6 +277,8 @@ export default class App extends React.Component {
         }
       }
 
+      this.setState({obj_list: n_obj_list});
+
       if(animation_time > 0) {animation_time--;}
       if(animation_time == 0){
         this.setState({animation_opacity: 0.0});
@@ -284,7 +291,7 @@ export default class App extends React.Component {
         //this._addARNavObj(scene, obj_per_scene - n_obj_list.length, coinTexture);
       }
       
-      if(n_obj_list.length == 0 && !msg_shown && !exiting){
+      if(this.state.obj_list.length == 0 && !msg_shown && !exiting){
         //collected all object, show final message
         //console.debug(camera_position.x + ' ' +  camera_position.y + ' ' + camera_position.z);
         ExpoTHREE.utils.scaleLongestSideToSize(chestObj, 0.4);
@@ -295,7 +302,7 @@ export default class App extends React.Component {
         console.log(chestObj.position.x + " " + chestObj.position.y + " " + chestObj.position.z );
         scene.add(chestObj);
         msg_shown = true;
-      }else if(n_obj_list.length == 0 && msg_shown){
+      }else if(this.state.obj_list.length == 0 && msg_shown){
         // Detecting whether you have captured the final treasure
         obj_position.setFromMatrixPosition(chestObj.matrixWorld);
         if(routeDecoder.distance(obj_position, camera_position) < capture_radius && !exiting){
@@ -313,9 +320,16 @@ export default class App extends React.Component {
           navigate('ViewQuest');
         }
       }
-      
 
-      this.setState({obj_list: n_obj_list});
+      let n_utas = [];
+      for(let uta of utas){
+        if(uta.live(uta)){
+          //this uta has NOT reached the end of its life, keep it
+          n_utas.push(uta);
+        }
+      }
+      // This essentially does a remove
+      utas = n_utas;
 
       if (ray_casted) {
         ray_casted = false;
@@ -325,56 +339,44 @@ export default class App extends React.Component {
         /*
           Ray animation
         */
-        /*
         let origin = camera_position;
-        console.debug("Ray origin: " + origin.x + " " + origin.y + " " + origin.z);
         // make a copy, so we don't mess up the original vector
         let direction = raycaster.ray.direction.clone();
         let end_point = new THREE.Vector3();
-        let distance = 3;
+        let distance = 6.0;
         if (intersects.length >= 1 ) {
+          // distance to travel
           distance = intersects[0].distance;
         }
-        //end_point.addVectors(origin, direction.multiplyScalar( distance ));
 
-        let ray_geometry = new THREE.SphereGeometry( 0.025, 32, 32 );
-        let ray_material = new THREE.MeshBasicMaterial( {color: 0xFF8C00} );
-        
-        //If there was a ray_line object, remove it first
-        if(ray_line.obj){
-          scene.remove(ray_line.obj);
-        }
+        let uta_obj = new THREE.Mesh( uta_geometry, uta_material );
 
-        ray_line.obj = new THREE.Mesh( ray_geometry, ray_material );
-        // start at the origin, going to end_point
-        ray_line.obj.position = origin;
-        ray_line.steps = distance / step_size;
-        ray_line.direction = direction;
-
-        scene.add(ray_line.obj);
-
-        if(ray_line.steps != 0){
-          ray_line.obj.position.add(ray_line.direction.multiplyScalar(step_size));
-          ray_line.steps --;
-          if (ray_line.steps === 0){
-            scene.remove(ray_line.obj);
-            ray_line.obj = null;
-          }
-        }
-        */
-
-        if (intersects.length >= 1 ) {
-          for (let j = 0; j < this.state.obj_list.length; j++){
-            if(this.state.obj_list[j] === intersects[0].object){
-              console.debug("caught one here!");
-              this.state.obj_list.splice(j, 1);
-              scene.remove(intersects[0].object);
-              break;
+        let uta = new userTriggeredAnimation(uta_obj, 
+          (s) => {scene.add(s.obj)}, 
+          (s) => {
+            // remove uta first
+            scene.remove(s.obj);
+            if (intersects.length >= 1){
+              for (let j = 0; j < this.state.obj_list.length; j++){
+                if(this.state.obj_list[j] === intersects[0].object){
+                  this.state.obj_list.splice(j, 1);
+                  scene.remove(intersects[0].object);
+                  break;
+                }
+              }
+              animation_time = 100;
+              this.setState({animation_opacity: 1.0});
             }
-          }
-          animation_time = 100;
-          this.setState({animation_opacity: 1.0});
-        }
+          })
+
+        uta.born(uta);
+
+        uta.live = uta.moveObject(origin, direction, distance, 0.2);
+
+        utas.push(uta);
+        /*
+          Ray animation
+        */
       }
       
       renderer.render(scene, camera);
