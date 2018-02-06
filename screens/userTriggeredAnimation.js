@@ -20,7 +20,7 @@ export default class userTriggeredAnimation{
     moveObject(origin, direction, distance, step_size){
         // start at the origin, going to end_point
         var steps = distance / step_size;
-        this.obj.position = origin;
+        //console.debug("Origin: " + origin.x + " " + origin.y + " " + origin.z);
         return function(s){
             if(steps != 0){
               s.obj.position.x += (direction.x * step_size);

@@ -20,9 +20,8 @@ var self;
 var exiting = false;
 var point_of_touch = new THREE.Vector2();
 var ray_casted = false;
-var ray_line = {obj: null, steps: 0, direction: null};
 var scene;
-const step_size = 0.05;
+
 export default class App extends React.Component {
   state = {
     loaded: false,
@@ -170,6 +169,16 @@ export default class App extends React.Component {
     
   }
 
+  tapPosition3D(tappedVec, camera_position, camera_direction){
+    console.debug("tap at: " + tappedVec.x + " " + tappedVec.y + " " + tappedVec.z)
+    let vector = new THREE.Vector3();
+    vector.set(camera_position.x + camera_direction.x * 0.2 + tappedVec.x * 0.1, 
+      camera_position.y + camera_direction.y * 0.2 + tappedVec.y * 0.1, 
+      camera_position.z + camera_direction.z * 0.2);
+    return vector;
+
+  }
+
   _onGLContextCreate = async (gl) => {
     console.debug("Got here");
 
@@ -242,8 +251,8 @@ export default class App extends React.Component {
     */
     var raycaster = new THREE.Raycaster();
     // construct userTriggeredAnimation object's geometry and metarial, save memory
-    let uta_geometry = new THREE.SphereGeometry( 0.015, 32, 32 );
-    let uta_material = new THREE.MeshBasicMaterial( {color: 0xFF8C00} );
+    let uta_geometry = new THREE.SphereGeometry( 0.02, 32, 32 );
+    let uta_material = new THREE.MeshBasicMaterial( {color: 0xFFFF00, transparent:true, opacity: 0.60} );
     let utas = [];
 
     let animate = () => {
@@ -252,7 +261,7 @@ export default class App extends React.Component {
       camera.updateMatrixWorld();
       var camera_position = new THREE.Vector3();
       camera_position.setFromMatrixPosition( camera.matrixWorld );
-
+      var camera_direction = camera.getWorldDirection();
       //x direction is pointing right, y axis is pointing upword
       //cube.rotation.x += 0.01;
       //cube.rotation.x = Math.PI / 5.0 * 2.0;
@@ -295,7 +304,7 @@ export default class App extends React.Component {
         //collected all object, show final message
         //console.debug(camera_position.x + ' ' +  camera_position.y + ' ' + camera_position.z);
         ExpoTHREE.utils.scaleLongestSideToSize(chestObj, 0.4);
-        let camera_direction = camera.getWorldDirection();
+        
         chestObj.position.set(camera_position.x + camera_direction.x * 1.2, 
                     camera_position.y, 
                     camera_position.z + camera_direction.z * 1.2);
@@ -339,7 +348,6 @@ export default class App extends React.Component {
         /*
           Ray animation
         */
-        let origin = camera_position;
         // make a copy, so we don't mess up the original vector
         let direction = raycaster.ray.direction.clone();
         let end_point = new THREE.Vector3();
@@ -350,9 +358,13 @@ export default class App extends React.Component {
         }
 
         let uta_obj = new THREE.Mesh( uta_geometry, uta_material );
+        let tappedVec = new THREE.Vector3(point_of_touch.x, point_of_touch.y, 0);
+        camera.localToWorld(tappedVec);
+        let origin = this.tapPosition3D(tappedVec, camera_position, camera_direction);
+        uta_obj.position.set(origin.x, origin.y, origin.z);
 
         let uta = new userTriggeredAnimation(uta_obj, 
-          (s) => {scene.add(s.obj)}, 
+          (s) => {scene.add(s.obj); console.debug("Origin: " + s.obj.position.x + " " + s.obj.position.y + " " + s.obj.position.z)}, 
           (s) => {
             // remove uta first
             scene.remove(s.obj);
@@ -386,8 +398,8 @@ export default class App extends React.Component {
   }
 
   fingerDown(event){
-    point_of_touch.x = (event.nativeEvent.locationX / Dimensions.get('window').width) * 2 - 1;
-    point_of_touch.y = -(event.nativeEvent.locationY / Dimensions.get('window').height) * 2 + 1;
+    point_of_touch.x = (event.nativeEvent.locationX / Dimensions.get('window').width) * 2.0 - 1.0;
+    point_of_touch.y = -(event.nativeEvent.locationY / Dimensions.get('window').height) * 2.0 + 1.0;
     ray_casted = true;
   }
 
