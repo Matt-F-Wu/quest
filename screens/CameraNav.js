@@ -1,11 +1,14 @@
-import Expo, { Asset, Location, Permissions } from 'expo';
-import { View, Dimensions } from 'react-native';
+import Expo, { Asset, Location, Permissions, MapView } from 'expo';
+import { View, Dimensions, StyleSheet } from 'react-native';
 import React from 'react';
 import FastImage from 'react-native-fast-image';
 const THREE = require('three');
 global.THREE = THREE;
 import ExpoTHREE from 'expo-three'; // 2.0.2
 import userTriggeredAnimation from './userTriggeredAnimation.js';
+import Colors from '../constants/Colors';
+import {RkButton} from 'react-native-ui-kitten';
+import FIcon from 'react-native-vector-icons/FontAwesome';
 
 console.disableYellowBox = true;
 var secret = require('./secret');
@@ -21,7 +24,7 @@ var exiting = false;
 var point_of_touch = new THREE.Vector2();
 var ray_casted = false;
 var scene;
-
+var showMap = false;
 export default class App extends React.Component {
   state = {
     loaded: false,
@@ -453,18 +456,53 @@ export default class App extends React.Component {
 
   render() {
     return !exiting && this.state.loaded && this.state.got_route ? (
-      <View style={{ flex: 1 }}
+      <View style={{ flex: 1 }}>
+      <RkButton
+          onStartShouldSetResponder={(evt) => true}
+          onStartShouldSetResponderCapture={(evt) => true}
+          onResponderTerminationRequest={(evt) => false} 
+          onPress={() => {console.debug('Map button pressed..'); showMap = !showMap}} 
+          style={[{zIndex: 10, position: 'absolute', left: '80%', top: '2%', width: '15%', height: '10%'}, styles.button]} >
+          <FIcon name={'map'} color='#ffffff' size={25} />
+      </RkButton>
+
+      <Expo.GLView
         onStartShouldSetResponder={(evt) => true}
         onMoveShouldSetResponder={(evt) => true}
         onResponderTerminationRequest={(evt) => true}
         onResponderGrant={(evt) => this.fingerDown(evt)}
         onResponderRelease={(evt) => this.fingerRelease(evt)}
-        >
-      <Expo.GLView
         ref={(ref) => this._glView = ref}
         style={{ flex: 1 }}
         onContextCreate={this._onGLContextCreate}
       />
+      {
+        showMap? (
+          <MapView
+            style={{ position: 'absolute', width: '100%', height: '100%', }}
+            initialRegion={{
+              latitude: this.state.cur_location.coords.latitude,
+              longitude: this.state.cur_location.coords.longitude,
+              latitudeDelta: 0.0369,
+              longitudeDelta: 0.0168,
+            }}>
+
+            <MapView.Marker
+              coordinate = {{
+                latitude: this.state.cur_location.coords.latitude, 
+                longitude: this.state.cur_location.coords.longitude}}
+              title={'You are here!'}
+              image={require('../assets/images/person.png')}>
+            </MapView.Marker>
+
+            <MapView.Polyline 
+              coordinates={this.state.coords}
+              strokeWidth={2}
+              strokeColor={Colors.tintColor}/>
+
+          </MapView>
+        ) : null
+      }
       <FastImage style={{position: 'absolute', width: '100%', height: '100%', opacity: this.state.animation_opacity}} resizeMode='cover'
           source={require('../assets/images/burst.gif')}
       />
@@ -473,4 +511,11 @@ export default class App extends React.Component {
   }
 
 }
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: Colors.tintColor,
+    borderRadius: 40,
+  },
+});
 
