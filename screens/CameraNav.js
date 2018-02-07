@@ -55,8 +55,9 @@ export default class App extends React.Component {
       require('../assets/textures/coin/front.png'),
       require('../assets/textures/coin/side.png'),
       require('../assets/textures/coin/bottom.png'),
-      //require('../assets/objects/low-poly-chest.obj'),
+      require('../assets/images/crosshair.png'),
       require('../assets/objects/low-poly-chest.png'),
+      require('../assets/textures/crate/crate.gif'),
     ].map((module) => Expo.Asset.fromModule(module).downloadAsync()));
 
     this.setState({ loaded: true });
@@ -170,10 +171,10 @@ export default class App extends React.Component {
   }
 
   tapPosition3D(tappedVec, camera_position, camera_direction){
-    console.debug("tap at: " + tappedVec.x + " " + tappedVec.y + " " + tappedVec.z)
+    //console.debug("tap at: " + tappedVec.x + " " + tappedVec.y + " " + tappedVec.z)
     let vector = new THREE.Vector3();
-    vector.set(camera_position.x + camera_direction.x * 0.2 + tappedVec.x * 0.1, 
-      camera_position.y + camera_direction.y * 0.2 + tappedVec.y * 0.1, 
+    vector.set(camera_position.x + camera_direction.x * 0.2, 
+      camera_position.y + camera_direction.y * 0.2, 
       camera_position.z + camera_direction.z * 0.2);
     return vector;
 
@@ -255,6 +256,46 @@ export default class App extends React.Component {
     let uta_material = new THREE.MeshBasicMaterial( {color: 0xFFFF00, transparent:true, opacity: 0.60} );
     let utas = [];
 
+    //Create crosshair
+    let ch_texture = await ExpoTHREE.createTextureAsync({
+      asset: Asset.fromModule(require('../assets/images/crosshair.png')),
+    });
+
+    let ch_geometry = new THREE.PlaneBufferGeometry(0.1, 0.1);
+    let ch_material = new THREE.MeshBasicMaterial( { transparent: true, opacity: 0.5, map: ch_texture } );
+    let chObj = new THREE.Mesh(ch_geometry, ch_material);
+
+    let ch_uta = new userTriggeredAnimation(chObj, 
+          (s) => {
+            if(s.life_span === undefined || s.life_span <= 0){
+              //Haven't been added yet, or has been removed
+              scene.add(s.obj);
+            }
+            //born again, extend life
+            s.life_span = 50;
+          }, 
+          (s) => {scene.remove(s.obj);});
+
+    ch_uta.live = (s, cp, cd) => {
+      if(s.life_span === undefined){
+        //hasn't been born yet
+      }
+      else{
+        let pos = this.tapPosition3D(null, cp, cd);
+        s.obj.position.set(pos.x, pos.y, pos.z);
+        s.obj.lookAt(cp);
+        if(s.life_span === 0){
+          s.death(s);
+        }else{
+          s.life_span = Math.max(s.life_span - 1, -1);  
+        }
+      }
+      //always alive, stay in utas queue
+      return true;
+    };
+
+    utas.push(ch_uta);
+
     let animate = () => {
       requestAnimationFrame(animate);
 
@@ -332,7 +373,7 @@ export default class App extends React.Component {
 
       let n_utas = [];
       for(let uta of utas){
-        if(uta.live(uta)){
+        if(uta.live(uta, camera_position, camera_direction)){
           //this uta has NOT reached the end of its life, keep it
           n_utas.push(uta);
         }
@@ -349,6 +390,9 @@ export default class App extends React.Component {
           Ray animation
         */
         // make a copy, so we don't mess up the original vector
+        ch_uta.born(ch_uta);
+
+
         let direction = raycaster.ray.direction.clone();
         let end_point = new THREE.Vector3();
         let distance = 6.0;
@@ -379,7 +423,7 @@ export default class App extends React.Component {
               animation_time = 100;
               this.setState({animation_opacity: 1.0});
             }
-          })
+          });
 
         uta.born(uta);
 
