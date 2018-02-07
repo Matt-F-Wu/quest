@@ -492,12 +492,12 @@ export default class App extends React.Component {
                 latitude: this.state.cur_location.coords.latitude, 
                 longitude: this.state.cur_location.coords.longitude}}
               title={'You are here!'}
-              image={require('../assets/images/person.png')}>
+              pinColor={Colors.tintColor}>
             </MapView.Marker>
 
             <MapView.Polyline 
               coordinates={this.state.coords}
-              strokeWidth={2}
+              strokeWidth={4}
               strokeColor={Colors.tintColor}/>
 
           </MapView>
