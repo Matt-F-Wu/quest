@@ -11,7 +11,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../constants/Colors';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import {RkButton} from 'react-native-ui-kitten';
-
+import CustomMapPin from '../components/CustomMapPin'
+var pinLoc = {latitude: 37.4223618, longitude: -122.1823528};
 export default class SelectLocation extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Choose a Location',
@@ -73,18 +74,20 @@ export default class SelectLocation extends React.Component {
             onPress={marker.onPress}
           />
         ))}
+
         <MapView.Marker draggable
           coordinate = {{latitude: 37.4223618, longitude: -122.1823528}}
           title={'Hide Your Quest'}
-          image={require('../assets/images/pin.png')}
           onDragEnd={(e) => this.setState({ hideout: e.nativeEvent.coordinate })}
           onPress={() => this.locationSelected()}>
         </MapView.Marker>
+
         <MapView.Marker
           coordinate = {{latitude: 37.4268463, longitude: -122.1658255}}
           title={this.props.navigation.state.params.name + ' is here!'}
           image={require('../assets/images/person.png')}>
         </MapView.Marker>
+
       </MapView>
       <RkButton onPress={() => navigate('CapturePicture')} 
           style={[{position: 'absolute', left: '40%', top: '90%', width: '20%', height: '8%', marginBottom: '2%',}, styles.button]} >

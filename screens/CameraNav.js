@@ -5,14 +5,14 @@ import FastImage from 'react-native-fast-image';
 const THREE = require('three');
 global.THREE = THREE;
 import ExpoTHREE from 'expo-three'; // 2.0.2
-import userTriggeredAnimation from './userTriggeredAnimation.js';
+import userTriggeredAnimation from '../api/userTriggeredAnimation.js';
 import Colors from '../constants/Colors';
 import {RkButton} from 'react-native-ui-kitten';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 
 console.disableYellowBox = true;
-var secret = require('./secret');
-var routeDecoder = require('./routeDecoder');
+var secret = require('../api/secret');
+var routeDecoder = require('../api/routeDecoder');
 var nextStop;
 var obj_per_scene = 3;
 var capture_radius = 0.15;
@@ -411,7 +411,7 @@ export default class App extends React.Component {
         uta_obj.position.set(origin.x, origin.y, origin.z);
 
         let uta = new userTriggeredAnimation(uta_obj, 
-          (s) => {scene.add(s.obj); console.debug("Origin: " + s.obj.position.x + " " + s.obj.position.y + " " + s.obj.position.z)}, 
+          (s) => {scene.add(s.obj);}, 
           (s) => {
             // remove uta first
             scene.remove(s.obj);
@@ -461,7 +461,7 @@ export default class App extends React.Component {
           onStartShouldSetResponder={(evt) => true}
           onStartShouldSetResponderCapture={(evt) => true}
           onResponderTerminationRequest={(evt) => false} 
-          onPress={() => {console.debug('Map button pressed..'); showMap = !showMap}} 
+          onPress={() => {showMap = !showMap}} 
           style={[{zIndex: 10, position: 'absolute', left: '80%', top: '2%', width: '15%', height: '10%'}, styles.button]} >
           <FIcon name={'map'} color='#ffffff' size={25} />
       </RkButton>
