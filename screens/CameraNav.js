@@ -452,7 +452,7 @@ export default class App extends React.Component {
   }
 
   render() {
-    return this.state.loaded && this.state.got_route ? (
+    return !exiting && this.state.loaded && this.state.got_route ? (
       <View style={{ flex: 1 }}
         onStartShouldSetResponder={(evt) => true}
         onMoveShouldSetResponder={(evt) => true}
