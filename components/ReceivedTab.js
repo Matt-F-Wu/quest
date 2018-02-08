@@ -41,6 +41,7 @@ export default class ReceivedTab extends React.Component {
 
 		return (
 			<ListView
+			  removeClippedSubviews={false}
 	          enableEmptySections={true}
 	          dataSource={this.state.dataSource}
 	          renderRow={this.renderRow.bind(this)}

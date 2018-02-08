@@ -99,6 +99,7 @@ export default class ContactList extends Component {
         />
 
         <ListView
+          removeClippedSubviews={false}
           enableEmptySections={true}
           dataSource={this.state.dataSource}
           renderRow={this.renderRow.bind(this)}
