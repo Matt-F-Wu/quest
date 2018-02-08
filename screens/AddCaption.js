@@ -49,6 +49,9 @@ export default class AddCaption extends React.Component {
     });
     const { navigate } = this.props.navigation;
     Alert.alert("Quest sent successfully!");
+    /*TODO: Ian
+      clear stacks
+    */
     navigate('Compose');
   }
 

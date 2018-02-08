@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../constants/Colors';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import {RkButton} from 'react-native-ui-kitten';
-import CustomMapPin from '../components/CustomMapPin'
+
 var pinLoc = {latitude: 37.4223618, longitude: -122.1823528};
 export default class SelectLocation extends React.Component {
   static navigationOptions = ({ navigation }) => ({

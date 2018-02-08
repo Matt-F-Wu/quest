@@ -9,12 +9,24 @@ import ViewQuest from '../screens/ViewQuest';
 import SelectLocation from '../screens/SelectLocation';
 import AddCaption from '../screens/AddCaption';
 import CapturePicture from '../screens/CapturePicture';
+import Compose from '../screens/Compose';
+import Gallery from '../screens/Gallery';
+import Profile from '../screens/Profile';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
 
 const RootStackNavigator = StackNavigator(
   {
     Main: {
       screen: MainTabNavigator,
+    },
+    Profile: {
+      screen: Profile,
+    },
+    Compose: {
+      screen: Compose,
+    },
+    Gallery: {
+      screen: Gallery,
     },
     CameraNav: {
       screen: CameraNav,

@@ -8,6 +8,7 @@ import Colors from '../constants/Colors';
 import Compose from '../screens/Compose';
 import Gallery from '../screens/Gallery';
 import Profile from '../screens/Profile';
+import Notification from '../screens/Notification';
 
 export default TabNavigator(
   {
@@ -19,6 +20,9 @@ export default TabNavigator(
     },
     Profile: {
       screen: Profile,
+    },
+    Notification: {
+      screen: Notification,
     },
   },
   {
