@@ -1,7 +1,8 @@
 import { Notifications } from 'expo';
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
-
+import Colors from '../constants/Colors';
+import Icon from 'react-native-vector-icons/Ionicons';
 import MainTabNavigator from './MainTabNavigator';
 import CameraNav from '../screens/CameraNav';
 import Friend from '../screens/Friend';
@@ -18,15 +19,6 @@ const RootStackNavigator = StackNavigator(
   {
     Main: {
       screen: MainTabNavigator,
-    },
-    Profile: {
-      screen: Profile,
-    },
-    Compose: {
-      screen: Compose,
-    },
-    Gallery: {
-      screen: Gallery,
     },
     CameraNav: {
       screen: CameraNav,

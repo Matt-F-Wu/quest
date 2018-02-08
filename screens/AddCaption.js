@@ -13,6 +13,7 @@ import {
 import { FileSystem } from 'expo';
 import {RkButton} from 'react-native-ui-kitten';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 //flags used to denote which step we are at during the sending process
 const STEP_FLAG = {contact: 0, pin: 1, format: 2, compose: 3, send: 4};
 const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/sendq/';
@@ -24,10 +25,14 @@ export default class AddCaption extends React.Component {
     captionText: '',
   };
 
-  static navigationOptions = {
+  static navigationOptions = ({ navigation }) => ({
     title: 'Add a Caption',
     headerTintColor: Colors.tintColor,
-  };
+    headerRight: (
+      <Ionicons name={'md-close-circle'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
+                            onPress={ () => {navigation.popToTop();} } />
+      ),
+  });
 
   async aboutFile(img_src){
     let info = await FileSystem.getInfoAsync(img_src);
@@ -47,12 +52,14 @@ export default class AddCaption extends React.Component {
         },
       }),
     });
-    const { navigate } = this.props.navigation;
+    
     Alert.alert("Quest sent successfully!");
     /*TODO: Ian
       clear stacks
+
+      Progress (Hao): Resolved by using popToTop() to solve this, provided by react-navigation@1.0.0-beta.31
     */
-    navigate('Compose');
+    this.props.navigation.popToTop();
   }
 
   render() {

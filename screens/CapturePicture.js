@@ -27,9 +27,8 @@ export default class CapturePicture extends CameraBase {
   }
 
   backToMain(){
-    const { navigate } = self.props.navigation;
     self.setState({mountCam: false}); 
-    navigate('Compose');
+    self.props.navigation.popToTop();
   }
 
   takePicture = async () => {
