@@ -48,9 +48,13 @@ export default TabNavigator(
           case 'Profile':
             iconName =
               Platform.OS === 'ios' ? `ios-person${focused ? '' : '-outline'}` : 'md-person';
+            break;
+          case 'Notification':
+            iconName =
+              Platform.OS === 'ios' ? `ios-notifications${focused ? '' : '-outline'}` : 'md-notifications';
         }
         function renderNotif(routeName){
-            if(routeName === 'Profile'){
+            if(routeName === 'Notification'){
               return (
                 <Text style={{color: 'red', 'fontWeight': 'bold', fontSize: 24}}>2</Text>
               );

@@ -46,37 +46,19 @@ export default class Profile extends React.Component {
     let styles = ProfileTab.getStyles();
     const { navigate } = this.props.navigation;
     return (
-      <RkTabView tabsContainerStyle={tl_styles.tabView}>
-        
-        <RkTabView.Tab title={(selected) => <ProfileTab selected={selected} name='' value='New Quests! '/>}>
-          <View style={tl_styles.tabContent}>
+         <View style={tl_styles.tabContent2}>
 
-            <ScrollView contentContainerStyle={tl_styles.contentContainer}>
-                <Touchables onClick={() => navigate('CameraNav')} hasImage={false} 
-                title={'You have received a new quest!'} subTitle={'10 minutes ago'}
-                text={'Click to begin your quest'} styles={tl_styles} />
-                <Touchables onClick={() => navigate('CameraNav')} hasImage={false} 
-                title={'You have received a new quest!'} subTitle={'1 day ago'}
-                text={'Click to begin your quest'} styles={tl_styles} />
-            </ScrollView>
-
-          </View>
-        </RkTabView.Tab>
-
-        <RkTabView.Tab title={(selected) => <ProfileTab selected={selected} name='' value='Account'/>}>
-           <View style={tl_styles.tabContent2}>
-          
           <View style={tl_styles.row}>
             <Text style={[tl_styles.largeText, tl_styles.orangeText]}>Email: </Text>
             <Text style={tl_styles.largeText}>wuhao20@stanford.edu</Text>
             <Icon name={'edit'} size={20} style={{marginLeft: 10, color: Colors.tintColor,}} />
           </View>
+
           <View style={tl_styles.row}>
             <Text style={[tl_styles.largeText, tl_styles.orangeText]}>Status: </Text>
             <Text style={tl_styles.largeText}>CS MS at Stanford University</Text>
             <Icon name={'edit'} size={20} style={{marginLeft: 10, color: Colors.tintColor,}} />
           </View>
-          
           
           <View style={tl_styles.row}>
             <Text style={[tl_styles.largeText, tl_styles.orangeText]}>Vehicles Owned:</Text>
@@ -85,52 +67,51 @@ export default class Profile extends React.Component {
           </View>
           
           <View style={tl_styles.row}>
-          <Text style={[tl_styles.largeText]}>You have</Text >
-          <Text style={[tl_styles.largeText, tl_styles.orangeText]}>100 coins!</Text><Text style={tl_styles.largeText}>You can purchase:</Text>
+            <Text style={[tl_styles.largeText]}>You have</Text >
+            <Text style={[tl_styles.largeText, tl_styles.orangeText]}>100 coins!</Text><Text style={tl_styles.largeText}>You can purchase:</Text>
           </View>
+          
           <View>
           
-          <View style={[tl_styles.row, tl_styles.rowGray]}>
-            <Image resizeMode="contain"
-              source={require('../assets/images/mushroom.gif')}
-              style={{ margin: '2%', flex: 1 }}
-            />
-            <View style={{flex: 1}}>
-            <Text style={[tl_styles.largeText]}>Mushroom Picking</Text >
-            <Text style={[tl_styles.largeText, tl_styles.orangeText]}>[Navigation Game]</Text >
-            <Text style={[tl_styles.largeText, tl_styles.orangeText]}>70 coins</Text >
+            <View style={[tl_styles.row, tl_styles.rowGray]}>
+              <Image resizeMode="contain"
+                source={require('../assets/images/mushroom.gif')}
+                style={{ margin: '2%', flex: 1 }}
+              />
+              <View style={{flex: 1}}>
+                <Text style={[tl_styles.largeText]}>Mushroom Picking</Text >
+                <Text style={[tl_styles.largeText, tl_styles.orangeText]}>[Navigation Game]</Text >
+                <Text style={[tl_styles.largeText, tl_styles.orangeText]}>70 coins</Text >
+              </View>
             </View>
-          </View>
-      
-          <View style={[tl_styles.row, tl_styles.rowGray]}>
-            <Image resizeMode="contain"
-              source={require('../assets/images/bird.gif')}
-              style={{ margin: '2%', flex: 1 }}
-            />
-            <View style={{flex: 1}}>
-            <Text style={[tl_styles.largeText]}>Bird Catch</Text>
-            <Text style={[tl_styles.largeText, tl_styles.orangeText]}>[Open-Message Game]</Text >
-            <Text style={[tl_styles.largeText, tl_styles.orangeText]}>50 coins</Text >
-            </View>
-          </View>
-      
-          <View style={[tl_styles.row, tl_styles.rowGray]}>
-            <Image resizeMode="contain"
-              source={require('../assets/images/snowman.gif')}
-              style={{ margin: '2%', flex: 1 }}
-            />
-            <View style={{flex: 1}}>
-            <Text style={[tl_styles.largeText]}>Smash the Snowman</Text >
-            <Text style={[tl_styles.largeText, tl_styles.orangeText]}>[Navigation Game]</Text >
-            <Text style={[tl_styles.largeText, tl_styles.orangeText]}>60 coins</Text >
-            </View>
-          </View>
-      
-          </View>
-        </View>
-        </RkTabView.Tab>
         
-      </RkTabView>
+            <View style={[tl_styles.row, tl_styles.rowGray]}>
+              <Image resizeMode="contain"
+                source={require('../assets/images/bird.gif')}
+                style={{ margin: '2%', flex: 1 }}
+              />
+              <View style={{flex: 1}}>
+                <Text style={[tl_styles.largeText]}>Bird Catch</Text>
+                <Text style={[tl_styles.largeText, tl_styles.orangeText]}>[Open-Message Game]</Text >
+                <Text style={[tl_styles.largeText, tl_styles.orangeText]}>50 coins</Text >
+              </View>
+            </View>
+        
+            <View style={[tl_styles.row, tl_styles.rowGray]}>
+              <Image resizeMode="contain"
+                source={require('../assets/images/snowman.gif')}
+                style={{ margin: '2%', flex: 1 }}
+              />
+              <View style={{flex: 1}}>
+                <Text style={[tl_styles.largeText]}>Smash the Snowman</Text >
+                <Text style={[tl_styles.largeText, tl_styles.orangeText]}>[Navigation Game]</Text >
+                <Text style={[tl_styles.largeText, tl_styles.orangeText]}>60 coins</Text >
+              </View>
+            </View>
+            
+          </View>
+
+         </View>
     );
   }
 
