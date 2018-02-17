@@ -7,13 +7,19 @@ import {
   Alert,
 } from 'react-native';
 import { FileSystem } from 'expo';
-import Colors from '../constants/Colors';
-import CameraBase from '../components/CameraBase';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+// Constant imports
+import Colors from '../constants/Colors';
+
+// Component imports
+import CameraBase from '../components/SendQuest/CameraBase';
+
 var self;
 export default class CapturePicture extends CameraBase {
   static navigationOptions = ({ navigation, screenProps }) => ({
     title:  'Take a Picture',
+    headerBackgroundColor: Colors.backgroundColor,
     headerTintColor: Colors.tintColor,
     headerRight: (
       <Icon name={'md-close-circle'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}

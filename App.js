@@ -2,9 +2,9 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View, Animated, Text } from 'react-native';
 import { AppLoading, Asset, Font, Permissions, Notifications } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
-import RootNavigation from './navigation/RootNavigation';
 import Colors from './constants/Colors';
 import Touchables from './components/Touchables';
+import SwiperNavigation from './navigation/SwiperNavigation';
 
 const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/register';
 var isShown = false;
@@ -123,7 +123,7 @@ export default class App extends React.Component {
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
-          <RootNavigation />
+          <SwiperNavigation />
           <Animated.View
             style={[styles.subView,
               {transform: [{translateY: this.state.bounceValue}]}]}>

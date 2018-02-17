@@ -8,9 +8,11 @@ import {
 } from 'react-native';
 import { MapView } from 'expo';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Colors from '../constants/Colors';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import {RkButton} from 'react-native-ui-kitten';
+
+// Constant imports
+import Colors from '../constants/Colors';
 
 const username = 'HaoWu';
 const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/sendq/';

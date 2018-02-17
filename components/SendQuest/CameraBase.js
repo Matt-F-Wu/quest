@@ -3,8 +3,11 @@ import { Text, View, Image, TouchableOpacity, Button, StyleSheet, Alert} from 'r
 import { Camera, Permissions, Location, Constants } from 'expo';
 import {RkButton} from 'react-native-ui-kitten';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Touchables from '../components/Touchables';
-import Colors from '../constants/Colors';
+import Icon2 from 'react-native-vector-icons/SimpleLineIcons'
+import Touchables from '../Touchables';
+import Colors from '../../constants/Colors';
+import Fonts from '../../constants/Fonts';
+import ProfileOverlay from './ProfileOverlay';
 
 export default class CameraBase extends React.Component {
   state = {
@@ -18,6 +21,13 @@ export default class CameraBase extends React.Component {
     buttonPress: () => Alert.alert("Not Implemented!"),
     mountCam: true,
     locationResult: null,
+
+    // State stuff for landing page
+    has_overlay: false,
+    has_refresh: true,
+    has_label: false,
+    has_target: false,
+    textLabel: null,
   };
 
   num_objs = 0;
@@ -77,12 +87,34 @@ export default class CameraBase extends React.Component {
     */
   }
 
-  _renderTextLable(){
-    if(this.state.has_lable){
+  _renderProfileOverlay(){
+    if(this.state.has_overlay){
+      return ( 
+        <ProfileOverlay/>
+      );
+    } else {
+      return null;
+    }
+  }
+
+  // _renderTarget(){
+  //   if(this.state.has_target){
+  //     return (    
+  //       <TouchableOpacity style={{top: 30, alignSelf:'center', backgroundColor:'transparent'}}>
+  //         <Icon2 name="target" size={100} color={Colors.tintColor} />
+  //       </TouchableOpacity>  
+  //     );
+  //   } else {
+  //     return null;
+  //   }
+  // }
+
+  _renderTextLabel(){
+    if(this.state.has_label){
       return (
-        <Text style={[{position: 'absolute', left: this.state.lx, 
-        top: this.state.ly}, 
-        this.state.styles.lable]}>{this.state.textLable}</Text>
+        <Text style={{fontFamily: Fonts.logoFont, fontSize: Fonts.logoFontSize, backgroundColor: 'transparent', color: Colors.tintColor, 
+                      position:'absolute', top: 22, alignSelf: 'center'}}>
+                      {this.state.textLabel}</Text>
       );
     }else{
       return null;
@@ -155,6 +187,13 @@ export default class CameraBase extends React.Component {
                 backgroundColor: 'transparent',
                 flexDirection: 'row',
               }}>
+              {this.state.has_overlay ? <ProfileOverlay/> : null}
+              {this.state.has_target ?   
+                    <TouchableOpacity style={{alignSelf:'center', backgroundColor:'transparent'}}>
+                      <Icon2 name="target" size={250} color={Colors.tintColor} />
+                    </TouchableOpacity> 
+              : null}
+
               <TouchableOpacity
                 style={{
                   flex: 0.1,
@@ -169,7 +208,7 @@ export default class CameraBase extends React.Component {
                       : Camera.Constants.Type.back,
                   });
                 }}>
-                <Icon name='refresh' color={Colors.tintColor} size={30}/>
+                {this.state.has_refresh ? <Icon name='refresh' color={Colors.tintColor} size={30}/> : null}     
               </TouchableOpacity>
             </View>
           </Camera>
@@ -187,11 +226,12 @@ export default class CameraBase extends React.Component {
       return <Text>No access to camera {this.st} and {this.str}</Text>;
     } else {
       return (
-        <View style={{ flex: 1, backgroundColor: 'white', }}>
+        <View style={{flex: 1, backgroundColor: Colors.backgroundColor}}>
+
           {this._renderCam()}
           {this._renderObjects()}
           {this._renderButton()}
-          {this._renderTextLable()}
+          {this._renderTextLabel()}
         </View>
       );
     }

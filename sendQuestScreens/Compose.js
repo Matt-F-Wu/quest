@@ -1,8 +1,12 @@
 import React from 'react';
 import { ExpoConfigView } from '@expo/samples';
-import ContactList from '../components/ContactList.js';
 import { Alert } from 'react-native';
+
+// Constant imports
 import Colors from '../constants/Colors';
+
+// Component imports
+import ContactList from '../components/SendQuest/ContactList.js';
 
 //flags used to denote which step we are at during the sending process
 const STEP_FLAG = {contact: 0, pin: 1, format: 2, compose: 3, send: 4};
@@ -10,7 +14,8 @@ const STEP_FLAG = {contact: 0, pin: 1, format: 2, compose: 3, send: 4};
 export default class Compose extends React.Component {
   static navigationOptions = {
     title: 'Send a Quest',
-    headerTintColor: Colors.tintColor,
+    headerBackgroundColor: Colors.BackgroundColor,
+    headerTintColor: Colors.TintColor,
   };
 
   //Call constructor to store state information
@@ -21,7 +26,7 @@ export default class Compose extends React.Component {
 
   toMap(item){
       const { navigate } = this.props.navigation;
-      navigate('SelectLocation', item);
+      navigate('CapturePicture', item);
   };
 
   render() {
