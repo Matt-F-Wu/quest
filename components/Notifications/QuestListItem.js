@@ -6,7 +6,7 @@ import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 
 // Icons
-import Icon from 'react-native-vector-icons/EvilIcons';
+import Icon from 'react-native-vector-icons/EvilIcons';z
 
 
 export default class QuestListItem extends React.Component {

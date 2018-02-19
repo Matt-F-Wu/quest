@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 // Component imports
 import Swiper from '../api/customSwiper';
 import GalleryTabNavigator from './GalleryTabNavigator';
-import Notifications from './Notifications';
+import Notifications from './NotificationsNavigation';
 import SendNavigation from './SendNavigation';
 
 
