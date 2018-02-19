@@ -19,7 +19,7 @@ export default class ViewQuest extends React.Component {
     title:  'View Quest',
     headerTintColor: Colors.tintColor,
     headerLeft: <Icon name={'md-close-circle'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
-                            onPress={ () => { navigation.navigate('Gallery') }} />,
+                            onPress={ () => { navigation.goBack() }} />,
   });
 
   render() {

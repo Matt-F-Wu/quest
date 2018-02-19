@@ -21,7 +21,7 @@ export default class SelectLocation extends React.Component {
     title: 'Choose a Location',
     headerRight: (
       <Icon name={'md-close-circle'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
-                            onPress={ () => { navigation.navigate('Compose') }} />
+                            onPress={ () => { navigation.goBack() }} />
       ),
     headerTintColor: Colors.tintColor,
   });
