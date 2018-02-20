@@ -1,5 +1,5 @@
 import Expo, { Asset, Location, Permissions, MapView } from 'expo';
-import { View, Dimensions, StyleSheet, Animated, Text, Image } from 'react-native';
+import { View, Dimensions, StyleSheet, Animated, Text, Image, TouchableWithoutFeedback } from 'react-native';
 import React from 'react';
 const THREE = require('three');
 global.THREE = THREE;
@@ -220,7 +220,7 @@ export default class App extends React.Component {
 
   showBlueFlame(){
     //console.debug("Show Blue Flame!");
-    animation_time = analysis_cycle;
+    animation_time = analysis_cycle * 2;
     this.setState({animation_opacity: 1.0, overlay_gif: Asset.fromModule(require('../assets/images/blueFlame.gif')).localUri});
   }
 
@@ -321,8 +321,8 @@ export default class App extends React.Component {
               //Haven't been added yet, or has been removed
               scene.add(s.obj);
             }
-            //born again, extend life
-            s.life_span = 50;
+            //born again, extend life, life span is half of analysis cycle
+            s.life_span = analysis_cycle / 2;
           }, 
           (s) => {scene.remove(s.obj);});
 
@@ -464,6 +464,8 @@ export default class App extends React.Component {
 
       if (ray_casted) {
         ray_casted = false;
+        ch_uta.born(ch_uta);
+
         raycaster.setFromCamera( point_of_touch, camera );
         let intersects = raycaster.intersectObjects( scene.children );
 
@@ -476,7 +478,7 @@ export default class App extends React.Component {
           console.log("Hit ghost: " + buff_point + " times!");
           if(buff_point === buff_threshold){
             //threshold reached, ghost runs away
-            ghost_uta.live = MovableObject.moveObject(ghost_uta.obj.position, camera_direction, 5, 0.5);
+            ghost_uta.live = MovableObject.moveObject(ghost_uta.obj.position, camera_direction, 15, 0.5);
             buff_point = 0;
             this.showBlueFlame();
           }
@@ -485,9 +487,7 @@ export default class App extends React.Component {
             Ray animation
           */
           // make a copy, so we don't mess up the original vector
-          ch_uta.born(ch_uta);
-
-
+          
           let direction = raycaster.ray.direction.clone();
           let end_point = new THREE.Vector3();
           let distance = 6.0;
@@ -522,7 +522,7 @@ export default class App extends React.Component {
 
           uta.born(uta);
 
-          uta.live = MovableObject.moveObject(origin, direction, distance, 0.2);
+          uta.live = MovableObject.moveObject(origin, direction, distance, distance < 1.0 ? 0.02 : 0.2);
 
           utas.push(uta);
         }
@@ -561,6 +561,7 @@ export default class App extends React.Component {
   render() {
     return !exiting && this.state.loaded && this.state.got_route ? (
       <View style={{ flex: 1 }}>
+
       <RkButton
           onStartShouldSetResponder={(evt) => true}
           onStartShouldSetResponderCapture={(evt) => true}
@@ -578,8 +579,8 @@ export default class App extends React.Component {
         onResponderRelease={(evt) => this.fingerRelease(evt)}
         ref={(ref) => this._glView = ref}
         style={{ flex: 1 }}
-        onContextCreate={this._onGLContextCreate}
-      />
+        onContextCreate={this._onGLContextCreate}/>
+
       {
         showMap? (
           <MapView
@@ -607,9 +608,9 @@ export default class App extends React.Component {
           </MapView>
         ) : null
       }
-      
-      <Image style={{position: 'absolute', width: '100%', height: '100%', opacity: this.state.animation_opacity}} resizeMode='cover'
-          source={{uri: this.state.overlay_gif}}
+
+      <Image style={{width: '100%', height: '100%', opacity: this.state.animation_opacity}} resizeMode='cover'
+        source={{uri: this.state.overlay_gif}}
       />
 
       <ProgressBar
