@@ -6,7 +6,7 @@ import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 
 // Icons
-import Icon from 'react-native-vector-icons/EvilIcons';z
+import Icon from 'react-native-vector-icons/EvilIcons';
 
 
 export default class QuestListItem extends React.Component {
@@ -40,7 +40,7 @@ export default class QuestListItem extends React.Component {
 	render() {
 		return (
 
-         	<TouchableOpacity style={styles.container}>
+         	<TouchableOpacity style={styles.container} onPress={this.props.onPress}>
             	
             	<View style={styles.progressImageView}>
             		<View style={[styles.circleContainer, {borderColor: this.state.progressColor, borderWidth: this.state.progressBorderWidth}]}> 
