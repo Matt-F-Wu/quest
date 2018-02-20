@@ -1,5 +1,5 @@
 import Expo, { Asset, Location, Permissions, MapView } from 'expo';
-import { View, Dimensions, StyleSheet, Animated, Text, Image, TouchableWithoutFeedback } from 'react-native';
+import { View, Dimensions, StyleSheet, Animated, Text, Image } from 'react-native';
 import React from 'react';
 const THREE = require('three');
 global.THREE = THREE;
@@ -608,11 +608,14 @@ export default class App extends React.Component {
           </MapView>
         ) : null
       }
-
-      <Image style={{width: '100%', height: '100%', opacity: this.state.animation_opacity}} resizeMode='cover'
+       
+      <Image style={{position: 'absolute', width: '100%', height: '100%', opacity: this.state.animation_opacity}} resizeMode='cover'
         source={{uri: this.state.overlay_gif}}
+        onStartShouldSetResponder={(evt) => true}
+        onResponderGrant={(evt) => this.fingerDown(evt)}
+        onResponderRelease={(evt) => this.fingerRelease(evt)}
       />
-
+      
       <ProgressBar
         fillStyle={styles.progress_fill}
         backgroundStyle={styles.progress_background}
