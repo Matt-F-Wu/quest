@@ -209,8 +209,9 @@ export default class App extends React.Component {
   }
 
   showBlueFlame(){
-    console.debug("Show Blue Flame!");
-    this.setState({overlay_gif: Asset.fromModule(require('../assets/images/blueFlame.gif')).localUri});
+    //console.debug("Show Blue Flame!");
+    animation_time = analysis_cycle;
+    this.setState({animation_opacity: 1.0, overlay_gif: Asset.fromModule(require('../assets/images/blueFlame.gif')).localUri});
   }
 
   _onGLContextCreate = async (gl) => {
@@ -246,7 +247,7 @@ export default class App extends React.Component {
 
     
     this._addARNavObj(scene, 3, coinTexture);
-    console.debug(" msg_shown: " + msg_shown + " animation_opacity: " + this.state.animation_opacity);
+    //console.debug(" msg_shown: " + msg_shown + " animation_opacity: " + this.state.animation_opacity);
 
     /*
     Adding the final treasure chest, for testing, shouldn't be this simple
@@ -351,6 +352,7 @@ export default class App extends React.Component {
           });
           utas = n_utas;
           scene.remove(ghost.object);
+          analysis_cycle = 100;
         },
       );
 
@@ -385,7 +387,7 @@ export default class App extends React.Component {
           console.debug("Collect! " + "length: " + n_obj_list.length + " msg_shown: " + msg_shown);
           //200 drawing cycles
           animation_time = analysis_cycle;
-          this.setState({animation_opacity: 1.0});
+          this.setState({animation_opacity: 1.0, overlay_gif: Asset.fromModule(require('../assets/images/burst.gif')).localUri});
           //Add screen flash effect for collecting an object
         }else{
           this.state.obj_list[i].rotation.y += 0.04;
@@ -500,11 +502,11 @@ export default class App extends React.Component {
                   if(this.state.obj_list[j] === intersects[0].object){
                     this.state.obj_list.splice(j, 1);
                     scene.remove(intersects[0].object);
+                    animation_time = analysis_cycle;
+                    this.setState({animation_opacity: 1.0, overlay_gif: Asset.fromModule(require('../assets/images/burst.gif')).localUri});
                     break;
                   }
                 }
-                animation_time = analysis_cycle;
-                this.setState({animation_opacity: 1.0});
               }
             });
 
@@ -540,9 +542,6 @@ export default class App extends React.Component {
     point_of_touch.x = (event.nativeEvent.locationX / Dimensions.get('window').width) * 2.0 - 1.0;
     point_of_touch.y = -(event.nativeEvent.locationY / Dimensions.get('window').height) * 2.0 + 1.0;
     ray_casted = true;
-    if(this.state.overlay_gif === require('../assets/images/blueFlame.gif')){
-      this.setState({overlay_gif: require('../assets/images/burst.gif')});
-    }
   }
 
   fingerRelease(event){
