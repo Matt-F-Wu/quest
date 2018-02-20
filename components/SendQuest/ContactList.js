@@ -10,21 +10,23 @@ import {
   Alert,
   ListView,
 } from 'react-native';
-import Touchables from '../components/Touchables';
 import Search from 'react-native-search-box';
-import Colors from '../constants/Colors';
+
+// Component/constant imports
+import Touchables from '../Touchables';
+import Colors from '../../constants/Colors';
 
 export default class ContactList extends Component {
 	/*TODO: make a contact list here*/
   data = [
-        {index: 3, name: 'Ariel', location: 'Beijing, China', time: '32 days ago', image: require('../assets/images/person7.jpg')}, 
-        {index: 4, name: 'Brian', location: 'Stanford, CA, USA', time: '22 days ago', image: require('../assets/images/person1.jpg')}, 
-        {index: 5, name: 'Christopher', location: 'Stanford, CA, USA', time: '17 days ago', image: require('../assets/images/person2.jpg')}, 
-        {index: 6, name: 'Dilu', location: 'Stanford, CA, USA', time: '12 days ago', image: require('../assets/images/person3.jpg')}, 
-        {index: 7, name: 'Eason', location: 'Stanford, CA, USA', time: '6 days ago', image: require('../assets/images/person5.jpg')}, 
-        {index: 8, name: 'Fanfan', location: 'Stanford, CA, USA', time: '2 days ago', image: require('../assets/images/person6.jpg')}, 
-        {index: 1, name: 'Lily Wang', location: 'Toronto, ON, Canada', time: '62 days ago', image: require('../assets/images/lilyP.jpg')}, 
-        {index: 2, name: 'Mark', location: 'Stanford, CA, USA', time: '51 days ago', image: require('../assets/images/person4.jpg')}, 
+        {index: 3, name: 'Ariel', location: 'Beijing, China', time: '32 days ago', image: require('../../assets/images/person7.jpg')}, 
+        {index: 4, name: 'Brian', location: 'Stanford, CA, USA', time: '22 days ago', image: require('../../assets/images/person1.jpg')}, 
+        {index: 5, name: 'Christopher', location: 'Stanford, CA, USA', time: '17 days ago', image: require('../../assets/images/person2.jpg')}, 
+        {index: 6, name: 'Dilu', location: 'Stanford, CA, USA', time: '12 days ago', image: require('../../assets/images/person3.jpg')}, 
+        {index: 7, name: 'Eason', location: 'Stanford, CA, USA', time: '6 days ago', image: require('../../assets/images/person5.jpg')}, 
+        {index: 8, name: 'Fanfan', location: 'Stanford, CA, USA', time: '2 days ago', image: require('../../assets/images/person6.jpg')}, 
+        {index: 1, name: 'Lily Wang', location: 'Toronto, ON, Canada', time: '62 days ago', image: require('../../assets/images/lilyP.jpg')}, 
+        {index: 2, name: 'Mark', location: 'Stanford, CA, USA', time: '51 days ago', image: require('../../assets/images/person4.jpg')}, 
         ];
 
   constructor() {
@@ -114,12 +116,12 @@ export default class ContactList extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.backgroundColor,
   },
   rowStyle: {
     flexDirection: 'row',
     height: 100,
-    backgroundColor: 'white',
+    backgroundColor: Colors.backgroundColor,
     borderBottomColor: '#333333',
     borderBottomWidth: 1,
     alignItems: 'center',

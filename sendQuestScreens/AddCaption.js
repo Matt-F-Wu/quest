@@ -1,6 +1,5 @@
 import React from 'react';
 import { ExpoConfigView } from '@expo/samples';
-import ContactList from '../components/ContactList.js';
 import Colors from '../constants/Colors';
 import {
   StyleSheet,
@@ -14,12 +13,10 @@ import { FileSystem } from 'expo';
 import {RkButton} from 'react-native-ui-kitten';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
 //flags used to denote which step we are at during the sending process
 const STEP_FLAG = {contact: 0, pin: 1, format: 2, compose: 3, send: 4};
-const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/sendq/';
 
-//This should be determined after user login/registration
-const username = 'HaoWu';
 export default class AddCaption extends React.Component {
   state = {
     captionText: '',
@@ -68,6 +65,7 @@ export default class AddCaption extends React.Component {
     var img_src = this.props.navigation.state.params.uri;
     //this.aboutFile(img_src);
     //console.debug(img_src);
+    const { navigate } = this.props.navigation;
   	return (
   		/*Return a list of contacts here*/
   		<View style={{ flex: 1, backgroundColor: Colors.tintColor }}>
@@ -75,7 +73,7 @@ export default class AddCaption extends React.Component {
           source={{uri: img_src}}
           style={{ width: '100%', height: '100%' }}
         />
-        <RkButton onPress={() => this.sendQuest()} 
+        <RkButton onPress={() => navigate('SelectLocation')} 
           style={{position: 'absolute', left: '40%', top: '90%', 
                   width: '20%', height: '8%', marginBottom: '2%', 
                   backgroundColor: Colors.tintColor}} >

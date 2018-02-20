@@ -36,14 +36,14 @@ export default class ViewQuest extends React.Component {
         <View style={styles.buttonContainer}>
 	        <Button
 	          style={styles.button}
-    			  onPress={() => navigate('Compose')}
+    			  // onPress={() => navigate('Compose')}
     			  title="Home"
     			  color={Colors.tintColor}
     			  accessibilityLabel="Return to Home"
     			/>
     			<Button
     			  style={styles.button}
-    			  onPress={() => navigate('SelectLocation', {index: 1, name: 'Linda Fang', location: 'Toronto, ON, Canada', time: '1 day ago', image: require('../assets/images/lilyP.jpg')})}
+    			  // onPress={() => navigate('SelectLocation', {index: 1, name: 'Linda Fang', location: 'Toronto, ON, Canada', time: '1 day ago', image: require('../assets/images/lilyP.jpg')})}
     			  title="Reply"
     			  color={Colors.tintColor}
     			  accessibilityLabel="Reply to this Quest"

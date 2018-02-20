@@ -8,9 +8,14 @@ import {
 } from 'react-native';
 import { MapView } from 'expo';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Colors from '../constants/Colors';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import {RkButton} from 'react-native-ui-kitten';
+
+// Constant imports
+import Colors from '../constants/Colors';
+
+const username = 'HaoWu';
+const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/sendq/';
 
 var pinLoc = {latitude: 37.4223618, longitude: -122.1823528};
 export default class SelectLocation extends React.Component {
@@ -18,7 +23,7 @@ export default class SelectLocation extends React.Component {
     title: 'Choose a Location',
     headerRight: (
       <Icon name={'md-close-circle'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
-                            onPress={ () => { navigation.goBack() }} />
+                            onPress={ () => { navigation.navigate('Compose') }} />
       ),
     headerTintColor: Colors.tintColor,
   });
@@ -46,7 +51,7 @@ export default class SelectLocation extends React.Component {
   		Alert.alert("Hide at this location?", "",
         [
           {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'OK', onPress: () => navigate('CapturePicture')},
+          {text: 'OK', onPress: () => navigate('Main')},
         ]
       );
   	}else{
@@ -54,8 +59,27 @@ export default class SelectLocation extends React.Component {
   	}
   }
 
-  render() {
+  sendQuest(){
+    fetch(PUSH_ENDPOINT + username, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        data: {
+          value: 'Some data',
+        },
+      }),
+    });
     const { navigate } = this.props.navigation;
+    Alert.alert("Quest sent successfully!");
+
+    navigate('Main');
+  }
+
+  render() {
+    // const { navigate } = this.props.navigation;
     return (
       <View style={{ flex: 1 }}>
       <MapView
@@ -84,12 +108,12 @@ export default class SelectLocation extends React.Component {
 
         <MapView.Marker
           coordinate = {{latitude: 37.4268463, longitude: -122.1658255}}
-          title={this.props.navigation.state.params.name + ' is here!'}
+          title={' is here!'}
           image={require('../assets/images/person.png')}>
         </MapView.Marker>
 
       </MapView>
-      <RkButton onPress={() => navigate('CapturePicture')} 
+      <RkButton onPress={() => this.sendQuest()} 
           style={[{position: 'absolute', left: '40%', top: '90%', width: '20%', height: '8%', marginBottom: '2%',}, styles.button]} >
           <FIcon name={'check'} color='#ffffff' size={30} />
       </RkButton>
