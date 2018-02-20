@@ -1,6 +1,6 @@
 export default {
 	logoFont: 'SavoyeLetPlain',
-  	logoFontSize: 50,
+  	logoFontSize: 70,
 
 	headerFont: 'Arial',
     headerFontSize: 26,

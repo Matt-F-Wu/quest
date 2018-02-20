@@ -56,7 +56,7 @@ export default class CameraBase extends React.Component {
     if(this.state.has_label){
       return (
         <Text style={{fontFamily: Fonts.logoFont, fontSize: Fonts.logoFontSize, backgroundColor: 'transparent', color: Colors.tintColor, 
-                      position:'absolute', top: 22, alignSelf: 'center'}}>
+                      position:'absolute', top: 4, alignSelf: 'center'}}>
                       {this.state.textLabel}</Text>
       );
     }else{
@@ -132,7 +132,6 @@ export default class CameraBase extends React.Component {
             <View
               style={{
                 flex: 1,
-                backgroundColor: 'transparent',
                 flexDirection: 'row',
               }}>
 
@@ -141,9 +140,12 @@ export default class CameraBase extends React.Component {
               <TouchableOpacity
                 style={{
                   flex: 0.1,
-                  alignSelf: 'flex-end',
+                  alignSelf: 'flex-start',
+                  positon: 'absolute',
+                  left: 333,
+                  marginTop: '2%',
                   alignItems: 'center',
-                  marginBottom: '2%',
+                  backgroundColor: 'transparent',
                 }}
                 onPress={() => {
                   this.setState({
