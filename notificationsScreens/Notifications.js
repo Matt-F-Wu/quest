@@ -129,7 +129,9 @@ export default class Notifications extends React.Component {
             		numColumns={1}
             		keyExtractor={item => item.name}  // Key is concatenation of name, date, image url
             		renderItem={({ item }) => (
-           				<QuestListItem name={item.name} date={item.date} image={item.image} progress={item.progress} onPress={() => navigate('CameraNav')}/>      
+            			<QuestListItem name={item.name} date={item.date} 
+            				image={item.image} progress={item.progress} 
+            				onPress={() => {navigate('CameraNav')}}/>
             		)}
           		/>
 			</View>

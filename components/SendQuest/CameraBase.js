@@ -23,10 +23,8 @@ export default class CameraBase extends React.Component {
     locationResult: null,
 
     // State stuff for landing page
-    has_overlay: false,
     has_refresh: true,
     has_label: false,
-    has_target: false,
     textLabel: null,
   };
 
@@ -47,46 +45,6 @@ export default class CameraBase extends React.Component {
     this.customize(this.num_objs);
   }
 
-  componentDidMount() {
-    /*
-    Location.watchPositionAsync({enableHighAccuracy: true, distanceInterval: 0.5}, async function(location){
-      let prev_loc = this.state.locationResult;
-
-      if(prev_loc === null) {
-        this.setState({locationResult: location});
-        return;
-      }
-
-      let heading = await Location.getHeadingAsync();
-      //Find vector of phone's direction
-      let headY = Math.sin(heading.magHeading);
-      let headX = Math.cos(heading.magHeading);
-      //dot product find Y
-      let dx = location.coords.latitude - prev_loc.coords.latitude;
-      let dy = location.coords.longitude - prev_loc.coords.longitude;
-
-      let motionY = dx*headX + dy*headY;
-      let motionX = Math.pow(Math.pow(dx, 2) + Math.pow(dy, 2) - Math.pow(motionY, 2), 0.5);
-      
-      this.setState({locationResult: location});
-      
-      console.debug("MotionX: " + motionX + " MotionY: " + motionY);
-      
-      let stepSize = 150000;
-      let threshold = 0;
-      if(Math.abs(motionY*stepSize) > threshold || Math.abs(motionX*stepSize) > threshold){
-        for(i = 0; i < this.num_objs; i++){
-          if (this.state.objects[i]){ 
-            this.state.objects[i].x = parseInt(this.state.objects[i].x.slice(0, -1)) - motionX*stepSize + "%";
-            this.state.objects[i].y = parseInt(this.state.objects[i].y.slice(0, -1)) - motionY*stepSize + "%";
-            console.debug("X: " + this.state.objects[i].x + " Y: " + this.state.objects[i].y);
-          }
-        }
-      }
-    }.bind(this));
-    */
-  }
-
   _renderProfileOverlay(){
     if(this.state.has_overlay){
       return ( 
@@ -96,18 +54,6 @@ export default class CameraBase extends React.Component {
       return null;
     }
   }
-
-  // _renderTarget(){
-  //   if(this.state.has_target){
-  //     return (    
-  //       <TouchableOpacity style={{top: 30, alignSelf:'center', backgroundColor:'transparent'}}>
-  //         <Icon2 name="target" size={100} color={Colors.tintColor} />
-  //       </TouchableOpacity>  
-  //     );
-  //   } else {
-  //     return null;
-  //   }
-  // }
 
   _renderTextLabel(){
     if(this.state.has_label){
@@ -187,13 +133,9 @@ export default class CameraBase extends React.Component {
                 backgroundColor: 'transparent',
                 flexDirection: 'row',
               }}>
-              {this.state.has_overlay ? <ProfileOverlay/> : null}
-              {this.state.has_target ?   
-                    <TouchableOpacity style={{alignSelf:'center', backgroundColor:'transparent'}}>
-                      <Icon2 name="target" size={250} color={Colors.tintColor} />
-                    </TouchableOpacity> 
-              : null}
 
+              {this.props.children}
+              
               <TouchableOpacity
                 style={{
                   flex: 0.1,

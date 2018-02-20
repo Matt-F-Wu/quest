@@ -10,8 +10,6 @@ import Layout from '../constants/Layout';
 import GalleryTab from '../components/Gallery/GalleryAllTab';
 import FavTab from '../components/Gallery/GalleryFavTab';
 
-
-
 export default TabNavigator(
   { 
     GalleryTab: {

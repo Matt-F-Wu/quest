@@ -1,14 +1,18 @@
 import Expo, { Asset, Location, Permissions, MapView } from 'expo';
-import { View, Dimensions, StyleSheet } from 'react-native';
+import { View, Dimensions, StyleSheet, Animated, Text, Image } from 'react-native';
 import React from 'react';
-import FastImage from 'react-native-fast-image';
 const THREE = require('three');
 global.THREE = THREE;
 import ExpoTHREE from 'expo-three'; // 2.0.2
-import userTriggeredAnimation from '../api/userTriggeredAnimation.js';
+import MovableObject from '../api/MovableObject.js';
+import softBodyObject from '../api/softBodyObject.js';
+import HGD from '../api/handGestureDetection';
 import Colors from '../constants/Colors';
 import {RkButton} from 'react-native-ui-kitten';
 import FIcon from 'react-native-vector-icons/FontAwesome';
+import ProgressBar from '../components/ProgressBar';
+import FadeOutView from '../components/FadeOutView'
+//import * as CANNON from 'cannon';
 
 console.disableYellowBox = true;
 var secret = require('../api/secret');
@@ -25,6 +29,13 @@ var point_of_touch = new THREE.Vector2();
 var ray_casted = false;
 var scene;
 var showMap = false;
+const analysis_cycle = 100;
+const zero_vector = new THREE.Vector3(0, 0, 0);
+// the user has to shoot 5 light balls to fire the blue flame, to repel the ghost
+var ghost_out = false;
+var buff_point = 0;
+const buff_threshold = 3;
+//
 export default class App extends React.Component {
   state = {
     loaded: false,
@@ -33,6 +44,8 @@ export default class App extends React.Component {
     got_route: false,
     obj_list: [],
     animation_opacity: 0.0,
+    overlay_gif: require('../assets/images/burst.gif'),
+    game_feedback: new Animated.Value(0),
   }
 
   constructor(props) {
@@ -55,15 +68,15 @@ export default class App extends React.Component {
 
   async preloadAssetsAsync() {
     await Promise.all([
-      require('../assets/textures/coin/front.png'),
-      require('../assets/textures/coin/side.png'),
-      require('../assets/textures/coin/bottom.png'),
+      require('../assets/images/coin.png'),
       require('../assets/images/crosshair.png'),
-      require('../assets/objects/low-poly-chest.png'),
+      require('../assets/images/ghost.png'),
       require('../assets/textures/crate/crate.gif'),
+      require('../assets/images/blueFlame.gif'),
+      require('../assets/images/burst.gif'),
     ].map((module) => Expo.Asset.fromModule(module).downloadAsync()));
 
-    this.setState({ loaded: true });
+    this.setState({ loaded: true, overlay_gif: Asset.fromModule(require('../assets/images/burst.gif')).localUri });
   }
 
   /*
@@ -173,14 +186,31 @@ export default class App extends React.Component {
     
   }
 
-  tapPosition3D(tappedVec, camera_position, camera_direction){
+  relativeToCamera(bias, camera_position, camera_direction, offset){
     //console.debug("tap at: " + tappedVec.x + " " + tappedVec.y + " " + tappedVec.z)
+    offset = offset || 0.2;
     let vector = new THREE.Vector3();
-    vector.set(camera_position.x + camera_direction.x * 0.2, 
-      camera_position.y + camera_direction.y * 0.2, 
-      camera_position.z + camera_direction.z * 0.2);
+    vector.set(camera_position.x + camera_direction.x * offset + bias.x, 
+      camera_position.y + camera_direction.y * offset + bias.y, 
+      camera_position.z + camera_direction.z * offset + bias.z);
     return vector;
 
+  }
+
+  showProgress(){
+    this.setState({game_feedback: new Animated.Value(1)});
+    Animated.timing(
+      this.state.game_feedback,
+      {
+        toValue: 0,
+        duration: 1000,
+      }
+    ).start();    
+  }
+
+  showBlueFlame(){
+    console.debug("Show Blue Flame!");
+    this.setState({overlay_gif: Asset.fromModule(require('../assets/images/blueFlame.gif')).localUri});
   }
 
   _onGLContextCreate = async (gl) => {
@@ -224,22 +254,28 @@ export default class App extends React.Component {
     
     /*
     //Until Evan figures out what's wrong with loadAsync
-    const chest = {
-      'low-poly-chest.obj': require('../assets/objects/low-poly-chest.obj'),
-      'low-poly-chest.mtl': require('../assets/objects/low-poly-chest.mtl'),
-      'low-poly-chest.png': require('../assets/objects/low-poly-chest.png'),
+    const ghost = {
+      'ghostfinal.obj': require('../assets/objects/ghostfinal.obj'),
+      'ghostfinal.mtl': require('../assets/objects/ghostfinal.mtl'),
     };
 
     const assetProvider = (name) => {
-      return chest[name];
+      return ghost[name];
     };
 
-    const chestObj = await ExpoTHREE.loadAsync(
-      [chest['low-poly-chest.obj'], chest['low-poly-chest.mtl']],
+    const ghostObj = await ExpoTHREE.loadAsync(
+      [ghost['ghostfinal.obj'], ghost['ghostfinal.mtl']],
       null,
       assetProvider,
     );
     */
+
+    var ghost_texture = await ExpoTHREE.createTextureAsync({
+      asset: Asset.fromModule(require('../assets/images/ghost.png')),
+    });
+
+    var ghost = new softBodyObject();
+    ghost.init(ghost_texture);
 
     var b_texture = await ExpoTHREE.createTextureAsync({
       asset: Asset.fromModule(require('../assets/textures/crate/crate.gif')),
@@ -254,7 +290,7 @@ export default class App extends React.Component {
     Raycaster object capture, used to handle user touches to interact with 3D objects
     */
     var raycaster = new THREE.Raycaster();
-    // construct userTriggeredAnimation object's geometry and metarial, save memory
+    // construct MovableObject object's geometry and metarial, save memory
     let uta_geometry = new THREE.SphereGeometry( 0.02, 32, 32 );
     let uta_material = new THREE.MeshBasicMaterial( {color: 0xFFFF00, transparent:true, opacity: 0.60} );
     let utas = [];
@@ -268,7 +304,7 @@ export default class App extends React.Component {
     let ch_material = new THREE.MeshBasicMaterial( { transparent: true, opacity: 0.5, map: ch_texture } );
     let chObj = new THREE.Mesh(ch_geometry, ch_material);
 
-    let ch_uta = new userTriggeredAnimation(chObj, 
+    let ch_uta = new MovableObject(chObj, 
           (s) => {
             if(s.life_span === undefined || s.life_span <= 0){
               //Haven't been added yet, or has been removed
@@ -284,7 +320,7 @@ export default class App extends React.Component {
         //hasn't been born yet
       }
       else{
-        let pos = this.tapPosition3D(null, cp, cd);
+        let pos = this.relativeToCamera(zero_vector, cp, cd);
         s.obj.position.set(pos.x, pos.y, pos.z);
         s.obj.lookAt(cp);
         if(s.life_span === 0){
@@ -297,11 +333,38 @@ export default class App extends React.Component {
       return true;
     };
 
+    let ghost_uta = new MovableObject(ghost.object, 
+      (s, ip) => {
+        if(!s.killed){
+          ghost_out = true;
+          //Ghost graphics make things slow, lower analysis cycle
+          analysis_cycle = 20;
+          ghost.animate(scene, ip); 
+          ghost.object.lookAt(ip);
+        }
+      },
+      (s) => {
+          s.killed = true;
+          ghost_out = false;
+          var n_utas = utas.filter(function(el) {
+              return el !== s;
+          });
+          utas = n_utas;
+          scene.remove(ghost.object);
+        },
+      );
+
+    ghost_uta.live = MovableObject.circleUser();
+
     utas.push(ch_uta);
+    utas.push(ghost_uta);
+
+    var cycle_idx = 0;
 
     let animate = () => {
       requestAnimationFrame(animate);
 
+      cycle_idx = (cycle_idx + 1) % analysis_cycle;
       camera.updateMatrixWorld();
       var camera_position = new THREE.Vector3();
       camera_position.setFromMatrixPosition( camera.matrixWorld );
@@ -321,7 +384,7 @@ export default class App extends React.Component {
           scene.remove(this.state.obj_list[i]);
           console.debug("Collect! " + "length: " + n_obj_list.length + " msg_shown: " + msg_shown);
           //200 drawing cycles
-          animation_time = 100;
+          animation_time = analysis_cycle;
           this.setState({animation_opacity: 1.0});
           //Add screen flash effect for collecting an object
         }else{
@@ -337,11 +400,14 @@ export default class App extends React.Component {
         this.setState({animation_opacity: 0.0});
       }
 
-      if(n_obj_list.length < obj_per_scene){
+      if(n_obj_list.length === 1){
         /*
         TODO: Need to add new object, below function call does something weird, need fixing
         */
         //this._addARNavObj(scene, obj_per_scene - n_obj_list.length, coinTexture);
+
+        //Temporarily, show ghost once, aka born once only
+        ghost_uta.born(ghost_uta, this.relativeToCamera(zero_vector, camera_position, camera_direction, 0.8));
       }
       
       if(this.state.obj_list.length == 0 && !msg_shown && !exiting){
@@ -390,56 +456,82 @@ export default class App extends React.Component {
         let intersects = raycaster.intersectObjects( scene.children );
 
         /*
-          Ray animation
+          If hit ghost, show progress
         */
-        // make a copy, so we don't mess up the original vector
-        ch_uta.born(ch_uta);
+        if(intersects.length >= 1 && intersects[0].object === ghost_uta.obj){
+          this.showProgress();
+          buff_point++;
+          console.log("Hit ghost: " + buff_point + " times!");
+          if(buff_point === buff_threshold){
+            //threshold reached, ghost runs away
+            ghost_uta.live = MovableObject.moveObject(ghost_uta.obj.position, camera_direction, 5, 0.5);
+            buff_point = 0;
+            this.showBlueFlame();
+          }
+        }else{
+          /*
+            Ray animation
+          */
+          // make a copy, so we don't mess up the original vector
+          ch_uta.born(ch_uta);
 
 
-        let direction = raycaster.ray.direction.clone();
-        let end_point = new THREE.Vector3();
-        let distance = 6.0;
-        if (intersects.length >= 1 ) {
-          // distance to travel
-          distance = intersects[0].distance;
-        }
+          let direction = raycaster.ray.direction.clone();
+          let end_point = new THREE.Vector3();
+          let distance = 6.0;
+          if (intersects.length >= 1 ) {
+            // distance to travel
+            distance = intersects[0].distance;
+          }
 
-        let uta_obj = new THREE.Mesh( uta_geometry, uta_material );
-        let tappedVec = new THREE.Vector3(point_of_touch.x, point_of_touch.y, 0);
-        camera.localToWorld(tappedVec);
-        let origin = this.tapPosition3D(tappedVec, camera_position, camera_direction);
-        uta_obj.position.set(origin.x, origin.y, origin.z);
+          let uta_obj = new THREE.Mesh( uta_geometry, uta_material );
+          let tappedVec = new THREE.Vector3(point_of_touch.x, point_of_touch.y, 0);
+          camera.localToWorld(tappedVec);
+          let origin = this.relativeToCamera(zero_vector, camera_position, camera_direction);
+          uta_obj.position.set(origin.x, origin.y, origin.z);
 
-        let uta = new userTriggeredAnimation(uta_obj, 
-          (s) => {scene.add(s.obj);}, 
-          (s) => {
-            // remove uta first
-            scene.remove(s.obj);
-            if (intersects.length >= 1){
-              for (let j = 0; j < this.state.obj_list.length; j++){
-                if(this.state.obj_list[j] === intersects[0].object){
-                  this.state.obj_list.splice(j, 1);
-                  scene.remove(intersects[0].object);
-                  break;
+          let uta = new MovableObject(uta_obj, 
+            (s) => {scene.add(s.obj);}, 
+            (s) => {
+              // remove uta first
+              scene.remove(s.obj);
+              if (intersects.length >= 1){
+                for (let j = 0; j < this.state.obj_list.length; j++){
+                  if(this.state.obj_list[j] === intersects[0].object){
+                    this.state.obj_list.splice(j, 1);
+                    scene.remove(intersects[0].object);
+                    break;
+                  }
                 }
+                animation_time = analysis_cycle;
+                this.setState({animation_opacity: 1.0});
               }
-              animation_time = 100;
-              this.setState({animation_opacity: 1.0});
-            }
-          });
+            });
 
-        uta.born(uta);
+          uta.born(uta);
 
-        uta.live = uta.moveObject(origin, direction, distance, 0.2);
+          uta.live = MovableObject.moveObject(origin, direction, distance, 0.2);
 
-        utas.push(uta);
-        /*
-          Ray animation
-        */
+          utas.push(uta);
+        }
       }
       
       renderer.render(scene, camera);
       gl.endFrameEXP();
+
+      //Finger detection, run every 10 drawing cycles
+      /*
+      if(cycle_idx === 0){
+        
+        let pixels = new Uint8Array(width * height * 4);
+        console.debug(pixels[0] + " " + pixels[1] + " " + pixels[2] + " " + pixels[3]);
+        console.debug(width + " " + height);
+        gl.readPixels(0, 0, width, height, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, pixels);
+        //contrusct an ImageData object from pixels and analyze
+        //TODO: somehow the readPixels return all 0 values, interesting
+        HGD.frameAnalyzer(width, height, HGD.downSampler(pixels, width, height, 10, 20));
+        
+      }*/
     }
     animate();   
   }
@@ -448,6 +540,9 @@ export default class App extends React.Component {
     point_of_touch.x = (event.nativeEvent.locationX / Dimensions.get('window').width) * 2.0 - 1.0;
     point_of_touch.y = -(event.nativeEvent.locationY / Dimensions.get('window').height) * 2.0 + 1.0;
     ray_casted = true;
+    if(this.state.overlay_gif === require('../assets/images/blueFlame.gif')){
+      this.setState({overlay_gif: require('../assets/images/burst.gif')});
+    }
   }
 
   fingerRelease(event){
@@ -503,9 +598,22 @@ export default class App extends React.Component {
           </MapView>
         ) : null
       }
-      <FastImage style={{position: 'absolute', width: '100%', height: '100%', opacity: this.state.animation_opacity}} resizeMode='cover'
-          source={require('../assets/images/burst.gif')}
+      
+      <Image style={{position: 'absolute', width: '100%', height: '100%', opacity: this.state.animation_opacity}} resizeMode='cover'
+          source={{uri: this.state.overlay_gif}}
       />
+
+      <ProgressBar
+        fillStyle={styles.progress_fill}
+        backgroundStyle={styles.progress_background}
+        style={{position:'absolute', marginTop: '5%', width: '40%', height: 15, marginLeft: '2%', opacity: ghost_out? 1 : 0}}
+        progress={buff_point/buff_threshold}
+      />
+
+      <FadeOutView fadeAnim={this.state.game_feedback} style={{position: 'absolute', marginLeft: '10%'}}>
+        <Text style={styles.gf_text}>+1</Text>
+      </FadeOutView>
+      
       </View>
     ) : <Expo.AppLoading />;
   }
@@ -517,5 +625,19 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.tintColor,
     borderRadius: 40,
   },
+  progress_fill: {
+    backgroundColor: Colors.tintColor,
+  },
+  progress_background: {
+    backgroundColor: Colors.textBGBlur, 
+    borderRadius: 2,
+  },
+  gf_text: {
+    backgroundColor: Colors.tintColor,
+    color: Colors.noticeText,
+    borderWidth: 5,
+    borderRadius: 5,
+    fontSize: 24,
+  }
 });
 
