@@ -58,7 +58,7 @@ export default class SelectLocation extends React.Component {
   		Alert.alert("Hide at this location?", "",
         [
           {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'OK', onPress: () => {navigate.popToTop();} },
+          {text: 'OK', onPress: () => {this.sendQuest()} },
         ]
       );
   	}else{
@@ -83,6 +83,7 @@ export default class SelectLocation extends React.Component {
     Alert.alert("Quest sent successfully!");
 
     self.props.navigation.popToTop();
+    self.props.navigation.state.params.main_remount({ mountCam: true });
   }
 
   render() {

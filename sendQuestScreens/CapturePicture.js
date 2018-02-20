@@ -38,7 +38,7 @@ export default class CapturePicture extends CameraBase {
   backToMain(navigation){
     self.setState({mountCam: false}); 
     self.props.navigation.popToTop();
-    self.props.navigation.state.params.main_remount({ mountCam: true });
+    self.props.navigation.state.params.main_remount({ mountCam: true, has_refresh: false });
   }
 
   takePicture = async () => {

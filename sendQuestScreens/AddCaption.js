@@ -77,7 +77,7 @@ export default class AddCaption extends React.Component {
           source={{uri: img_src}}
           style={{ width: '100%', height: '100%' }}
         />
-        <RkButton onPress={() => navigate('SelectLocation', {main_remount: this.props.navigation.main_remount})} 
+        <RkButton onPress={() => navigate('SelectLocation', {main_remount: this.props.navigation.state.params.main_remount})} 
           style={{position: 'absolute', left: '40%', top: '90%', 
                   width: '20%', height: '8%', marginBottom: '2%', 
                   backgroundColor: Colors.tintColor}} >
