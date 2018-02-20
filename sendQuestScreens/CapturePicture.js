@@ -22,7 +22,7 @@ export default class CapturePicture extends CameraBase {
     title:  'Take a Picture',
     headerLeft: (
       <Icon2 name={'chevron-left'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
-                            onPress={ () => navigation.goBack() } />
+                            onPress={ () => navigation.goBack()} />
       ),
     headerRight: (
       <Icon name={'md-close-circle'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
@@ -35,9 +35,10 @@ export default class CapturePicture extends CameraBase {
       self = this;
   }
 
-  backToMain(){
+  backToMain(navigation){
     self.setState({mountCam: false}); 
     self.props.navigation.popToTop();
+    self.props.navigation.state.params.main_remount({ mountCam: true });
   }
 
   takePicture = async () => {
@@ -47,7 +48,7 @@ export default class CapturePicture extends CameraBase {
       console.debug(photo.uri);
       //unmount camera
       this.setState({mountCam: false});
-      navigate('AddCaption', photo);
+      navigate('AddCaption', {photo: photo, remount: this.remount, main_remount: this.props.navigation.state.params.main_remount});
     }
   };
 

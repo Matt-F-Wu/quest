@@ -38,21 +38,18 @@ export default class CameraBase extends React.Component {
     //do something at subclass
   }
 
+  remount = (data) => {
+    //Hao: Remounting, reset states and customize
+    this.setState(data);
+    this.customize(null);
+  }
+
   async componentWillMount() {
     const { status_record } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     this.setState({ mountCam: true, hasCameraPermission: status === 'granted' && (status_record === 'granted' || !status_record) });
     this.customize(this.num_objs);
-  }
-
-  _renderProfileOverlay(){
-    if(this.state.has_overlay){
-      return ( 
-        <ProfileOverlay/>
-      );
-    } else {
-      return null;
-    }
+    console.debug("Camera mounted:" + this.state.mountCam);
   }
 
   _renderTextLabel(){
@@ -123,6 +120,11 @@ export default class CameraBase extends React.Component {
     
   }
 
+  makeChildren(){
+    //override this to add children
+    return null;
+  }
+
   _renderCam(){
     if (this.state.mountCam){
       return (
@@ -134,7 +136,7 @@ export default class CameraBase extends React.Component {
                 flexDirection: 'row',
               }}>
 
-              {this.props.children}
+              {this.makeChildren()}
               
               <TouchableOpacity
                 style={{
@@ -160,7 +162,12 @@ export default class CameraBase extends React.Component {
     }
   }
 
+  debugPrint(){
+
+  }
+
   render() {
+    this.debugPrint();
     const { hasCameraPermission } = this.state;
     if (hasCameraPermission === null) {
       return <View />;

@@ -18,7 +18,7 @@ export default class Compose extends React.Component {
     title: 'Send a Quest',
     headerLeft: (
       <Icon name={'chevron-left'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
-                            onPress={ () => navigation.goBack() } />
+                            onPress={ () => {navigation.goBack(); navigation.state.params.remount({ mountCam: true });}} />
       ),
   });
 
@@ -31,6 +31,8 @@ export default class Compose extends React.Component {
 
   toMap(item){
       const { navigate } = this.props.navigation;
+      //Passing main_remount down the stack
+      item.main_remount = this.props.navigation.state.params.main_remount;
       navigate('CapturePicture', item);
   };
 

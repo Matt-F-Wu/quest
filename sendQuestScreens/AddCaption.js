@@ -27,11 +27,11 @@ export default class AddCaption extends React.Component {
     title: 'Add a Caption',
     headerLeft: (
       <Icon2 name={'chevron-left'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
-                            onPress={ () => navigation.goBack() } />
+                            onPress={ () => {navigation.goBack(); navigation.state.params.remount({ mountCam: true });}} />
       ),
     headerRight: (
       <Ionicons name={'md-close-circle'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
-                            onPress={ () => {navigation.popToTop();} } />
+                            onPress={ () => {navigation.popToTop(); navigation.state.params.main_remount({ mountCam: true });} } />
       ),
   });
 
@@ -66,7 +66,7 @@ export default class AddCaption extends React.Component {
   render() {
     /* Go ahead and delete ExpoConfigView and replace it with your
      * content, we just wanted to give you a quick view of your config */
-    var img_src = this.props.navigation.state.params.uri;
+    var img_src = this.props.navigation.state.params.photo.uri;
     //this.aboutFile(img_src);
     //console.debug(img_src);
     const { navigate } = this.props.navigation;
@@ -77,7 +77,7 @@ export default class AddCaption extends React.Component {
           source={{uri: img_src}}
           style={{ width: '100%', height: '100%' }}
         />
-        <RkButton onPress={() => navigate('SelectLocation')} 
+        <RkButton onPress={() => navigate('SelectLocation', {main_remount: this.props.navigation.main_remount})} 
           style={{position: 'absolute', left: '40%', top: '90%', 
                   width: '20%', height: '8%', marginBottom: '2%', 
                   backgroundColor: Colors.tintColor}} >

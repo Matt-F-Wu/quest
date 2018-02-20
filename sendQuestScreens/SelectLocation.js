@@ -29,7 +29,7 @@ export default class SelectLocation extends React.Component {
       ),
     headerRight: (
       <Icon name={'md-close-circle'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
-                            onPress={ () => {navigation.popToTop();} } />
+                            onPress={ () => {navigation.popToTop(); navigation.state.params.main_remount({ mountCam: true });} } />
       ),
   });
 
