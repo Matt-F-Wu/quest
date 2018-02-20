@@ -106,6 +106,10 @@ const questsArr = [
 
 
 export default class Notifications extends React.Component {
+	//Hao Wu: removing header here 
+	static navigationOptions = {
+      header: null,
+  	};
 
 	static navigationOptions = {
     	header: null,
