@@ -28,10 +28,12 @@ export default class QuestListItem extends React.Component {
 	/* Set progress border color/width */
 	setProgressBorder = () => {
 		if (this.state.progress == 'unopened') {
-			this.setState({
-				progressColor: Colors.tintColor,
-				progressBorderWidth: 2,
-			});
+			if (this.state.received != true) {
+				this.setState({
+					progressColor: Colors.tintColor,
+					progressBorderWidth: 2,
+				});
+			}
 		}
 	}
 
