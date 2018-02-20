@@ -16,11 +16,11 @@ import CameraLandingPage from '../sendQuestScreens/CameraLandingPage';
 const SendStackNavigator = StackNavigator(
   {
     Main: {
-      screen: CameraLandingPage,
-    },
-    Compose: {
       screen: Compose,
     },
+    // Compose: {
+    //   screen: Compose,
+    // },
     CapturePicture: {
       screen: CapturePicture,
     },

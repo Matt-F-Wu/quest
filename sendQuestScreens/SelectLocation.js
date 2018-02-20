@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { MapView } from 'expo';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Icon2 from 'react-native-vector-icons/Entypo';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import {RkButton} from 'react-native-ui-kitten';
 
@@ -21,9 +22,13 @@ var pinLoc = {latitude: 37.4223618, longitude: -122.1823528};
 export default class SelectLocation extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Choose a Location',
+    headerLeft: (
+      <Icon2 name={'chevron-left'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
+                            onPress={ () => navigation.goBack() } />
+      ),
     headerRight: (
       <Icon name={'md-close-circle'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
-                            onPress={ () => { navigation.navigate('Compose') }} />
+                            onPress={ () => {navigation.popToTop();} } />
       ),
     headerTintColor: Colors.tintColor,
   });
@@ -51,11 +56,11 @@ export default class SelectLocation extends React.Component {
   		Alert.alert("Hide at this location?", "",
         [
           {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'OK', onPress: () => navigate('Main')},
+          {text: 'OK', onPress: () => {navigate.popToTop();} },
         ]
       );
   	}else{
-  		Alert.alert("Wait!", "Darg to desired location and click to select");
+  		Alert.alert("Wait!", "Drag to desired location and click to select");
   	}
   }
 
@@ -75,7 +80,7 @@ export default class SelectLocation extends React.Component {
     const { navigate } = this.props.navigation;
     Alert.alert("Quest sent successfully!");
 
-    navigate('Main');
+    () => {navigate.popToTop();};
   }
 
   render() {

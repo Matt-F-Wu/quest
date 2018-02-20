@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { FileSystem } from 'expo';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Icon2 from 'react-native-vector-icons/Entypo';
 
 // Constant imports
 import Colors from '../constants/Colors';
@@ -21,6 +22,10 @@ export default class CapturePicture extends CameraBase {
     title:  'Take a Picture',
     headerBackgroundColor: Colors.backgroundColor,
     headerTintColor: Colors.tintColor,
+    headerLeft: (
+      <Icon2 name={'chevron-left'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
+                            onPress={ () => navigation.goBack() } />
+      ),
     headerRight: (
       <Icon name={'md-close-circle'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
                             onPress={ () => self.backToMain() } />

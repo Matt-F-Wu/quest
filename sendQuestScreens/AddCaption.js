@@ -12,6 +12,7 @@ import {
 import { FileSystem } from 'expo';
 import {RkButton} from 'react-native-ui-kitten';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon2 from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 //flags used to denote which step we are at during the sending process
@@ -25,6 +26,10 @@ export default class AddCaption extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Add a Caption',
     headerTintColor: Colors.tintColor,
+    headerLeft: (
+      <Icon2 name={'chevron-left'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
+                            onPress={ () => navigation.goBack() } />
+      ),
     headerRight: (
       <Ionicons name={'md-close-circle'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
                             onPress={ () => {navigation.popToTop();} } />
