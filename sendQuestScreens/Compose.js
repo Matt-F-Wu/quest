@@ -14,19 +14,13 @@ const STEP_FLAG = {contact: 0, pin: 1, format: 2, compose: 3, send: 4};
 
 export default class Compose extends React.Component {
 
-
-  static navigationOptions = {
-    // const { navigate } = this.props.navigation;
+  static navigationOptions  = ({ navigation, screenProps }) => ({
     title: 'Send a Quest',
-    headerBackgroundColor: Colors.BackgroundColor,
-    headerTintColor: Colors.TintColor,
-    // headerLeft: (
-    //   <Icon name={'chevron-left'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
-    //                         onPress={ () => self.goBack() } />
-    //   ),
-
-  };
-
+    headerLeft: (
+      <Icon name={'chevron-left'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
+                            onPress={ () => navigation.goBack() } />
+      ),
+  });
 
 
   //Call constructor to store state information

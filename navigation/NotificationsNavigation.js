@@ -5,6 +5,7 @@ import registerForPushNotificationsAsync from '../api/registerForPushNotificatio
 
 // Colors
 import Colors from '../constants/Colors';
+import Fonts from '../constants/Fonts';
 
 // Component imports
 import NotificationsLandingPage from '../notificationsScreens/Notifications';
@@ -34,6 +35,7 @@ const NotificationsStackNavigator = StackNavigator(
       },
       headerTitleStyle: {
         fontWeight: 'normal',
+        fontSize: Fonts.headerFontSize,
         color: Colors.tintColor,
       },
     }),

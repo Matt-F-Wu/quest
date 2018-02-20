@@ -5,6 +5,7 @@ import registerForPushNotificationsAsync from '../api/registerForPushNotificatio
 
 // Colors
 import Colors from '../constants/Colors';
+import Fonts from '../constants/Fonts';
 
 // Component imports
 import SelectLocation from '../sendQuestScreens/SelectLocation';
@@ -16,11 +17,11 @@ import CameraLandingPage from '../sendQuestScreens/CameraLandingPage';
 const SendStackNavigator = StackNavigator(
   {
     Main: {
+      screen: CameraLandingPage,
+    },
+    Compose: {
       screen: Compose,
     },
-    // Compose: {
-    //   screen: Compose,
-    // },
     CapturePicture: {
       screen: CapturePicture,
     },
@@ -41,6 +42,7 @@ const SendStackNavigator = StackNavigator(
       },
       headerTitleStyle: {
         fontWeight: 'normal',
+        fontSize: Fonts.headerFontSize,
         color: Colors.tintColor,
       },
     }),

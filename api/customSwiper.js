@@ -653,8 +653,7 @@ export default class extends Component {
     let bottomMargin = 0
     // Highlight button if on that page currently
     if (this.state.index == 1) {
-      button = this.props.selectedHomeButton
-      bottomMargin = 30
+      button = null
     } else {
       button = this.props.homeButton
     }

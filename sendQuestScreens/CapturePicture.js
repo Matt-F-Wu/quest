@@ -20,8 +20,6 @@ var self;
 export default class CapturePicture extends CameraBase {
   static navigationOptions = ({ navigation, screenProps }) => ({
     title:  'Take a Picture',
-    headerBackgroundColor: Colors.backgroundColor,
-    headerTintColor: Colors.tintColor,
     headerLeft: (
       <Icon2 name={'chevron-left'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
                             onPress={ () => navigation.goBack() } />

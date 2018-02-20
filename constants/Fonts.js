@@ -3,7 +3,7 @@ export default {
   	logoFontSize: 50,
 
 	headerFont: 'Arial',
-    headerFontSize: 30,
+    headerFontSize: 26,
 	  
 	itemFont: 'Arial',
 	itemFontSize: 25,

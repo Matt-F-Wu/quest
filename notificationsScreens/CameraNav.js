@@ -13,6 +13,7 @@ import FIcon from 'react-native-vector-icons/FontAwesome';
 import ProgressBar from '../components/ProgressBar';
 import FadeOutView from '../components/FadeOutView'
 //import * as CANNON from 'cannon';
+import Icon from 'react-native-vector-icons/Entypo';
 
 console.disableYellowBox = true;
 var secret = require('../api/secret');
@@ -47,6 +48,15 @@ export default class App extends React.Component {
     overlay_gif: require('../assets/images/burst.gif'),
     game_feedback: new Animated.Value(0),
   }
+
+  static navigationOptions  = ({ navigation, screenProps }) => ({
+    title: 'Follow the coins!',
+    headerLeft: (
+      <Icon name={'chevron-left'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
+                            onPress={ () => navigation.goBack() } />
+      ),
+  });
+
 
   constructor(props) {
     super(props);

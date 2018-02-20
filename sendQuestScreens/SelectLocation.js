@@ -19,6 +19,7 @@ const username = 'HaoWu';
 const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/sendq/';
 
 var pinLoc = {latitude: 37.4223618, longitude: -122.1823528};
+var self;
 export default class SelectLocation extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Choose a Location',
@@ -30,11 +31,12 @@ export default class SelectLocation extends React.Component {
       <Icon name={'md-close-circle'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
                             onPress={ () => {navigation.popToTop();} } />
       ),
-    headerTintColor: Colors.tintColor,
   });
+
 
   constructor(props) {
   	super(props);
+    self = this;
 
   	this.state = {
   		markers: [
@@ -80,7 +82,7 @@ export default class SelectLocation extends React.Component {
     const { navigate } = this.props.navigation;
     Alert.alert("Quest sent successfully!");
 
-    () => {navigate.popToTop();};
+    self.props.navigation.popToTop();
   }
 
   render() {

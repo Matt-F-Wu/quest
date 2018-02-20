@@ -25,7 +25,6 @@ export default class AddCaption extends React.Component {
 
   static navigationOptions = ({ navigation }) => ({
     title: 'Add a Caption',
-    headerTintColor: Colors.tintColor,
     headerLeft: (
       <Icon2 name={'chevron-left'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
                             onPress={ () => navigation.goBack() } />
