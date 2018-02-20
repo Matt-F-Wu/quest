@@ -141,7 +141,7 @@ export default class CameraBase extends React.Component {
                 style={{
                   flex: 0.1,
                   alignSelf: 'flex-start',
-                  positon: 'absolute',
+                  position: 'absolute',
                   left: 333,
                   marginTop: '2%',
                   alignItems: 'center',

@@ -20,8 +20,8 @@ export default {
   blurOrange: 'rgba(255, 140, 0, 0.8)',
   textBGBlur: 'rgba(0, 0, 0, 0.6)',
 
-
   tintColor,
+  blackMask: 'rgba(0, 0, 0, 0.7)',
   accentColor: 'grey',
   secondaryAccentColor: 'grey',
 
