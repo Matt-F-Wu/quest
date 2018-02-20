@@ -7,7 +7,7 @@ import Colors from '../constants/Colors';
 import Icon from 'react-native-vector-icons/Entypo';
 
 // Component imports
-import ContactList from '../components/SendQuest/ContactList.js';
+import ContactList from '../components/SendQuest/newContactList.js';
 
 //flags used to denote which step we are at during the sending process
 const STEP_FLAG = {contact: 0, pin: 1, format: 2, compose: 3, send: 4};

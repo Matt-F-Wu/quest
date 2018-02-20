@@ -4,6 +4,7 @@ import { TabNavigator, TabBarTop } from 'react-navigation';
 
 // Colors, layout
 import Colors from '../constants/Colors';
+import Fonts from '../constants/Fonts';
 import Layout from '../constants/Layout';
 
 // Component imports
@@ -41,7 +42,8 @@ export default TabNavigator(
       // Text style for label
       labelStyle: {
         color: Colors.tintColor,
-        fontSize: 20,
+        fontFamily: Fonts.headerFont,
+        fontSize: Fonts.headerFontSize,
         padding: 10,
       },
 

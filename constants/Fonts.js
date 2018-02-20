@@ -1,13 +1,29 @@
 export default {
-	logoFont: 'SavoyeLetPlain',
-  	logoFontSize: 70,
+	// logoFont: 'SavoyeLetPlain',
+	// logoFont: 'Baskerville',
+	// logoFont: 'Didot',
+	logoFont: 'Palatino',
+  logoFontSize: 40,
 
-	headerFont: 'Arial',
-    headerFontSize: 26,
+  	// bodyFont: 'Cochin',
+  	// bodyFont: 'Didot',
+  	// bodyFont: 'Georgia',
+  	// bodyFont: 'Helvetica-Light',
+  	// bodyFont: 'HoeflerText-Regular',
+  // bodyFont: 'Kailasa',
+  	// bodyFont: 'Palatino',
+  	// bodyFontSize: 25,
+
+
+  // Fonts for headers (tab bar headers)
+	headerFont: 'Kailasa',
+  headerFontSize: 20,
 	  
-	itemFont: 'Arial',
-	itemFontSize: 25,
+  // Fonts for items ()
+	bodyFont: 'Kailasa',
+	bodyFontSize: 25,
 
-	accentFont: 'Arial',
+  // Fonts for accents (greyed out text)
+	accentFont: 'Kailasa',
 	accentFontSize: 15,
 };

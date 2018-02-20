@@ -34,7 +34,7 @@ const NotificationsStackNavigator = StackNavigator(
         color: Colors.tintColor,
       },
       headerTitleStyle: {
-        fontWeight: 'normal',
+        fontFamily: Fonts.headerFont,
         fontSize: Fonts.headerFontSize,
         color: Colors.tintColor,
       },

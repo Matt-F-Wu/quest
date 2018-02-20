@@ -56,7 +56,7 @@ export default class CameraBase extends React.Component {
     if(this.state.has_label){
       return (
         <Text style={{fontFamily: Fonts.logoFont, fontSize: Fonts.logoFontSize, backgroundColor: 'transparent', color: Colors.tintColor, 
-                      position:'absolute', top: 4, alignSelf: 'center'}}>
+                      position:'absolute', top: 15, alignSelf: 'center'}}>
                       {this.state.textLabel}</Text>
       );
     }else{

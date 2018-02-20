@@ -144,8 +144,8 @@ export default class GalleryAllTab extends Component {
               useNativeDriver style={styles.overlayContainer}>
               
                 <View style={styles.modalHeader}>
-                  <Text style={{fontFamily: 'Arial', fontSize: 35, color: Colors.tintColor}}> {this.state.nameToDisplay} </Text>
-                  <Text style={{fontFamily: 'Arial', fontSize: 16, color: Colors.tintColor, paddingLeft: 6.5}}> {this.state.dateToDisplay} </Text>
+                  <Text style={{fontFamily: Fonts.bodyFont, fontSize: 35, color: Colors.tintColor}}> {this.state.nameToDisplay} </Text>
+                  <Text style={{fontFamily: Fonts.bodyFont, fontSize: 16, color: Colors.tintColor, paddingLeft: 6.5}}> {this.state.dateToDisplay} </Text>
                 </View>
 
 
@@ -160,15 +160,15 @@ export default class GalleryAllTab extends Component {
              
                 <View style={styles.modalFooter}>
                   <Icon.Button iconStyle={styles.buttonStyle} name="ios-chatboxes" size={27} color={Colors.tintColor} backgroundColor="transparent" onPress={this.SendAQuest}>
-                    <Text style={{fontFamily: Fonts.itemFont, fontSize: 14, color: Colors.tintColor}}>Go to conversation</Text>
+                    <Text style={{fontFamily: Fonts.bodyFont, fontSize: 14, color: Colors.tintColor}}>Go to conversation</Text>
                   </Icon.Button>
 
                   <Icon.Button iconStyle={styles.buttonStyle} name="ios-heart-outline" size={27} color={Colors.tintColor} backgroundColor="transparent" onPress={this.SendAQuest}>
-                    <Text style={{fontFamily: Fonts.itemFont, fontSize: 14, color: Colors.tintColor}}>Favorite</Text>
+                    <Text style={{fontFamily: Fonts.bodyFont, fontSize: 14, color: Colors.tintColor}}>Favorite</Text>
                   </Icon.Button>
 
                   <Icon2.Button iconStyle={styles.buttonStyle} name="reply" size={27} color={Colors.tintColor} backgroundColor="transparent" onPress={this.SendAQuest}>
-                    <Text style={{fontFamily: Fonts.itemFont, fontSize: 14, color: Colors.tintColor}}>Send a Quest</Text>
+                    <Text style={{fontFamily: Fonts.bodyFont, fontSize: 14, color: Colors.tintColor}}>Send a Quest</Text>
                   </Icon2.Button>
                 </View>
 

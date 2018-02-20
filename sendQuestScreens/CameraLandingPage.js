@@ -16,7 +16,7 @@ export default class CameraLandingPage extends CameraBase {
 
   	customize(num){
   		this.setState({has_refresh: false, 
-  					   has_label: true, textLabel:'quest'});
+  					   has_label: true, textLabel:'Quest'});
       //console.debug("states: " + this.state.has_label + " " + this.state.has_refresh );
   	}
 
