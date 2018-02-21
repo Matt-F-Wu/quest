@@ -305,7 +305,9 @@ export default class softBodyObject {
 	}
 
 	animate(scene, initialPosition) {
-		this.object.position.set( initialPosition.x, initialPosition.y, initialPosition.z );
+		if (initialPosition){
+			this.object.position.set( initialPosition.x, initialPosition.y, initialPosition.z );
+		}
 		scene.add( this.object );
 		var time = Date.now();
 
