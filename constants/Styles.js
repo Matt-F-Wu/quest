@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import Colors from './Colors';
 
 const i_styles = StyleSheet.create({
   container: {
@@ -132,8 +133,19 @@ const c_styles = StyleSheet.create({
   },
 });
 
+const floating_text = {
+  color: Colors.tintColor, 
+  backgroundColor: Colors.textBGBlur, 
+  marginTop: '5%', 
+  fontWeight: 'bold',  
+  fontSize: 14,
+  textAlign: 'center',
+  textAlignVertical: 'center',
+};
+
 export default {
   i_styles: i_styles,
   u_styles: u_styles,
   c_styles: c_styles,
+  floating_text: floating_text
 };

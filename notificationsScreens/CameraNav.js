@@ -1,5 +1,5 @@
 import Expo, { Asset, Location, Permissions, MapView } from 'expo';
-import { View, Dimensions, StyleSheet, Animated, Text, Image } from 'react-native';
+import { View, Dimensions, StyleSheet, Animated, Text, Image, Modal } from 'react-native';
 import React from 'react';
 const THREE = require('three');
 global.THREE = THREE;
@@ -8,6 +8,7 @@ import MovableObject from '../api/MovableObject.js';
 import softBodyObject from '../api/softBodyObject.js';
 import HGD from '../api/handGestureDetection';
 import Colors from '../constants/Colors';
+import Styles from '../constants/Styles';
 import {RkButton} from 'react-native-ui-kitten';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import ProgressBar from '../components/ProgressBar';
@@ -30,6 +31,7 @@ var point_of_touch = new THREE.Vector2();
 var ray_casted = false;
 var scene;
 var showMap = false;
+var showDash = false;
 const analysis_cycle = 100;
 const zero_vector = new THREE.Vector3(0, 0, 0);
 // the user has to shoot 5 light balls to fire the blue flame, to repel the ghost
@@ -84,6 +86,7 @@ export default class App extends React.Component {
       require('../assets/textures/crate/crate.gif'),
       require('../assets/images/blueFlame.gif'),
       require('../assets/images/burst.gif'),
+      require('../assets/images/ghost_entrance.gif'),
     ].map((module) => Expo.Asset.fromModule(module).downloadAsync()));
 
     this.setState({ loaded: true, overlay_gif: Asset.fromModule(require('../assets/images/burst.gif')).localUri });
@@ -220,6 +223,7 @@ export default class App extends React.Component {
 
   showBlueFlame(){
     //console.debug("Show Blue Flame!");
+    analysis_cycle = 100;
     animation_time = analysis_cycle * 2;
     this.setState({animation_opacity: 1.0, overlay_gif: Asset.fromModule(require('../assets/images/blueFlame.gif')).localUri});
   }
@@ -346,10 +350,12 @@ export default class App extends React.Component {
 
     let ghost_uta = new MovableObject(ghost.object, 
       (s, ip) => {
-        if(!s.killed){
+        if(!s.killed && !ghost_out){
           ghost_out = true;
           //Ghost graphics make things slow, lower analysis cycle
           analysis_cycle = 20;
+          animation_time = analysis_cycle;
+          this.setState({animation_opacity: 0.6, overlay_gif: Asset.fromModule(require('../assets/images/ghost_entrance.gif')).localUri});
           ghost.animate(scene, ip); 
           ghost.object.lookAt(ip);
         }
@@ -362,11 +368,21 @@ export default class App extends React.Component {
           });
           utas = n_utas;
           scene.remove(ghost.object);
-          analysis_cycle = 100;
         },
       );
 
-    ghost_uta.live = MovableObject.circleUser();
+    ghost_uta.live = (s, cp, cd) => {
+      if(ghost_out){
+        let cir = MovableObject.circleUser();
+        let ip = this.relativeToCamera(zero_vector, cp, cd, 0.8);
+        ghost.animate(scene, ip);
+        ghost.object.lookAt(ip);
+        //never forget to return true to indicate that it should live
+        return cir(s, cp, cd);
+      }else{
+        return true;
+      }
+    };
 
     utas.push(ch_uta);
     utas.push(ghost_uta);
@@ -408,7 +424,7 @@ export default class App extends React.Component {
       this.setState({obj_list: n_obj_list});
 
       if(animation_time > 0) {animation_time--;}
-      if(animation_time == 0){
+      if(animation_time <= 0){
         this.setState({animation_opacity: 0.0});
       }
 
@@ -571,6 +587,15 @@ export default class App extends React.Component {
           <FIcon name={'map'} color='#ffffff' size={25} />
       </RkButton>
 
+      <RkButton
+          onStartShouldSetResponder={(evt) => true}
+          onStartShouldSetResponderCapture={(evt) => true}
+          onResponderTerminationRequest={(evt) => false} 
+          onPress={() => {showDash= !showDash}} 
+          style={[{zIndex: 10, position: 'absolute', left: '5%', top: '90%', width: '10%', height: '5%', backgroundColor: Colors.tintColor, borderRadius: 5}]} >
+          <FIcon name={'chevron-up'} color='#ffffff' size={10} />
+      </RkButton>
+
       <Expo.GLView
         onStartShouldSetResponder={(evt) => true}
         onMoveShouldSetResponder={(evt) => true}
@@ -623,9 +648,48 @@ export default class App extends React.Component {
         progress={buff_point/buff_threshold}
       />
 
+      <Text style={[{position:'absolute', height: 15, paddingTop: 6, width: '10%', left: '45%', opacity: ghost_out? 1 : 0}, Styles.floating_text]}>{buff_point} / {buff_threshold}</Text>
+
       <FadeOutView fadeAnim={this.state.game_feedback} style={{position: 'absolute', marginLeft: '10%'}}>
         <Text style={styles.gf_text}>+1</Text>
       </FadeOutView>
+
+      <Modal
+        transparent={true}
+        visible={showDash}
+        animationType={'slide'}
+        onRequestClose={() => {showDash = false;}}>
+
+        <View style={styles.modalContainer}>
+          <RkButton style={{width: '10%', height: '5%', marginLeft: '85%', marginTop: '2%', backgroundColor: Colors.tintColor, borderRadius: 5}}
+                onPress={() => {showDash = false;}}>
+            <FIcon name={'close'} color='white' size={10} />
+          </RkButton>
+          
+          <View style={styles.innerContainer}>
+            <View style={styles.row}>
+              <Text style={{fontSize: 24, color: Colors.tintColor}}>Points: </Text><Text style={styles.gf_text}>30</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={{fontSize: 24, color: Colors.tintColor}}>To destination: </Text><Text style={styles.gf_text}>2.2 miles</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={{fontSize: 24, color: Colors.tintColor}}>Time spent: </Text><Text style={styles.gf_text}>1.2 hours</Text>
+            </View>
+            <View style={styles.row}>
+              <RkButton style={{flex: 1, backgroundColor: Colors.tintColor, borderRadius: 5, marginRight: 5}}
+                  onPress={() => {showDash = false;}}>
+                <Text style={{fontSize: 16, color: Colors.noticeText}}>Request hints</Text>
+              </RkButton>
+              <RkButton style={{flex: 1, backgroundColor: Colors.tintColor, borderRadius: 5}}
+                  onPress={() => {showDash = false;}}>
+                <Text style={{fontSize: 16, color: Colors.noticeText}}>About Game</Text>
+              </RkButton>
+            </View>
+          </View>
+        
+        </View>
+      </Modal>
       
       </View>
     ) : <Expo.AppLoading />;
@@ -651,6 +715,20 @@ const styles = StyleSheet.create({
     borderWidth: 5,
     borderRadius: 5,
     fontSize: 24,
-  }
+  },
+  modalContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    flex: 1,
+    marginTop: 20,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  innerContainer: {
+    padding: 10,
+  },
+  row: {
+    flexDirection: 'row',
+    marginBottom: 15,
+  },
 });
 
