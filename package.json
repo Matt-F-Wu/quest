@@ -22,6 +22,7 @@
     "react-native-lookback": "^2.2.0",
     "react-native-maps": "^0.18.3",
     "react-native-search-box": "0.0.13",
+    "react-native-searchbar": "^1.14.0",
     "react-native-swiper": "^1.5.13",
     "react-native-ui-kitten": "^2.0.1",
     "react-native-vector-icons": "^4.4.2",

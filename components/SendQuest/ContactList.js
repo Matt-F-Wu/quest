@@ -10,24 +10,127 @@ import {
   Alert,
   ListView,
 } from 'react-native';
-import Search from 'react-native-search-box';
+// import Search from 'react-native-search-box';
+import { SearchBar } from 'react-native-elements';
 
 // Component/constant imports
 import Touchables from '../Touchables';
+// import ContactListItem from './ContactListItem';
 import Colors from '../../constants/Colors';
+import Fonts from '../../constants/Fonts';
+
 
 export default class ContactList extends Component {
 	/*TODO: make a contact list here*/
-  data = [
-        {index: 3, name: 'Ariel', location: 'Beijing, China', time: '32 days ago', image: require('../../assets/images/person7.jpg')}, 
-        {index: 4, name: 'Brian', location: 'Stanford, CA, USA', time: '22 days ago', image: require('../../assets/images/person1.jpg')}, 
-        {index: 5, name: 'Christopher', location: 'Stanford, CA, USA', time: '17 days ago', image: require('../../assets/images/person2.jpg')}, 
-        {index: 6, name: 'Dilu', location: 'Stanford, CA, USA', time: '12 days ago', image: require('../../assets/images/person3.jpg')}, 
-        {index: 7, name: 'Eason', location: 'Stanford, CA, USA', time: '6 days ago', image: require('../../assets/images/person5.jpg')}, 
-        {index: 8, name: 'Fanfan', location: 'Stanford, CA, USA', time: '2 days ago', image: require('../../assets/images/person6.jpg')}, 
-        {index: 1, name: 'Lily Wang', location: 'Toronto, ON, Canada', time: '62 days ago', image: require('../../assets/images/lilyP.jpg')}, 
-        {index: 2, name: 'Mark', location: 'Stanford, CA, USA', time: '51 days ago', image: require('../../assets/images/person4.jpg')}, 
-        ];
+  data = [  
+  {
+    name: 'Alejandrina', 
+    index: 1,
+    location: 'Stanford, CA',
+    time: '2 weeks ago', 
+    image: require('../../assets/images/profileImages/woman3.png'),
+  },
+  {
+    name: 'Alison', 
+    index: 2,
+    location: 'Boston, MA',
+    time: '1 year ago', 
+    image: require('../../assets/images/profileImages/woman5.png'),
+  },
+  {
+    name: 'Austin',
+    index: 3, 
+    location: 'Thousand Oaks, CA',
+    time: '1 month ago', 
+    image: require('../../assets/images/profileImages/man8.png'),
+  },
+  {
+    name: 'Bob', 
+    index: 4,
+    location: 'San Francisco, CA',
+    time: '3 weeks ago', 
+    image: require('../../assets/images/profileImages/man6.png'),
+  },
+  {
+    name: 'Cole', 
+    index: 5,
+    location: 'Stanford, CA',
+    time: '1 week ago', 
+    image: require('../../assets/images/profileImages/man4.png'),
+  },
+  {
+    name: 'Cooper',
+    index: 6, 
+    location: 'Kauaia, HI',
+    time: '1 day ago', 
+    image: require('../../assets/images/profileImages/man2.png'),
+  },
+  {
+    name: 'George',
+    index: 7, 
+    location: 'Los Angeles, CA',
+    time: '1 year ago', 
+    image: require('../../assets/images/profileImages/man9.png'),
+  },
+  {
+    name: 'Grace', 
+    index: 8,
+    location: 'Vancouver, BC',
+    time: '9:35 AM', 
+    image: require('../../assets/images/profileImages/woman1.png'),
+  },
+  {
+    name: 'Hao', 
+    index: 9,
+    location: 'Toronto, ON',
+    time: '1 week ago', 
+    image: require('../../assets/images/profileImages/man5.png'),
+  },
+  {
+    name: 'Ian', 
+    index: 10,
+    location: 'Thousand Oaks, CA',
+    time: '5 days ago', 
+    image: require('../../assets/images/profileImages/man3.png'),
+  },  
+  {
+    name: 'Jon', 
+    index: 11,
+    location: 'New York, NY',
+    time: '3 weeks ago', 
+    image: require('../../assets/images/profileImages/man7.png'),
+  },
+  {
+    name: 'Katie', 
+    index: 12,
+    location: 'Bend, OR',
+    time: '4 days ago',
+    image: require('../../assets/images/profileImages/woman2.png'),
+  },
+  {
+    name: 'Lily', 
+    index: 13,
+    location: 'Providence, RI',
+    time: '2 months ago', 
+    image: require('../../assets/images/profileImages/woman4.png'),
+  },
+  {
+    name: 'Nicole', 
+    index: 14,
+    location: 'Phoenix, AZ',
+    time: '10:01 AM',
+    image: require('../../assets/images/profileImages/woman7.png'),
+  },
+  {
+    name: 'Samantha', 
+    index: 15,
+    location: 'Cincinnati, OH',
+    time: '1 year ago', 
+    image: require('../../assets/images/profileImages/woman6.png'),
+  },
+];
+
+
 
   constructor() {
     super();
@@ -64,7 +167,7 @@ export default class ContactList extends Component {
   renderRow(item){
     
     return (
-        <Touchables key={item.index} 
+      <Touchables key={item.index} 
               onClick={() => this.props.toMap(item)}
               onLongPress={() => this.props.navigatorVal('Friend')} 
               hasImage={true} 
@@ -77,27 +180,13 @@ export default class ContactList extends Component {
 	render() {
 
     return (
-      <View style={{ flex: 1}}>
-        <Search
-          backgroundColor={Colors.tintColor}
-          placeholder='Search contacts'
-          ref="search_box"
-          onSearch={(keyword) => {
-            var dataArray = [];
-            for(var i = 0; i < this.data.length; i++){
-              if(this.data[i].name.toLowerCase().includes(keyword.toLowerCase())
-                || this.data[i].location.toLowerCase().includes(keyword.toLowerCase())){
-                  dataArray.push(this.data[i]);
-                }
-            }
-            const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-            this.setState({ dataSource: ds.cloneWithRows(dataArray)});
-          }}
-          onCancel={() => {
-            const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-            this.setState({ dataSource: ds.cloneWithRows(this.data)});
-            }
-          }
+      <View style={{ flex: 1, backgroundColor: Colors.backgroundColor}}>
+
+        <SearchBar
+          round
+          // lightTheme
+          containerStyle={styles.searchBarStyle}
+          placeholder='Search contacts' 
         />
 
         <ListView
@@ -117,6 +206,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.backgroundColor,
+    borderColor: 'transparent',
   },
   rowStyle: {
     flexDirection: 'row',
@@ -126,6 +216,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     alignItems: 'center',
   },
+  searchBarStyle: {
+    backgroundColor: 'transparent', 
+    borderBottomColor: 'transparent', 
+    borderTopColor: 'transparent'
+  },
   contentContainer: {
     flexWrap: 'wrap',
   },
@@ -134,15 +229,17 @@ const styles = StyleSheet.create({
   	marginLeft: 20,
   },
   title: {
-  	color: 'orange',
-  	fontWeight: 'bold',
-  	fontSize: 14,
+    fontFamily: Fonts.bodyFont,
+  	color: Colors.tintColor,
+  	fontSize: 18,
   },
   subTitle: {
-  	color: '#666666',
+    fontFamily: Fonts.accentFont,
+  	color: Colors.accentColor,
   },
   text: {
-  	color: '#333333',
+    fontFamily: Fonts.accentFont,
+  	color: Colors.secondaryAccentColor,
   },
   imageContainer: {
   	width: 80,
