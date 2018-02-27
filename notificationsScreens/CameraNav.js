@@ -12,7 +12,8 @@ import Styles from '../constants/Styles';
 import {RkButton} from 'react-native-ui-kitten';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import ProgressBar from '../components/ProgressBar';
-import FadeOutView from '../components/FadeOutView'
+import FadeOutView from '../components/FadeOutView';
+import ExpandableView from '../components/ExpandableView';
 //import * as CANNON from 'cannon';
 import Icon from 'react-native-vector-icons/Entypo';
 
@@ -38,6 +39,8 @@ const zero_vector = new THREE.Vector3(0, 0, 0);
 var ghost_out = false;
 var buff_point = 0;
 const buff_threshold = 3;
+var screenWidth = 0;
+var screenHeight = 0;
 //
 export default class App extends React.Component {
   state = {
@@ -73,9 +76,9 @@ export default class App extends React.Component {
     console.debug("Will mount...")
   }
 
-  //reset class variables
-  componentWillUnmount(){
-    console.debug("Component unmounting...");
+  componentDidMount(){
+    screenWidth = Dimensions.get('window').width;
+    screenHeight = Dimensions.get('window').height;
   }
 
   async preloadAssetsAsync() {
@@ -587,15 +590,6 @@ export default class App extends React.Component {
           <FIcon name={'map'} color='#ffffff' size={25} />
       </RkButton>
 
-      <RkButton
-          onStartShouldSetResponder={(evt) => true}
-          onStartShouldSetResponderCapture={(evt) => true}
-          onResponderTerminationRequest={(evt) => false} 
-          onPress={() => {showDash= !showDash}} 
-          style={[{zIndex: 10, position: 'absolute', left: '5%', top: '90%', width: '10%', height: '5%', backgroundColor: Colors.tintColor, borderRadius: 5}]} >
-          <FIcon name={'chevron-up'} color='#ffffff' size={10} />
-      </RkButton>
-
       <Expo.GLView
         onStartShouldSetResponder={(evt) => true}
         onMoveShouldSetResponder={(evt) => true}
@@ -654,42 +648,42 @@ export default class App extends React.Component {
         <Text style={styles.gf_text}>+1</Text>
       </FadeOutView>
 
-      <Modal
-        transparent={true}
-        visible={showDash}
-        animationType={'slide'}
-        onRequestClose={() => {showDash = false;}}>
-
-        <View style={styles.modalContainer}>
-          <RkButton style={{width: '10%', height: '5%', marginLeft: '85%', marginTop: '2%', backgroundColor: Colors.tintColor, borderRadius: 5}}
-                onPress={() => {showDash = false;}}>
-            <FIcon name={'close'} color='white' size={10} />
-          </RkButton>
-          
-          <View style={styles.innerContainer}>
-            <View style={styles.row}>
-              <Text style={{fontSize: 24, color: Colors.tintColor}}>Points: </Text><Text style={styles.gf_text}>30</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={{fontSize: 24, color: Colors.tintColor}}>To destination: </Text><Text style={styles.gf_text}>2.2 miles</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={{fontSize: 24, color: Colors.tintColor}}>Time spent: </Text><Text style={styles.gf_text}>1.2 hours</Text>
-            </View>
-            <View style={styles.row}>
-              <RkButton style={{flex: 1, backgroundColor: Colors.tintColor, borderRadius: 5, marginRight: 5}}
-                  onPress={() => {showDash = false;}}>
-                <Text style={{fontSize: 16, color: Colors.noticeText}}>Request hints</Text>
-              </RkButton>
-              <RkButton style={{flex: 1, backgroundColor: Colors.tintColor, borderRadius: 5}}
-                  onPress={() => {showDash = false;}}>
-                <Text style={{fontSize: 16, color: Colors.noticeText}}>About Game</Text>
-              </RkButton>
-            </View>
-          </View>
+      <ExpandableView style={{position: 'absolute', backgroundColor: Colors.blackMask}}
+        config={{initialWidth: 0, initialHeight: 0, endWidth: screenWidth * 0.8, endHeight: screenHeight * 0.8, anchorX: screenWidth * 0.1, anchorY: screenHeight * 0.2}}
+        expand={showDash}>
         
+        <View style={styles.innerContainer}>
+          <View style={styles.row}>
+            <Text style={{fontSize: 24, color: Colors.tintColor}}>Points: </Text><Text style={styles.gf_text}>30</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={{fontSize: 24, color: Colors.tintColor}}>To destination: </Text><Text style={styles.gf_text}>2.2 miles</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={{fontSize: 24, color: Colors.tintColor}}>Time spent: </Text><Text style={styles.gf_text}>1.2 hours</Text>
+          </View>
+          <View style={styles.row}>
+            <RkButton style={{flex: 1, backgroundColor: Colors.tintColor, borderRadius: 5, marginRight: 5}}
+                onPress={() => {showDash = false;}}>
+              <Text style={{fontSize: 16, color: Colors.noticeText}}>Request hints</Text>
+            </RkButton>
+            <RkButton style={{flex: 1, backgroundColor: Colors.tintColor, borderRadius: 5}}
+                onPress={() => {showDash = false;}}>
+              <Text style={{fontSize: 16, color: Colors.noticeText}}>About Game</Text>
+            </RkButton>
+          </View>
         </View>
-      </Modal>
+      
+      </ExpandableView>
+
+      <RkButton
+          onStartShouldSetResponder={(evt) => true}
+          onStartShouldSetResponderCapture={(evt) => true}
+          onResponderTerminationRequest={(evt) => false} 
+          onPress={() => {showDash= !showDash}} 
+          style={[{zIndex: 50, position: 'absolute', left: '5%', top: '90%', width: '10%', height: '5%', backgroundColor: Colors.tintColor, borderRadius: 5}]} >
+          <FIcon name={showDash ? 'chevron-down' : 'chevron-up'} color='#ffffff' size={10} />
+      </RkButton>
       
       </View>
     ) : <Expo.AppLoading />;
@@ -715,13 +709,6 @@ const styles = StyleSheet.create({
     borderWidth: 5,
     borderRadius: 5,
     fontSize: 24,
-  },
-  modalContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
-    flex: 1,
-    marginTop: 20,
-    marginLeft: 20,
-    marginRight: 20,
   },
   innerContainer: {
     padding: 10,
