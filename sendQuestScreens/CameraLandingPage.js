@@ -5,6 +5,7 @@ import ProfileOverlay from '../components/SendQuest/ProfileOverlay';
 import CameraBase from '../components/SendQuest/CameraBase';
 import FavoritesView from '../components/SendQuest/FavoritesView';
 // import { BlurView } from 'react-native-blur';
+import { BlurView } from 'expo';
 import Colors from '../constants/Colors';
 
 export default class CameraLandingPage extends CameraBase {
@@ -30,7 +31,7 @@ export default class CameraLandingPage extends CameraBase {
       const { navigate } = this.props.navigation;
       //Hao: the key is to pass functions bond to this screen as navigation parameters and call them from subsequent screens
       return [
-          <View key={'black_mask'} style={{position: 'absolute', height: '100%', width: '100%', backgroundColor: Colors.blackMask}}></View>, 
+          <BlurView tint="dark" intensity={100} style={{position: 'absolute', height: '100%', width: '100%'}} />,
           <FavoritesView key={'favorites_view'} style={{position: 'absolute', height: '100%', width: '100%'}}/>,
           <ProfileOverlay key={'p_overlay'}/>,
       ];
