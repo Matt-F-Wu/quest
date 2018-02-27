@@ -103,7 +103,7 @@ export default class ProfileOverlay extends Component {
           </Modal>
 
           <TouchableOpacity style={styles.profileIcon}>
-            <Icon6 style={{top: 5}} name="user" size={profileIconSize} color={Colors.tintColor} onPress={() => this.openModal()} />
+            <Icon6 style={{position:'absolute', top: 5}} name="user" size={profileIconSize} color={Colors.tintColor} onPress={() => this.openModal()} />
           </TouchableOpacity>   
 
         </View>
@@ -119,6 +119,7 @@ const styles = {
 
   container: { 
     height: Layout.headerHeight,
+    position:'absolute',
     width: 57,
     justifyContent: 'flex-end',
     alignItems: 'flex-end',

@@ -6,6 +6,7 @@ import Colors from './constants/Colors';
 import Touchables from './components/Touchables';
 import SwiperNavigation from './navigation/SwiperNavigation';
 
+
 const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/register';
 var isShown = false;
 const notification_h = 100;
