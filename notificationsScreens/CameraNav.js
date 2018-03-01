@@ -7,6 +7,8 @@ import ExpoTHREE from 'expo-three'; // 2.0.2
 import MovableObject from '../api/MovableObject.js';
 import softBodyObject from '../api/softBodyObject.js';
 import HGD from '../api/handGestureDetection';
+import utils from '../api/utils';
+import pixies from './ARUtils/pixies';
 import Colors from '../constants/Colors';
 import Styles from '../constants/Styles';
 import {RkButton} from 'react-native-ui-kitten';
@@ -266,28 +268,6 @@ export default class App extends React.Component {
     this._addARNavObj(scene, 3, coinTexture);
     //console.debug(" msg_shown: " + msg_shown + " animation_opacity: " + this.state.animation_opacity);
 
-    /*
-    Adding the final treasure chest, for testing, shouldn't be this simple
-    */
-    
-    /*
-    //Until Evan figures out what's wrong with loadAsync
-    const ghost = {
-      'ghostfinal.obj': require('../assets/objects/ghostfinal.obj'),
-      'ghostfinal.mtl': require('../assets/objects/ghostfinal.mtl'),
-    };
-
-    const assetProvider = (name) => {
-      return ghost[name];
-    };
-
-    const ghostObj = await ExpoTHREE.loadAsync(
-      [ghost['ghostfinal.obj'], ghost['ghostfinal.mtl']],
-      null,
-      assetProvider,
-    );
-    */
-
     var ghost_texture = await ExpoTHREE.createTextureAsync({
       asset: Asset.fromModule(require('../assets/images/ghost.png')),
     });
@@ -312,6 +292,12 @@ export default class App extends React.Component {
     let uta_geometry = new THREE.SphereGeometry( 0.02, 32, 32 );
     let uta_material = new THREE.MeshBasicMaterial( {color: 0xFFFF00, transparent:true, opacity: 0.60} );
     let utas = [];
+
+    // make the pixies (guide) and add to scene
+    var group = new THREE.Group();
+    pixies.addPixies(group);
+    scene.add(group);
+    //TODO: Deal with the position of Group later
 
     //Create crosshair
     let ch_texture = await ExpoTHREE.createTextureAsync({
@@ -400,6 +386,13 @@ export default class App extends React.Component {
       var camera_position = new THREE.Vector3();
       camera_position.setFromMatrixPosition( camera.matrixWorld );
       var camera_direction = camera.getWorldDirection();
+
+      let pixie_position = this.relativeToCamera(zero_vector, camera_position, camera_direction);
+      group.position.set(pixie_position.x, pixie_position.y, pixie_position.z);
+      let angleToCoin = utils.horizontalAngleBetween(camera_direction, this.state.obj_list[0].position.clone().sub(camera_position));
+      //console.debug("###### angle to coin: " + angleToCoin);
+      //set arrow to point to left when condition is true
+      pixies.alignPixies(group, camera_position, angleToCoin < 0 || angleToCoin > Math.PI);
       //x direction is pointing right, y axis is pointing upword
       //cube.rotation.x += 0.01;
       //cube.rotation.x = Math.PI / 5.0 * 2.0;
@@ -550,19 +543,6 @@ export default class App extends React.Component {
       renderer.render(scene, camera);
       gl.endFrameEXP();
 
-      //Finger detection, run every 10 drawing cycles
-      /*
-      if(cycle_idx === 0){
-        
-        let pixels = new Uint8Array(width * height * 4);
-        console.debug(pixels[0] + " " + pixels[1] + " " + pixels[2] + " " + pixels[3]);
-        console.debug(width + " " + height);
-        gl.readPixels(0, 0, width, height, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, pixels);
-        //contrusct an ImageData object from pixels and analyze
-        //TODO: somehow the readPixels return all 0 values, interesting
-        HGD.frameAnalyzer(width, height, HGD.downSampler(pixels, width, height, 10, 20));
-        
-      }*/
     }
     animate();   
   }
