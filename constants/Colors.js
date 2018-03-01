@@ -1,7 +1,8 @@
 // const tintColor = '#FF8C00';
-const tintColor = '#FFC700';   // gold
+// const tintColor = '#FFC700';   // gold
 // const tintColor = '#ffbf00';    // yellow
-// const tintColor = '';
+// const tintColor = '#151D51'; 
+const tintColor = '#46B9BF';
 
 export default {
   tabIconDefault: '#ccc',
@@ -21,7 +22,7 @@ export default {
   textBGBlur: 'rgba(0, 0, 0, 0.6)',
 
   tintColor,
-  blackMask: 'rgba(0, 0, 0, 0.7)',
+  blackMask: 'rgba(0, 0, 0, 0.8)',
   accentColor: 'grey',
   secondaryAccentColor: 'grey',
 
@@ -29,5 +30,6 @@ export default {
   // backgroundColor: '#0C0709',   // Dark dark grey
   // backgroundColor: '#233248',    // Dark blue 
   // backgroundColor: '#1F1A27',   // Dark purple
-  backgroundColor: '#120F15',   // Dark dark purple
+  // backgroundColor: '#120F15',   // Dark dark purple
+  backgroundColor: '#FDFFF1',
 };
