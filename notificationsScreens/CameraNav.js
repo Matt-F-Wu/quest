@@ -4,11 +4,12 @@ import React from 'react';
 const THREE = require('three');
 global.THREE = THREE;
 import ExpoTHREE from 'expo-three'; // 2.0.2
-import MovableObject from '../api/MovableObject.js';
+import MovableObject from './ARUtils/MovableObject.js';
 import softBodyObject from '../api/softBodyObject.js';
 import HGD from '../api/handGestureDetection';
 import utils from '../api/utils';
-import pixies from './ARUtils/pixies';
+import Pixies from './ARUtils/Pixies';
+import Claws from './ARUtils/Claws';
 import Colors from '../constants/Colors';
 import Styles from '../constants/Styles';
 import {RkButton} from 'react-native-ui-kitten';
@@ -35,6 +36,7 @@ var ray_casted = false;
 var scene;
 var showMap = false;
 var showDash = false;
+var showPixies = true;
 const analysis_cycle = 100;
 const zero_vector = new THREE.Vector3(0, 0, 0);
 // the user has to shoot 5 light balls to fire the blue flame, to repel the ghost
@@ -88,7 +90,8 @@ export default class App extends React.Component {
       require('../assets/images/coin.png'),
       require('../assets/images/crosshair.png'),
       require('../assets/images/ghost.png'),
-      require('../assets/textures/crate/crate.gif'),
+      require('../assets/images/quest-present-side.png'),
+      require('../assets/images/quest-present-top-bottom.png'),
       require('../assets/images/blueFlame.gif'),
       require('../assets/images/burst.gif'),
       require('../assets/images/ghost_entrance.gif'),
@@ -275,12 +278,19 @@ export default class App extends React.Component {
     var ghost = new softBodyObject();
     ghost.init(ghost_texture);
 
-    var b_texture = await ExpoTHREE.createTextureAsync({
-      asset: Asset.fromModule(require('../assets/textures/crate/crate.gif')),
+    var b_t_texture = await ExpoTHREE.createTextureAsync({
+      asset: Asset.fromModule(require('../assets/images/quest-present-top-bottom.png')),
     });
+    var b_s_texture = await ExpoTHREE.createTextureAsync({
+      asset: Asset.fromModule(require('../assets/images/quest-present-side.png')),
+    });
+    
     var b_geometry = new THREE.BoxBufferGeometry( 200, 200, 200 );
-    var b_material = new THREE.MeshBasicMaterial( { map: b_texture } );
-    const chestObj = new THREE.Mesh( b_geometry, b_material );
+    var b_t_material = new THREE.MeshBasicMaterial( { map: b_t_texture } );
+    var b_s_material = new THREE.MeshBasicMaterial( { map: b_s_texture } );
+    var b_materials = [b_s_material, b_s_material, b_t_material, b_t_material, b_s_material, b_s_material];
+    
+    const chestObj = new THREE.Mesh( b_geometry,  b_materials);
 
     const { navigate } = self.props.navigation;
 
@@ -295,7 +305,7 @@ export default class App extends React.Component {
 
     // make the pixies (guide) and add to scene
     var group = new THREE.Group();
-    pixies.addPixies(group);
+    Pixies.addPixies(group);
     scene.add(group);
     //TODO: Deal with the position of Group later
 
@@ -377,7 +387,8 @@ export default class App extends React.Component {
     utas.push(ghost_uta);
 
     var cycle_idx = 0;
-
+    //let dummyobj = Claws.createClaw();
+    //scene.add(dummyobj);
     let animate = () => {
       requestAnimationFrame(animate);
 
@@ -387,12 +398,23 @@ export default class App extends React.Component {
       camera_position.setFromMatrixPosition( camera.matrixWorld );
       var camera_direction = camera.getWorldDirection();
 
-      let pixie_position = this.relativeToCamera(zero_vector, camera_position, camera_direction);
-      group.position.set(pixie_position.x, pixie_position.y, pixie_position.z);
-      let angleToCoin = utils.horizontalAngleBetween(camera_direction, this.state.obj_list[0].position.clone().sub(camera_position));
-      //console.debug("###### angle to coin: " + angleToCoin);
-      //set arrow to point to left when condition is true
-      pixies.alignPixies(group, camera_position, angleToCoin < 0 || angleToCoin > Math.PI);
+      if(showPixies){
+        let pixie_position = this.relativeToCamera(zero_vector, camera_position, camera_direction);
+        
+        //dummyobj.position.set(pixie_position.x, pixie_position.y, pixie_position.z);
+        
+        group.position.set(pixie_position.x, pixie_position.y, pixie_position.z);
+        let angleToCoin = utils.horizontalAngleBetween(camera_direction, this.state.obj_list[0].position.clone().sub(camera_position));
+        if(Math.abs(angleToCoin) < Math.PI/9.0){
+          /*If the user is less than 20 degrees away from the first coin
+            Remove the pixies/arrow
+          */
+          scene.remove(group);
+          showPixies = false;
+        }
+        //set arrow to point to left when condition is true
+        Pixies.alignPixies(group, camera_position, angleToCoin < 0 || angleToCoin > Math.PI);
+      }
       //x direction is pointing right, y axis is pointing upword
       //cube.rotation.x += 0.01;
       //cube.rotation.x = Math.PI / 5.0 * 2.0;
@@ -508,7 +530,13 @@ export default class App extends React.Component {
             distance = intersects[0].distance;
           }
 
-          let uta_obj = new THREE.Mesh( uta_geometry, uta_material );
+          let uta_obj;
+          if(this.state.obj_list.length > 0){ 
+            uta_obj = new THREE.Mesh( uta_geometry, uta_material );
+          }else{
+            //Final box/gift is showing
+            uta_obj = Claws.createClaw();
+          }
           let tappedVec = new THREE.Vector3(point_of_touch.x, point_of_touch.y, 0);
           camera.localToWorld(tappedVec);
           let origin = this.relativeToCamera(zero_vector, camera_position, camera_direction);
@@ -520,6 +548,17 @@ export default class App extends React.Component {
               // remove uta first
               scene.remove(s.obj);
               if (intersects.length >= 1){
+                //Am I hitting th final gift?
+                if(intersects[0].object === chestObj){
+                  exiting = true;
+                  msg_shown = false;
+                  scene.remove(chestObj);
+                  console.debug("Exiting this view! msg_shown: " + msg_shown);
+                  animate = () => {};
+                  navigate('ViewQuest');
+                  return;
+                }
+
                 for (let j = 0; j < this.state.obj_list.length; j++){
                   if(this.state.obj_list[j] === intersects[0].object){
                     this.state.obj_list.splice(j, 1);
