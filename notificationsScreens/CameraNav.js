@@ -571,8 +571,8 @@ export default class App extends React.Component {
             });
 
           uta.born(uta);
-
-          uta.live = MovableObject.moveObject(origin, direction, distance, distance < 1.0 ? 0.02 : 0.2);
+          // If throwing the claw, face camera
+          uta.live = MovableObject.moveObject(origin, direction, distance, distance < 1.0 ? 0.02 : 0.2, this.state.obj_list.length == 0);
 
           utas.push(uta);
         }

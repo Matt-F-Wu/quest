@@ -38,8 +38,13 @@ function addArrows(group, anchor, angle, size=0.02){
 
 function alignArrows(group, angle){
 	let numArrows = group.children.length;
+	//default to the right
+	let direction = 1;
+	if(angle < 0 || angle > Math.PI){
+		direction = -1;
+	}
 	for(i = 0; i < numArrows; i++){
-		group.children[i].position.set(Math.sin(i*angle/numArrows), 0, -Math.cos(i*angle/numArrows));
+		group.children[i].position.set(Math.sin(i*angle/numArrows)*direction, 0, -Math.cos(i*angle/numArrows));
 		group.children[i].lookAt(new THREE.Vector3(0, 0, 0));
 	}
 }

@@ -17,7 +17,7 @@ export default class MovableObject{
         This is a function factory, since translating in space is common
         A move object animation, from point "origin", in "direction", travel "distance"
     */
-    static moveObject(origin, direction, distance, step_size){
+    static moveObject(origin, direction, distance, step_size, faceCamera=false){
         // start at the origin, going to end_point
         var steps = distance / step_size;
         //console.debug("Origin: " + origin.x + " " + origin.y + " " + origin.z);
@@ -26,6 +26,9 @@ export default class MovableObject{
               s.obj.position.x += (direction.x * step_size);
               s.obj.position.y += (direction.y * step_size);
               s.obj.position.z += (direction.z * step_size);
+              if(faceCamera){
+                s.obj.lookAt(origin);
+              }
               //console.debug("steps left: " + steps + " x: " + s.obj.position.x + " y: " + s.obj.position.y + " z: " + s.obj.position.z);
               steps --;
               if (steps <= 0){
@@ -70,7 +73,7 @@ export default class MovableObject{
     static oscillate(offset = {x: 0, y: 0, z: 0}, radius = 0.02){
         return function(s, cp, cd){
             var time = Date.now();
-            
+            //TODO:            
 
         }
     }
