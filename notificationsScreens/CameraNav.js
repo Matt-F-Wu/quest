@@ -4,9 +4,12 @@ import React from 'react';
 const THREE = require('three');
 global.THREE = THREE;
 import ExpoTHREE from 'expo-three'; // 2.0.2
-import MovableObject from '../api/MovableObject.js';
+import MovableObject from './ARUtils/MovableObject.js';
 import softBodyObject from '../api/softBodyObject.js';
 import HGD from '../api/handGestureDetection';
+import utils from '../api/utils';
+import Arrows from './ARUtils/Arrows';
+import Claws from './ARUtils/Claws';
 import Colors from '../constants/Colors';
 import Styles from '../constants/Styles';
 import {RkButton} from 'react-native-ui-kitten';
@@ -33,6 +36,7 @@ var ray_casted = false;
 var scene;
 var showMap = false;
 var showDash = false;
+var showArrows = true;
 const analysis_cycle = 100;
 const zero_vector = new THREE.Vector3(0, 0, 0);
 // the user has to shoot 5 light balls to fire the blue flame, to repel the ghost
@@ -86,7 +90,8 @@ export default class App extends React.Component {
       require('../assets/images/coin.png'),
       require('../assets/images/crosshair.png'),
       require('../assets/images/ghost.png'),
-      require('../assets/textures/crate/crate.gif'),
+      require('../assets/images/quest-present-side.png'),
+      require('../assets/images/quest-present-top-bottom.png'),
       require('../assets/images/blueFlame.gif'),
       require('../assets/images/burst.gif'),
       require('../assets/images/ghost_entrance.gif'),
@@ -266,28 +271,6 @@ export default class App extends React.Component {
     this._addARNavObj(scene, 3, coinTexture);
     //console.debug(" msg_shown: " + msg_shown + " animation_opacity: " + this.state.animation_opacity);
 
-    /*
-    Adding the final treasure chest, for testing, shouldn't be this simple
-    */
-    
-    /*
-    //Until Evan figures out what's wrong with loadAsync
-    const ghost = {
-      'ghostfinal.obj': require('../assets/objects/ghostfinal.obj'),
-      'ghostfinal.mtl': require('../assets/objects/ghostfinal.mtl'),
-    };
-
-    const assetProvider = (name) => {
-      return ghost[name];
-    };
-
-    const ghostObj = await ExpoTHREE.loadAsync(
-      [ghost['ghostfinal.obj'], ghost['ghostfinal.mtl']],
-      null,
-      assetProvider,
-    );
-    */
-
     var ghost_texture = await ExpoTHREE.createTextureAsync({
       asset: Asset.fromModule(require('../assets/images/ghost.png')),
     });
@@ -295,12 +278,19 @@ export default class App extends React.Component {
     var ghost = new softBodyObject();
     ghost.init(ghost_texture);
 
-    var b_texture = await ExpoTHREE.createTextureAsync({
-      asset: Asset.fromModule(require('../assets/textures/crate/crate.gif')),
+    var b_t_texture = await ExpoTHREE.createTextureAsync({
+      asset: Asset.fromModule(require('../assets/images/quest-present-top-bottom.png')),
     });
+    var b_s_texture = await ExpoTHREE.createTextureAsync({
+      asset: Asset.fromModule(require('../assets/images/quest-present-side.png')),
+    });
+    
     var b_geometry = new THREE.BoxBufferGeometry( 200, 200, 200 );
-    var b_material = new THREE.MeshBasicMaterial( { map: b_texture } );
-    const chestObj = new THREE.Mesh( b_geometry, b_material );
+    var b_t_material = new THREE.MeshBasicMaterial( { map: b_t_texture } );
+    var b_s_material = new THREE.MeshBasicMaterial( { map: b_s_texture } );
+    var b_materials = [b_s_material, b_s_material, b_t_material, b_t_material, b_s_material, b_s_material];
+    
+    const chestObj = new THREE.Mesh( b_geometry,  b_materials);
 
     const { navigate } = self.props.navigation;
 
@@ -312,6 +302,11 @@ export default class App extends React.Component {
     let uta_geometry = new THREE.SphereGeometry( 0.02, 32, 32 );
     let uta_material = new THREE.MeshBasicMaterial( {color: 0xFFFF00, transparent:true, opacity: 0.60} );
     let utas = [];
+
+    // make the pixies (guide) and add to scene
+    var group = new THREE.Group();
+    scene.add(group);
+    //TODO: Deal with the position of Group later
 
     //Create crosshair
     let ch_texture = await ExpoTHREE.createTextureAsync({
@@ -391,7 +386,8 @@ export default class App extends React.Component {
     utas.push(ghost_uta);
 
     var cycle_idx = 0;
-
+    //let dummyobj = Claws.createClaw();
+    //scene.add(dummyobj);
     let animate = () => {
       requestAnimationFrame(animate);
 
@@ -400,6 +396,24 @@ export default class App extends React.Component {
       var camera_position = new THREE.Vector3();
       camera_position.setFromMatrixPosition( camera.matrixWorld );
       var camera_direction = camera.getWorldDirection();
+      
+      let angleToCoin;
+      if(showArrows){
+        angleToCoin = utils.horizontalAngleBetween(camera_direction, this.state.obj_list[0].position.clone().sub(camera_position));
+        group.position.copy(camera_position);
+        //set arrow to point to left when condition is true
+        if(!group.added) {
+          Arrows.addArrows(group, camera_position, angleToCoin);
+        }
+        if(Math.abs(angleToCoin) < Math.PI/9.0){
+          /*If the user is less than 20 degrees away from the first coin
+            Remove the pixies/arrow
+          */
+          scene.remove(group);
+          showArrows = false;
+        }
+      }
+      
       //x direction is pointing right, y axis is pointing upword
       //cube.rotation.x += 0.01;
       //cube.rotation.x = Math.PI / 5.0 * 2.0;
@@ -515,7 +529,13 @@ export default class App extends React.Component {
             distance = intersects[0].distance;
           }
 
-          let uta_obj = new THREE.Mesh( uta_geometry, uta_material );
+          let uta_obj;
+          if(this.state.obj_list.length > 0){ 
+            uta_obj = new THREE.Mesh( uta_geometry, uta_material );
+          }else{
+            //Final box/gift is showing
+            uta_obj = Claws.createClaw();
+          }
           let tappedVec = new THREE.Vector3(point_of_touch.x, point_of_touch.y, 0);
           camera.localToWorld(tappedVec);
           let origin = this.relativeToCamera(zero_vector, camera_position, camera_direction);
@@ -527,6 +547,17 @@ export default class App extends React.Component {
               // remove uta first
               scene.remove(s.obj);
               if (intersects.length >= 1){
+                //Am I hitting th final gift?
+                if(intersects[0].object === chestObj){
+                  exiting = true;
+                  msg_shown = false;
+                  scene.remove(chestObj);
+                  console.debug("Exiting this view! msg_shown: " + msg_shown);
+                  animate = () => {};
+                  navigate('ViewQuest');
+                  return;
+                }
+
                 for (let j = 0; j < this.state.obj_list.length; j++){
                   if(this.state.obj_list[j] === intersects[0].object){
                     this.state.obj_list.splice(j, 1);
@@ -540,8 +571,8 @@ export default class App extends React.Component {
             });
 
           uta.born(uta);
-
-          uta.live = MovableObject.moveObject(origin, direction, distance, distance < 1.0 ? 0.02 : 0.2);
+          // If throwing the claw, face camera
+          uta.live = MovableObject.moveObject(origin, direction, distance, distance < 1.0 ? 0.02 : 0.2, this.state.obj_list.length == 0);
 
           utas.push(uta);
         }
@@ -550,19 +581,6 @@ export default class App extends React.Component {
       renderer.render(scene, camera);
       gl.endFrameEXP();
 
-      //Finger detection, run every 10 drawing cycles
-      /*
-      if(cycle_idx === 0){
-        
-        let pixels = new Uint8Array(width * height * 4);
-        console.debug(pixels[0] + " " + pixels[1] + " " + pixels[2] + " " + pixels[3]);
-        console.debug(width + " " + height);
-        gl.readPixels(0, 0, width, height, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, pixels);
-        //contrusct an ImageData object from pixels and analyze
-        //TODO: somehow the readPixels return all 0 values, interesting
-        HGD.frameAnalyzer(width, height, HGD.downSampler(pixels, width, height, 10, 20));
-        
-      }*/
     }
     animate();   
   }

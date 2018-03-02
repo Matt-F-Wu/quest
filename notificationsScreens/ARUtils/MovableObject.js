@@ -17,7 +17,7 @@ export default class MovableObject{
         This is a function factory, since translating in space is common
         A move object animation, from point "origin", in "direction", travel "distance"
     */
-    static moveObject(origin, direction, distance, step_size){
+    static moveObject(origin, direction, distance, step_size, faceCamera=false){
         // start at the origin, going to end_point
         var steps = distance / step_size;
         //console.debug("Origin: " + origin.x + " " + origin.y + " " + origin.z);
@@ -26,6 +26,9 @@ export default class MovableObject{
               s.obj.position.x += (direction.x * step_size);
               s.obj.position.y += (direction.y * step_size);
               s.obj.position.z += (direction.z * step_size);
+              if(faceCamera){
+                s.obj.lookAt(origin);
+              }
               //console.debug("steps left: " + steps + " x: " + s.obj.position.x + " y: " + s.obj.position.y + " z: " + s.obj.position.z);
               steps --;
               if (steps <= 0){
@@ -38,26 +41,25 @@ export default class MovableObject{
         }
     }
 
-    static circleUser(){
-        var radius = 2.5;
+    static circleUser(radius = 2.5, interval = 2000, normalizer = 12){
         return function(s, cp, cd){
             //console.debug("Got here");
             var time = Date.now();
-            let nx = s.obj.position.x + Math.cos(time / 2000) / 12 * radius;
+            let nx = s.obj.position.x + Math.cos(time / interval) / normalizer * radius;
             if(nx < cp.x - radius || nx > cp.x + radius){
                 //stay put
                 nx = s.obj.position.x;
             }
             s.obj.position.x = nx;
 
-            let ny = s.obj.position.y + Math.sin(time / 2000) / 12 * radius;
+            let ny = s.obj.position.y + Math.sin(time / interval) / normalizer * radius;
             if(ny < cp.y - radius || ny > cp.y + radius){
                 //stay put
                 ny = s.obj.position.y;
             }
             s.obj.position.y = ny;
 
-            let nz = s.obj.position.z + Math.sin(time / 2000) / 12 * radius;
+            let nz = s.obj.position.z + Math.sin(time / interval) / normalizer * radius;
             if(nz < cp.z - radius || nz > cp.z + radius){
                 //stay put
                 nz = s.obj.position.z;
@@ -65,6 +67,14 @@ export default class MovableObject{
             s.obj.position.z = nz;
             s.obj.lookAt(cp);
             return true;
+        }
+    }
+
+    static oscillate(offset = {x: 0, y: 0, z: 0}, radius = 0.02){
+        return function(s, cp, cd){
+            var time = Date.now();
+            //TODO:            
+
         }
     }
 }        
