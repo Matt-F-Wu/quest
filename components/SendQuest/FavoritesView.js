@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Dimensions } from 'react-native';
 
 // Colors, Fonts
 import Colors from '../../constants/Colors';
@@ -8,10 +8,25 @@ import Colors from '../../constants/Colors';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 
+// TODO
+// Add navigation
+// Also look at CameraLandingPage for FavoriteView props
+
+const sendButtonSize = 70;
+const favSize = 80;
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
+const radius = Dimensions.get('window').width / 3;
+
+
 data = [ 
 	{
     	name: 'Lily', 
 	    image: require('../../assets/images/profileImages/woman4.png'),
+  	},
+  	{
+	    name: 'Austin',
+	    image: require('../../assets/images/profileImages/man8.png'),
   	},
   	{
 	    name: 'Nicole', 
@@ -22,8 +37,8 @@ data = [
 	    image: require('../../assets/images/profileImages/woman6.png'),
   	},
   	{
-	    name: 'Austin',
-	    image: require('../../assets/images/profileImages/man8.png'),
+    	name: 'Jon', 
+    	image: require('../../assets/images/profileImages/man7.png'),
   	},
     {
 	    name: 'Grace', 
@@ -32,203 +47,72 @@ data = [
 ];
 
 
+/*
+ * Returns a view that has a center button surrounded by the favorites equally spaced on a circular boundary
+ */
+makeFavoritesView = (navigate) => {
+	var favorites = [];
 
-renderZeroFavoriteView = () => {
-	return (
-		<View>
-			<TouchableOpacity style={styles.addButtonContainerStyle}>
-				<Icon2 name="ios-add-circle-outline" size={80} color={Colors.tintColor}/>
-			</TouchableOpacity>
-			<TouchableOpacity style={styles.sendButtonContainerStyle}>
-				<Icon name="send-o" size={70} color={Colors.tintColor}/>
-			</TouchableOpacity>
-		</View>
+	let n = data.length;						// Number of favorites to render
+	let theta = 360 / n * Math.PI / 180;		// Angle between each favorite circle
+
+	let sendButtonX = screenWidth / 2;
+	let sendButtonY = screenHeight / 2;
+
+	let sendButtonLeft = sendButtonX - (sendButtonSize / 2);
+	let sendButtonTop = sendButtonY - (sendButtonSize / 2);
+
+	// Render send Quest button
+	favorites.push(
+		<TouchableOpacity style={[styles.sendButtonContainerStyle, {top: sendButtonTop, left: sendButtonLeft}]}>
+			<Icon name="send-o" size={sendButtonSize} color={Colors.tintColor} />
+		</TouchableOpacity>
 	)
-}
 
-renderOneFavoriteView = () => {
-	return (
-		<View>
-			<TouchableOpacity style={[styles.circleContainer, {position:'relative'}]}> 
-	 			<Image resizeMode='cover' 
-				   	   source={data[0].image}
+	// Cartesian coordinates of first favorite (center of screen is origin)
+	var x1 = -radius / Math.sqrt(2);
+	var y1 = radius / Math.sqrt(2);
+
+	// Render favorites in a circle around center
+	for (let i = 0; i < n; i++) {
+
+		// Cartesian coordinates of next favorite (center of screen is origin)
+		let x2 = (x1 * Math.cos(theta)) + (y1 * Math.sin(theta));
+		let y2 = -(x1 * Math.sin(theta)) + (y1 * Math.cos(theta));
+
+		// Screen coordinates of next favorite
+		let currTop  = sendButtonY - y2 - (favSize / 2);
+		let currLeft = sendButtonX + x2 - (favSize / 2);
+
+		// Render next favorite
+		favorites.push(
+			<TouchableOpacity style={[styles.circleContainer, {top: currTop, left: currLeft}]}>
+				 			<Image resizeMode='cover' 
+				   	   source={data[i].image}
 	      		       style={[styles.profileImg]} />
-	        </TouchableOpacity>
-			<TouchableOpacity style={styles.sendButtonContainerStyle}>
-				<Icon name="send-o" size={70} color={Colors.tintColor}/>
 			</TouchableOpacity>
-			<TouchableOpacity style={styles.addButtonContainerStyle}>
-				<Icon2 name="ios-add-circle-outline" size={80} color={Colors.tintColor}/>
-			</TouchableOpacity>
+		)
 
-		</View>
-	)
-}
-
-renderTwoFavoriteView = () => {
-	return (
-		<View style={styles.favoritesContainer}>
-			<TouchableOpacity style={styles.sendButtonContainerStyle}>
-				<Icon name="send-o" size={70} color={Colors.tintColor}/>
-			</TouchableOpacity>
-			<TouchableOpacity style={styles.addButtonContainerStyle}>
-				<Icon2 name="ios-add-circle-outline" size={80} color={Colors.tintColor}/>
-			</TouchableOpacity>
-
-			<TouchableOpacity style={[styles.circleContainer, {top: 250, left: 30}]}> 
-				<Image resizeMode='cover' 
-			   		   source={data[0].image}
-	  		   		   style={[styles.profileImg]} />
-  		   	</TouchableOpacity>
-  		   	<TouchableOpacity style={[styles.circleContainer, {top: 250, right: 30}]}> 
-	  		   	<Image resizeMode='cover' 
-			   		   source={data[1].image}
-	  		   		   style={[styles.profileImg]} />
-  		   	</TouchableOpacity>
-		</View>
-	)
-}
-
-renderThreeFavoriteView = () => {
-	return (
-		<View style={styles.favoritesContainer}>
-			<TouchableOpacity style={styles.sendButtonContainerStyle}>
-				<Icon name="send-o" size={70} color={Colors.tintColor}/>
-			</TouchableOpacity>
-			<TouchableOpacity style={styles.addButtonContainerStyle}>
-				<Icon2 name="ios-add-circle-outline" size={80} color={Colors.tintColor}/>
-			</TouchableOpacity>
-
-			<TouchableOpacity style={[styles.circleContainer, {top: 250, left: 30}]}> 
-				<Image resizeMode='cover' 
-		   		   	   source={data[0].image}
-  		   		   	   style={[styles.profileImg]} />
-  		    </TouchableOpacity>
-  		    <TouchableOpacity style={[styles.circleContainer, {top: 140, alignSelf: 'center'}]}> 
-	  		   	<Image resizeMode='cover' 
-			   		   source={data[1].image}
-	  		   		   style={[styles.profileImg]} />
-  		   	</TouchableOpacity>
-  		   	<TouchableOpacity style={[styles.circleContainer, {top: 250, right: 30}]}> 
-	  		   	<Image resizeMode='cover' 
-			   		   source={data[2].image}
-	  		   		   style={[styles.profileImg]} />
-  		   	</TouchableOpacity>
-		</View>
-	)
-}
-
-renderFourFavoriteView = () => {
-	return (
-		<View style={styles.favoritesContainer}>
-			<TouchableOpacity style={styles.sendButtonContainerStyle}>
-				<Icon name="send-o" size={70} color={Colors.tintColor}/>
-			</TouchableOpacity>
-			<TouchableOpacity style={[styles.addButtonContainerStyle, {position: 'absolute', top: 380, right: 30}]}>
-				<Icon2 name="ios-add-circle" size={80} color={Colors.tintColor}/>
-			</TouchableOpacity>
-
-			<TouchableOpacity style={[styles.circleContainer, {top: 380, left: 30}]}> 
-				<Image resizeMode='cover' 
-			   		   source={data[0].image}
-	  		   		   style={[styles.profileImg]} />
-  		   	</TouchableOpacity>
-  		   	<TouchableOpacity style={[styles.circleContainer, {top: 230, left: 30}]}> 
-	  		   	<Image resizeMode='cover' 
-			   		   source={data[1].image}
-	  		   		   style={[styles.profileImg]} />
-  		   	</TouchableOpacity>
-  		   	<TouchableOpacity style={[styles.circleContainer, {top: 120, alignSelf: 'center'}]}> 
-	  		   	<Image resizeMode='cover' 
-			   		   source={data[2].image}
-	  		   		   style={[styles.profileImg]} />
-  		   	</TouchableOpacity>
-  		   	<TouchableOpacity style={[styles.circleContainer, {top: 230, right: 30}]}> 
-	  		   	<Image resizeMode='cover' 
-			   		   source={data[3].image}
-	  		   		   style={[styles.profileImg]} />
-			</TouchableOpacity>
-		</View>	
-	)
-}
-
-renderFiveFavoriteView = () => {
-	return (
-		<View style={styles.favoritesContainer}>
-			<TouchableOpacity style={styles.sendButtonContainerStyle}>
-				<Icon name="send-o" size={70} color={Colors.tintColor}/>
-			</TouchableOpacity>
-
-			<TouchableOpacity style={[styles.circleContainer, {top: 380, left: 30}]}> 
-				<Image resizeMode='cover' 
-			   		   source={data[0].image}
-	  		   		   style={[styles.profileImg]} />
-  		   	</TouchableOpacity>
-  		   	<TouchableOpacity style={[styles.circleContainer, {top: 230, left: 30}]}> 
-	  		   	<Image resizeMode='cover' 
-			   		   source={data[1].image}
-	  		   		   style={[styles.profileImg]} />
-  		   	</TouchableOpacity>
-  		   	<TouchableOpacity style={[styles.circleContainer, {top: 120, alignSelf: 'center'}]}>  
-	  		   	<Image resizeMode='cover' 
-			   		   source={data[2].image}
-	  		   		   style={[styles.profileImg]} />
-  		   	</TouchableOpacity>
-  		   	<TouchableOpacity style={[styles.circleContainer, {top: 230, right: 30}]}> 
-	  		   	<Image resizeMode='cover' 
-			   		   source={data[3].image}
-	  		   		   style={[styles.profileImg]} />
-  		   	</TouchableOpacity> 
-  		   	<TouchableOpacity style={[styles.circleContainer, {top: 380, right: 30}]}>
-	  		   	<Image resizeMode='cover' 
-			   		   source={data[4].image}
-	  		   		   style={[styles.profileImg]} />
-  		   	</TouchableOpacity>
-		</View>	
-	)
-}
-
-
-
-
-
-makeFavoritesView = () => {
-	let favorites = null;
-	if (data.length == 0) {
-		favorites = renderZeroFavoriteView();
-	} else if (data.length == 1) {
-		favorites = renderOneFavoriteView();
-	} else if (data.length == 2) {
-		favorites = renderTwoFavoriteView();
-	} else if (data.length == 3) {
-		favorites = renderThreeFavoriteView();
-	} else if (data.length == 4) {
-		favorites = renderFourFavoriteView();
-	} else if (data.length == 5) {
-		favorites = renderFiveFavoriteView();
+		x1 = x2;
+		y1 = y2;
 	}
-	return (
-		favorites
-	)
+	return favorites
 }
-
 
 
 export default class FavoritesView extends React.Component {
 
-	render() {
 
-		favorites = makeFavoritesView();
+
+	render() {
+		let favorites = makeFavoritesView(this.props.navigate);
 
 		return (
-			<View style={{width:'100%', height:'100%', alignItems:'center', justifyContent:'center'}}>
+			<View style={{width:'100%', height:'100%', justifyContent: 'center', alignItems: 'center'}}>
 				{favorites}
 			</View>
 		);
 	}
-
-
-
 }
 
 
@@ -236,38 +120,28 @@ const styles = StyleSheet.create({
 	favoritesContainer: {
 		height: '100%', 
 		width: '100%',
-		alignItems: 'center',
-		justifyContent: 'center',
 	},
 
 	sendButtonContainerStyle: {
 		backgroundColor: 'transparent',
-		paddingVertical: 40,
-		paddingHorizontal: 40,
-	},
-
-	addButtonContainerStyle: {
-		backgroundColor: 'transparent',
-		alignItems: 'center',
-		justifyContent: 'center',
+		position: 'absolute',
 	},
 
 	circleContainer: {
 		position: 'absolute',
-		width: 80,
-		height: 80,
-		alignSelf: 'center',
+		width: favSize,
+		height: favSize,
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderRadius: 80/2,
+		borderRadius: favSize / 2,
 		borderColor: Colors.tintColor,
 		borderWidth: 2,
 	},
 
 	profileImg: {
-		width: 70,
-		height: 70,
-		borderRadius: 70/2,
+		width: favSize - 10,
+		height: favSize - 10,
+		borderRadius: (favSize - 10) / 2,
 		backgroundColor: 'transparent',
 	},
 });
