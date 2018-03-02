@@ -8,7 +8,7 @@ import MovableObject from './ARUtils/MovableObject.js';
 import softBodyObject from '../api/softBodyObject.js';
 import HGD from '../api/handGestureDetection';
 import utils from '../api/utils';
-import Pixies from './ARUtils/Pixies';
+import Arrows from './ARUtils/Arrows';
 import Claws from './ARUtils/Claws';
 import Colors from '../constants/Colors';
 import Styles from '../constants/Styles';
@@ -36,7 +36,7 @@ var ray_casted = false;
 var scene;
 var showMap = false;
 var showDash = false;
-var showPixies = true;
+var showArrows = true;
 const analysis_cycle = 100;
 const zero_vector = new THREE.Vector3(0, 0, 0);
 // the user has to shoot 5 light balls to fire the blue flame, to repel the ghost
@@ -305,7 +305,6 @@ export default class App extends React.Component {
 
     // make the pixies (guide) and add to scene
     var group = new THREE.Group();
-    Pixies.addPixies(group);
     scene.add(group);
     //TODO: Deal with the position of Group later
 
@@ -397,24 +396,24 @@ export default class App extends React.Component {
       var camera_position = new THREE.Vector3();
       camera_position.setFromMatrixPosition( camera.matrixWorld );
       var camera_direction = camera.getWorldDirection();
-
-      if(showPixies){
-        let pixie_position = this.relativeToCamera(zero_vector, camera_position, camera_direction);
-        
-        //dummyobj.position.set(pixie_position.x, pixie_position.y, pixie_position.z);
-        
-        group.position.set(pixie_position.x, pixie_position.y, pixie_position.z);
-        let angleToCoin = utils.horizontalAngleBetween(camera_direction, this.state.obj_list[0].position.clone().sub(camera_position));
+      
+      let angleToCoin;
+      if(showArrows){
+        angleToCoin = utils.horizontalAngleBetween(camera_direction, this.state.obj_list[0].position.clone().sub(camera_position));
+        group.position.copy(camera_position);
+        //set arrow to point to left when condition is true
+        if(!group.added) {
+          Arrows.addArrows(group, camera_position, angleToCoin);
+        }
         if(Math.abs(angleToCoin) < Math.PI/9.0){
           /*If the user is less than 20 degrees away from the first coin
             Remove the pixies/arrow
           */
           scene.remove(group);
-          showPixies = false;
+          showArrows = false;
         }
-        //set arrow to point to left when condition is true
-        Pixies.alignPixies(group, camera_position, angleToCoin < 0 || angleToCoin > Math.PI);
       }
+      
       //x direction is pointing right, y axis is pointing upword
       //cube.rotation.x += 0.01;
       //cube.rotation.x = Math.PI / 5.0 * 2.0;
