@@ -27,16 +27,18 @@ export default class CameraLandingPage extends CameraBase {
     }
 
     makeChildren(){
-      const { navigate } = this.props.navigation;
+      var navigation = this.props.navigation;
       //Hao: the key is to pass functions bond to this screen as navigation parameters and call them from subsequent screens
       return [
           <BlurView tint="dark" intensity={100} style={{position: 'absolute', height: '100%', width: '100%'}} />,
-          <FavoritesView navigation={navigate} key={'favorites_view'} style={{position: 'absolute', height: '100%', width: '100%'}}/>,
-          <ProfileOverlay key={'p_overlay'}/>,
+          <FavoritesView navigation={navigation} key={'favorites_view'} style={{position: 'absolute', height: '100%', width: '100%'}} 
+                         onPress={() => {this.setState({mountCam: false})}} remount={this.remount} main_remount={this.remount}/>,
+          <ProfileOverlay navigation={navigation} key={'p_overlay'}/>,
       ];
     }
 }
 
 
-
- // onPress={() => {this.setState({mountCam: false}); navigate('Compose', {remount: this.remount, main_remount: this.remount}
+ // TODO
+ // Figure out navigation from favorites page, and from profile overlay
+ // onPress={() => {this.setState({mountCam: false}); navigate('Compose', {remount: this.remount, main_remount: this.remount})

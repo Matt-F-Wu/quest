@@ -9,8 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 
 // TODO
-// Add navigation
-// Also look at CameraLandingPage for FavoriteView props
+// Navigation is messing up camera again...
 
 const sendButtonSize = 70;
 const favSize = 80;
@@ -50,7 +49,7 @@ data = [
 /*
  * Returns a view that has a center button surrounded by the favorites equally spaced on a circular boundary
  */
-makeFavoritesView = (navigate) => {
+makeFavoritesView = (navigation, remount, main_remount) => {
 	var favorites = [];
 
 	let n = data.length;						// Number of favorites to render
@@ -65,9 +64,11 @@ makeFavoritesView = (navigate) => {
 	// Render send Quest button
 	favorites.push(
 		<TouchableOpacity style={[styles.sendButtonContainerStyle, {top: sendButtonTop, left: sendButtonLeft}]}>
-			<Icon name="send-o" size={sendButtonSize} color={Colors.tintColor} />
+			<Icon name="send-o" size={sendButtonSize} color={Colors.tintColor} 
+			      onPress={() => navigation.navigate('Compose', {remount: remount, main_remount: main_remount})}/>
 		</TouchableOpacity>
 	)
+
 
 	// Cartesian coordinates of first favorite (center of screen is origin)
 	var x1 = -radius / Math.sqrt(2);
@@ -86,13 +87,14 @@ makeFavoritesView = (navigate) => {
 
 		// Render next favorite
 		favorites.push(
-			<TouchableOpacity style={[styles.circleContainer, {top: currTop, left: currLeft}]}>
-				 			<Image resizeMode='cover' 
-				   	   source={data[i].image}
-	      		       style={[styles.profileImg]} />
+			<TouchableOpacity style={[styles.circleContainer, {top: currTop, left: currLeft}]}
+							  onPress={() => navigation.navigate('CapturePicture', {remount: remount, main_remount: main_remount})}>
+	 			<Image resizeMode='cover' 
+	   	   			   source={data[i].image}
+		       		   style={[styles.profileImg]} />
 			</TouchableOpacity>
 		)
-
+		// Update coordinates
 		x1 = x2;
 		y1 = y2;
 	}
@@ -102,10 +104,10 @@ makeFavoritesView = (navigate) => {
 
 export default class FavoritesView extends React.Component {
 
-
-
 	render() {
-		let favorites = makeFavoritesView(this.props.navigate);
+		var remount = this.props.remount;
+		var main_remount = this.props.main_remount;
+		let favorites = makeFavoritesView(this.props.navigation, remount, main_remount);
 
 		return (
 			<View style={{width:'100%', height:'100%', justifyContent: 'center', alignItems: 'center'}}>

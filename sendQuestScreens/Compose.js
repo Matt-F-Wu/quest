@@ -48,3 +48,5 @@ export default class Compose extends React.Component {
 	
   }
 }
+
+
