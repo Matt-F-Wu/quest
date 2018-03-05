@@ -3,6 +3,8 @@ import { View, Dimensions, StyleSheet, Animated, Text, Image, Modal } from 'reac
 import React from 'react';
 const THREE = require('three');
 global.THREE = THREE;
+require('./ARUtils/OBJLoader');
+require('./ARUtils/Water');
 import ExpoTHREE from 'expo-three'; // 2.0.2
 import MovableObject from './ARUtils/MovableObject.js';
 import softBodyObject from '../api/softBodyObject.js';
@@ -10,6 +12,8 @@ import HGD from '../api/handGestureDetection';
 import utils from '../api/utils';
 import Arrows from './ARUtils/Arrows';
 import Claws from './ARUtils/Claws';
+import Tools from './ARUtils/Tools';
+import BlueOverlay from './ARUtils/BlueOverlay';
 import Colors from '../constants/Colors';
 import Styles from '../constants/Styles';
 import {RkButton} from 'react-native-ui-kitten';
@@ -45,7 +49,10 @@ var buff_point = 0;
 const buff_threshold = 3;
 var screenWidth = 0;
 var screenHeight = 0;
-//
+// Water related consts
+const WATER_Y = -0.15;
+//globe related consts
+const sphere_r = 5;
 export default class App extends React.Component {
   state = {
     loaded: false,
@@ -58,11 +65,13 @@ export default class App extends React.Component {
     game_feedback: new Animated.Value(0),
   }
 
+  // TODO: AR View requires customized back button, resetting states + global variables
   static navigationOptions  = ({ navigation, screenProps }) => ({
     title: 'Follow the coins!',
+    style:{ position: 'absolute', backgroundColor: 'transparent', zIndex: 100, top: 0, left: 0, right: 0 },
     headerLeft: (
       <Icon name={'chevron-left'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
-                            onPress={ () => navigation.goBack() } />
+                            onPress={ () => {exiting = true; msg_shown = false; showArrows = true; navigation.goBack();} } />
       ),
   });
 
@@ -70,6 +79,9 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     self = this;
+    if(this.props.navigation.state.params.indoor){
+      obj_per_scene = 1;
+    }
   }
 
   //before mounting view, do these things
@@ -86,6 +98,7 @@ export default class App extends React.Component {
   }
 
   async preloadAssetsAsync() {
+    //Hao: Should do slective loading, but I am running out of time
     await Promise.all([
       require('../assets/images/coin.png'),
       require('../assets/images/crosshair.png'),
@@ -95,6 +108,10 @@ export default class App extends React.Component {
       require('../assets/images/blueFlame.gif'),
       require('../assets/images/burst.gif'),
       require('../assets/images/ghost_entrance.gif'),
+      require('../assets/textures/waternormals.jpg'),
+      require('../assets/textures/city_globe.jpg'),
+      require('../assets/textures/rainbow_metallic.jpg'),
+      require('../assets/objects/heart/heart-reformed.obj'),
     ].map((module) => Expo.Asset.fromModule(module).downloadAsync()));
 
     this.setState({ loaded: true, overlay_gif: Asset.fromModule(require('../assets/images/burst.gif')).localUri });
@@ -207,6 +224,103 @@ export default class App extends React.Component {
     
   }
 
+  async _addARWater(camera, renderer){
+    // First add lighting
+    const dirLight = new THREE.DirectionalLight(0xdddddd);
+    dirLight.position.set(1, 1, 1);
+    scene.add(dirLight);
+    // water
+    const waterNormals = await ExpoTHREE.createTextureAsync({
+      asset: Expo.Asset.fromModule(require('../assets/textures/waternormals.jpg')),
+    });
+    waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
+    const water = new THREE.Water(renderer, camera, scene, {
+      textureWidth: 256, textureHeight: 256,
+      waterNormals,
+      alpha: 0.75,
+      sunDirection: dirLight.position.normalize(),
+      waterColor: 0x001e0f,
+      betaVersion: 0,
+      side: THREE.DoubleSide,
+      distortionScale: 10,
+      noiseScale: 0.005,
+    });
+    const waterMesh = new THREE.Mesh(
+      new THREE.PlaneBufferGeometry(30, 30, 10, 10),
+      water.material,
+    );
+    waterMesh.add(water);
+    waterMesh.rotation.x = -Math.PI * 0.5;
+    waterMesh.position.y = WATER_Y;
+    return waterMesh;
+  }
+
+  async _addARHeart(){
+    const modelAsset = Asset.fromModule(require('../assets/objects/heart/heart-reformed.obj'));
+    await modelAsset.downloadAsync();
+    const loader = new THREE.OBJLoader();
+    const model = loader.parse(
+      await Expo.FileSystem.readAsStringAsync(modelAsset.localUri));
+    const heart_material = new THREE.MeshPhongMaterial( { color: 0xFFB6C1 } );
+    model.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.material = heart_material;
+        }
+      });
+    return model;
+  }
+
+  async _addARGlobe(){
+    var sphere_geometry = new THREE.SphereGeometry(sphere_r, 200, 200);
+    const sphere_texture = await ExpoTHREE.createTextureAsync({
+      asset: Asset.fromModule(require('../assets/textures/city_globe.jpg')),
+    });
+    // A large enclosing globe
+    var sphere_material = new THREE.MeshBasicMaterial({map: sphere_texture, side: THREE.BackSide});
+    var globe = new THREE.Mesh(sphere_geometry, sphere_material);
+    globe.rotation.z = Math.PI / 2;
+    return globe;
+  }
+
+  async _createARGoal(){
+    if(this.props.navigation.state.params.portal){
+      let portal = new THREE.Group();
+      let frame_top_geometry = new THREE.BoxBufferGeometry( 20, 500, 20 );
+      let frame_side_geometry = new THREE.BoxBufferGeometry( 500, 20, 20 );
+      let frame_texture = await ExpoTHREE.createTextureAsync({
+        asset: Asset.fromModule(require('../assets/textures/rainbow_metallic.jpg')),
+      });
+      let frame_material = new THREE.MeshBasicMaterial( { map: frame_texture } );
+      let sideL = new THREE.Mesh(frame_side_geometry, frame_material);
+      let sideR = new THREE.Mesh(frame_side_geometry, frame_material);
+      let top = new THREE.Mesh(frame_top_geometry, frame_material);
+      let bottom = new THREE.Mesh(frame_top_geometry, frame_material);
+      portal.add(sideL);
+      portal.add(sideR);
+      portal.add(top);
+      portal.add(bottom);
+      sideL.position.set(-0.25, 0, 0);
+      sideR.position.set(0.25, 0, 0);
+      top.position.set(0, 0.25, 0);
+      bottom.position.set(0, -0.25, 0);
+      return portal;
+    }
+
+    var b_t_texture = await ExpoTHREE.createTextureAsync({
+      asset: Asset.fromModule(require('../assets/images/quest-present-top-bottom.png')),
+    });
+    var b_s_texture = await ExpoTHREE.createTextureAsync({
+      asset: Asset.fromModule(require('../assets/images/quest-present-side.png')),
+    });
+    
+    var b_geometry = new THREE.BoxBufferGeometry( 200, 200, 200 );
+    var b_t_material = new THREE.MeshBasicMaterial( { map: b_t_texture } );
+    var b_s_material = new THREE.MeshBasicMaterial( { map: b_s_texture } );
+    var b_materials = [b_s_material, b_s_material, b_t_material, b_t_material, b_s_material, b_s_material];
+    
+    return (new THREE.Mesh( b_geometry,  b_materials));
+  }
+
   relativeToCamera(bias, camera_position, camera_direction, offset){
     //console.debug("tap at: " + tappedVec.x + " " + tappedVec.y + " " + tappedVec.z)
     offset = offset || 0.2;
@@ -268,7 +382,7 @@ export default class App extends React.Component {
     });
 
     
-    this._addARNavObj(scene, 3, coinTexture);
+    this._addARNavObj(scene, obj_per_scene, coinTexture);
     //console.debug(" msg_shown: " + msg_shown + " animation_opacity: " + this.state.animation_opacity);
 
     var ghost_texture = await ExpoTHREE.createTextureAsync({
@@ -278,19 +392,7 @@ export default class App extends React.Component {
     var ghost = new softBodyObject();
     ghost.init(ghost_texture);
 
-    var b_t_texture = await ExpoTHREE.createTextureAsync({
-      asset: Asset.fromModule(require('../assets/images/quest-present-top-bottom.png')),
-    });
-    var b_s_texture = await ExpoTHREE.createTextureAsync({
-      asset: Asset.fromModule(require('../assets/images/quest-present-side.png')),
-    });
-    
-    var b_geometry = new THREE.BoxBufferGeometry( 200, 200, 200 );
-    var b_t_material = new THREE.MeshBasicMaterial( { map: b_t_texture } );
-    var b_s_material = new THREE.MeshBasicMaterial( { map: b_s_texture } );
-    var b_materials = [b_s_material, b_s_material, b_t_material, b_t_material, b_s_material, b_s_material];
-    
-    const chestObj = new THREE.Mesh( b_geometry,  b_materials);
+    const chestObj = await this._createARGoal();
 
     const { navigate } = self.props.navigation;
 
@@ -346,44 +448,88 @@ export default class App extends React.Component {
       return true;
     };
 
-    let ghost_uta = new MovableObject(ghost.object, 
-      (s, ip) => {
-        if(!s.killed && !ghost_out){
-          ghost_out = true;
-          //Ghost graphics make things slow, lower analysis cycle
-          analysis_cycle = 20;
-          animation_time = analysis_cycle;
-          this.setState({animation_opacity: 0.6, overlay_gif: Asset.fromModule(require('../assets/images/ghost_entrance.gif')).localUri});
-          ghost.animate(scene, ip); 
-          ghost.object.lookAt(ip);
-        }
-      },
-      (s) => {
-          s.killed = true;
-          ghost_out = false;
-          var n_utas = utas.filter(function(el) {
-              return el !== s;
-          });
-          utas = n_utas;
-          scene.remove(ghost.object);
-        },
-      );
-
-    ghost_uta.live = (s, cp, cd) => {
-      if(ghost_out){
-        let cir = MovableObject.circleUser();
-        let ip = this.relativeToCamera(zero_vector, cp, cd, 0.8);
-        ghost.animate(scene, ip);
-        ghost.object.lookAt(ip);
-        //never forget to return true to indicate that it should live
-        return cir(s, cp, cd);
-      }else{
-        return true;
-      }
-    };
-
     utas.push(ch_uta);
-    utas.push(ghost_uta);
+
+    if(this.props.navigation.state.params.has_ghost){
+      //Make it a var, so scoping is no longer a concern
+      var ghost_uta = new MovableObject(ghost.object, 
+        (s, ip) => {
+          if(!s.killed && !ghost_out){
+            ghost_out = true;
+            //Ghost graphics make things slow, lower analysis cycle
+            analysis_cycle = 20;
+            animation_time = analysis_cycle;
+            this.setState({animation_opacity: 0.6, overlay_gif: Asset.fromModule(require('../assets/images/ghost_entrance.gif')).localUri});
+            ghost.animate(scene, ip); 
+            ghost.object.lookAt(ip);
+          }
+        },
+        (s) => {
+            s.killed = true;
+            ghost_out = false;
+            var n_utas = utas.filter(function(el) {
+                return el !== s;
+            });
+            utas = n_utas;
+            scene.remove(ghost.object);
+          },
+        );
+
+      ghost_uta.live = (s, cp, cd) => {
+        if(ghost_out){
+          let cir = MovableObject.circleUser();
+          let ip = this.relativeToCamera(zero_vector, cp, cd, 0.8);
+          ghost.animate(scene, ip);
+          ghost.object.lookAt(ip);
+          //never forget to return true to indicate that it should live
+          return cir(s, cp, cd);
+        }else{
+          return true;
+        }
+      };
+      
+      utas.push(ghost_uta);
+    }
+
+    if(this.props.navigation.state.params.indoor){
+      let globe = await this._addARGlobe();
+      scene.add(globe);
+      let waterMesh = await this._addARWater(camera, renderer);
+      scene.add(waterMesh);
+      let heart = await this._addARHeart();
+      Tools.scaleLongestSideToSize(heart, 0.08);
+      let i; 
+      //put 6 hearts there because I want to --- Hao
+      for(i = 0; i < 6; i++){
+        let h = heart.clone();
+        //randomly put it somewhere, 0 -> 1, so need to scale
+        h.position.set(Math.random() * sphere_r / 2, WATER_Y + Math.random() * 0.03, Math.random() * sphere_r / 2);
+        let h_uta = new MovableObject(h);
+        h_uta.live = (s) => {
+          
+          if(s.obj.position.y > WATER_Y + 0.03 || s.obj.position.y < WATER_Y - 0.03){
+            if(!s.up){
+              s.up = true;
+            }else{
+              s.up = false;
+            }
+          }
+
+          if(s.up){
+            s.obj.position.y += 0.002;  
+          }else{
+            s.obj.position.y -= 0.002;
+          }
+
+          s.obj.rotation.x += Math.random() / 20;
+          s.obj.rotation.y += Math.random() / 20;
+          return true;
+        };
+        
+        scene.add(h);
+        utas.push(h_uta);
+      }
+    }
 
     var cycle_idx = 0;
     //let dummyobj = Claws.createClaw();
@@ -397,6 +543,17 @@ export default class App extends React.Component {
       camera_position.setFromMatrixPosition( camera.matrixWorld );
       var camera_direction = camera.getWorldDirection();
       
+      if(this.props.navigation.state.params.indoor){
+        // Workaround for water_overlay becomes null when exiting
+        if(this.water_overlay){
+          if (camera_position.y < WATER_Y && !this.water_overlay.visible()) {
+            this.water_overlay.setVisible(true);
+          }else if(camera_position.y >= WATER_Y && this.water_overlay.visible()){
+            this.water_overlay.setVisible(false);
+          }
+        }
+      }
+
       let angleToCoin;
       if(showArrows){
         angleToCoin = utils.horizontalAngleBetween(camera_direction, this.state.obj_list[0].position.clone().sub(camera_position));
@@ -434,6 +591,7 @@ export default class App extends React.Component {
           //Add screen flash effect for collecting an object
         }else{
           this.state.obj_list[i].rotation.y += 0.04;
+          this.state.obj_list[i].rotation.x += 0.01;
           n_obj_list.push(this.state.obj_list[i]);
         }
       }
@@ -452,7 +610,9 @@ export default class App extends React.Component {
         //this._addARNavObj(scene, obj_per_scene - n_obj_list.length, coinTexture);
 
         //Temporarily, show ghost once, aka born once only
-        ghost_uta.born(ghost_uta, this.relativeToCamera(zero_vector, camera_position, camera_direction, 0.8));
+        if(this.props.navigation.state.params.has_ghost){
+          ghost_uta.born(ghost_uta, this.relativeToCamera(zero_vector, camera_position, camera_direction, 0.8));
+        }
       }
       
       if(this.state.obj_list.length == 0 && !msg_shown && !exiting){
@@ -473,6 +633,7 @@ export default class App extends React.Component {
           //Go to viewing message
           exiting = true;
           msg_shown = false;
+          showArrows = true;
           scene.remove(chestObj);
           console.debug("Exiting this view! msg_shown: " + msg_shown);
           /*
@@ -501,11 +662,10 @@ export default class App extends React.Component {
 
         raycaster.setFromCamera( point_of_touch, camera );
         let intersects = raycaster.intersectObjects( scene.children );
-
         /*
           If hit ghost, show progress
         */
-        if(intersects.length >= 1 && intersects[0].object === ghost_uta.obj){
+        if(intersects.length >= 1 && this.props.navigation.state.params.has_ghost && intersects[0].object === ghost_uta.obj){
           this.showProgress();
           buff_point++;
           console.log("Hit ghost: " + buff_point + " times!");
@@ -596,6 +756,7 @@ export default class App extends React.Component {
   }
 
   render() {
+    //console.debug("Exiting: " + exiting);
     return !exiting && this.state.loaded && this.state.got_route ? (
       <View style={{ flex: 1 }}>
 
@@ -648,6 +809,12 @@ export default class App extends React.Component {
        
       <Image style={{position: 'absolute', width: '100%', height: '100%', opacity: this.state.animation_opacity}} resizeMode='cover'
         source={{uri: this.state.overlay_gif}}
+        onStartShouldSetResponder={(evt) => true}
+        onResponderGrant={(evt) => this.fingerDown(evt)}
+        onResponderRelease={(evt) => this.fingerRelease(evt)}
+      />
+
+      <BlueOverlay ref={(ref) => this.water_overlay = ref} 
         onStartShouldSetResponder={(evt) => true}
         onResponderGrant={(evt) => this.fingerDown(evt)}
         onResponderRelease={(evt) => this.fingerRelease(evt)}

@@ -31,7 +31,7 @@ export default class CameraLandingPage extends CameraBase {
       const { navigate } = this.props.navigation;
       //Hao: the key is to pass functions bond to this screen as navigation parameters and call them from subsequent screens
       return [
-          <BlurView tint="dark" intensity={100} style={{position: 'absolute', height: '100%', width: '100%'}} />,
+          <BlurView key={'blur_overlay'} tint="dark" intensity={100} style={{position: 'absolute', height: '100%', width: '100%'}} />,
           <FavoritesView key={'favorites_view'} style={{position: 'absolute', height: '100%', width: '100%'}}/>,
           <ProfileOverlay key={'p_overlay'}/>,
       ];

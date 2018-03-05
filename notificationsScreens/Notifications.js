@@ -150,7 +150,7 @@ export default class Notifications extends React.Component {
             		renderItem={({ item }) => (
             			<QuestListItem name={item.name} date={item.date} 
             				image={item.image} progress={item.progress} received={item.received}
-            				onPress={() => {navigate('CameraNav')}}/>
+            				onPress={() => {navigate('CameraNav', {has_ghost: false, indoor: true})}}/>
             		)}
           		/>
 			</View>

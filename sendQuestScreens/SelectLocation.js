@@ -58,7 +58,7 @@ export default class SelectLocation extends React.Component {
   		Alert.alert("Hide at this location?", "",
         [
           {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'OK', onPress: () => {this.sendQuest()} },
+          {text: 'OK', onPress: () => {this.proceed()} },
         ]
       );
   	}else{
@@ -66,24 +66,18 @@ export default class SelectLocation extends React.Component {
   	}
   }
 
-  sendQuest(){
-    fetch(PUSH_ENDPOINT + username, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        data: {
-          value: 'Some data',
-        },
-      }),
-    });
+  proceed(){
     const { navigate } = this.props.navigation;
-    Alert.alert("Quest sent successfully!");
+    navigate('CustomizeGame', {main_remount: this.props.navigation.state.params.main_remount});
+  }
 
-    self.props.navigation.popToTop();
-    self.props.navigation.state.params.main_remount({ mountCam: true });
+  proceedWrapper(){
+    Alert.alert("Skipping this step will send an Indoor Quest!", "aka a game to play at home",
+        [
+          {text: 'Cancel', onPress: () => console.log('Not Skipping'), style: 'cancel'},
+          {text: 'OK', onPress: () => {this.proceed()} },
+        ]
+      );
   }
 
   render() {
@@ -121,8 +115,12 @@ export default class SelectLocation extends React.Component {
         </MapView.Marker>
 
       </MapView>
-      <RkButton onPress={() => this.sendQuest()} 
-          style={[{position: 'absolute', left: '40%', top: '90%', width: '20%', height: '8%', marginBottom: '2%',}, styles.button]} >
+      <RkButton onPress={() => this.proceedWrapper()} 
+          style={[{position: 'absolute', left: '15%', top: '90%', width: '20%', height: '8%', marginBottom: '2%',}, styles.button]} >
+          <Text>Skip</Text>
+      </RkButton>
+      <RkButton onPress={() => this.proceed()} 
+          style={[{position: 'absolute', left: '65%', top: '90%', width: '20%', height: '8%', marginBottom: '2%',}, styles.button]} >
           <FIcon name={'check'} color='#ffffff' size={30} />
       </RkButton>
       </View>

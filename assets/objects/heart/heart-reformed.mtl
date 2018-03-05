@@ -1,0 +1,12 @@
+# Blender MTL File: 'heart-reformed.blend'
+# Material Count: 1
+
+newmtl Physical
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.776471 0.003922 0.003922
+Ks 0.013176 0.000000 0.000000
+Ke 0.181684 0.000918 0.000918
+Ni 1.000000
+d 1.000000
+illum 2

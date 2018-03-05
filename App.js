@@ -53,6 +53,7 @@ export default class App extends React.Component {
       });
       //TODO: Notification received, do something
       this._showNotification();
+      console.debug(receivedNotification.body.data);
       //Auto collapsing the notification after 2 seconds
       setTimeout(() => {
         if(mounted && isShown){

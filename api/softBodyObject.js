@@ -247,7 +247,7 @@ export default class softBodyObject {
 		}
 	}
 
-	init(clothTexture) {
+	init(clothTexture, type='ghost') {
 		// cloth geometry
 		this.clothGeometry = new THREE.PlaneGeometry( restDistance * xSegs, restDistance * ySegs, xSegs, ySegs );
 		this.clothGeometry.dynamic = true;
@@ -264,31 +264,55 @@ export default class softBodyObject {
       	*/
 
       	//Hao: find points that constitutes a filled circle
-		var i, j, x, y, xx, idx, bump, p = this.cloth.particles, bmax=0, i_set = new Set();
-		for(i = -90; i < 90; i += 5){
-			x = (xSegs/2 + Math.round(Math.cos(Math.radians(i)) * (xSegs / 5)))
-			y = (ySegs/2 - Math.round(Math.sin(Math.radians(i)) * (ySegs / 5)))
-			xx = xSegs - x;
-			for(j = xx; j < x + 1; j++){
-				idx = Math.round(j + y * (xSegs + 1));
-				if(i_set.has(idx)){
-					//duplicate pin
-					continue;
+      	if(type === 'ghost'){
+			var i, j, x, y, xx, idx, bump, p = this.cloth.particles, bmax=0, i_set = new Set();
+			for(i = -90; i < 90; i += 5){
+				x = (xSegs/2 + Math.round(Math.cos(Math.radians(i)) * (xSegs / 5)))
+				y = (ySegs/2 - Math.round(Math.sin(Math.radians(i)) * (ySegs / 5)))
+				xx = xSegs - x;
+				for(j = xx; j < x + 1; j++){
+					idx = Math.round(j + y * (xSegs + 1));
+					if(i_set.has(idx)){
+						//duplicate pin
+						continue;
+					}
+					i_set.add(idx);
+					bump = Math.max((xSegs/5) ** 2 - ((j - xSegs/2) ** 2 + (y - ySegs/2) ** 2), 0) ** 0.5 * 0.2 / (xSegs/5);
+					if (isNaN(bump)) {
+						//numerical stability check
+						console.debug("Unstable");
+						bump = 0;
+					}
+					//console.debug("original: " + p[idx].original + "  bump: " + bump);
+					p[idx].original.z += bump;
 				}
-				i_set.add(idx);
-				bump = Math.max((xSegs/5) ** 2 - ((j - xSegs/2) ** 2 + (y - ySegs/2) ** 2), 0) ** 0.5 * 0.2 / (xSegs/5);
-				if (isNaN(bump)) {
-					//numerical stability check
-					console.debug("Unstable");
-					bump = 0;
-				}
-				//console.debug("original: " + p[idx].original + "  bump: " + bump);
-				p[idx].original.z += bump;
+				//will have duplicates, but might not be worth cleaning up
 			}
-			//will have duplicates, but might not be worth cleaning up
-		}
 
-		this.pins = Array.from(i_set);
+			this.pins = Array.from(i_set);
+		}else if(type === 'portal'){
+			//restrain all edges
+			let i;
+			for(i = 0; i < xSegs; i++){
+				this.pins.push(i);
+			}
+
+			for(i = 1; i < ySegs - 1; i++){
+				this.pins.push(i);
+				this.pins.push(i + xSegs - 1);
+			}
+
+			for(i = 0; i < xSegs; i++){
+				this.pins.push((ySegs - 1) * xSegs + i);
+			}			
+
+		}else{
+			//default is just restraining top edge
+			let i;
+			for(i = 0; i < xSegs; i++){
+				this.pins.push(i);
+			}
+		}
 
       	var clothMaterial = new THREE.MeshBasicMaterial({map: clothTexture});
 

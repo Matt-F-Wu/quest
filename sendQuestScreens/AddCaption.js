@@ -40,29 +40,6 @@ export default class AddCaption extends React.Component {
     console.debug(info);
   }
 
-  sendQuest(){
-    fetch(PUSH_ENDPOINT + username, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        data: {
-          value: 'Some data',
-        },
-      }),
-    });
-    
-    Alert.alert("Quest sent successfully!");
-    /*TODO: Ian
-      clear stacks
-
-      Progress (Hao): Resolved by using popToTop() to solve this, provided by react-navigation@1.0.0-beta.31
-    */
-    this.props.navigation.popToTop();
-  }
-
   render() {
     /* Go ahead and delete ExpoConfigView and replace it with your
      * content, we just wanted to give you a quick view of your config */

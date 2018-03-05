@@ -12,6 +12,7 @@ import SelectLocation from '../sendQuestScreens/SelectLocation';
 import AddCaption from '../sendQuestScreens/AddCaption';
 import CapturePicture from '../sendQuestScreens/CapturePicture';
 import Compose from '../sendQuestScreens/Compose';
+import Compose from '../sendQuestScreens/CustomizeGame';
 import CameraLandingPage from '../sendQuestScreens/CameraLandingPage';
 
 const SendStackNavigator = StackNavigator(
@@ -30,6 +31,9 @@ const SendStackNavigator = StackNavigator(
     },
     SelectLocation: {
       screen: SelectLocation,
+    },
+    CustomizeGame: {
+      screen: CustomizeGame,
     },
   },
   {
