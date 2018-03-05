@@ -13,7 +13,7 @@ import CapturePicture from '../sendQuestScreens/CapturePicture';
 import Compose from '../sendQuestScreens/Compose';
 import CustomizeGame from '../sendQuestScreens/CustomizeGame';
 import ContactList from '../components/SendQuest/ContactList';
-import SwiperNavigation from './SwiperNavigation'
+import SwiperNavigation from './SwiperNavigation';
 
 const RootStackNavigator = StackNavigator(
   {

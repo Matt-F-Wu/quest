@@ -28,22 +28,25 @@ export default class QuestListItem extends React.Component {
 	/* Set progress border color/width */
 	setProgressBorder = () => {
 		if (this.state.progress == 'unopened') {
-			if (this.state.received != true) {
-				this.setState({
-					progressColor: Colors.tintColor,
-					progressBorderWidth: 2,
-				});
-			}
+			this.setState({
+				progressColor: Colors.tintColor,
+				progressBorderWidth: 2,
+			});
+		}else if(this.state.progress == 'in progress'){
+			this.setState({
+				progressColor: 'orange',
+				progressBorderWidth: 2,
+			});
 		}
 	}
 
 	/* Set profile image to picture, or ? mark if unopened and recevied */
 	setProfileImage = () => {
-		if (this.state.received == true && this.state.progress == 'unopened') {
+		if (this.state.received == true && this.state.progress != 'completed') {
 			this.setState({
 				profileImage: <Icon2 name="question" 
 									size={75} 
-									color={Colors.tintColor} 
+									color={this.state.progress == 'unopened'? Colors.tintColor : 'orange'} 
 									style={{backgroundColor: 'transparent', alignSelf: 'center', top:3}}/>
 			});		
 	 	} else {
