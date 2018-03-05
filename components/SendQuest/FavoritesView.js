@@ -6,12 +6,17 @@ import Colors from '../../constants/Colors';
 
 // Icons
 import Icon from 'react-native-vector-icons/FontAwesome';
+const sendButtonSize = 70;
+
 import Icon2 from 'react-native-vector-icons/Ionicons';
+import Icon3 from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // TODO
 // Navigation is messing up camera again...
 
-const sendButtonSize = 70;
+// const sendButtonSize = 100;
+// <Icon3 name="cube-send" size={sendButtonSize} color={Colors.tintColor} />
+
 const favSize = 80;
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;

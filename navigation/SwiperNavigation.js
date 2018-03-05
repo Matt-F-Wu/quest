@@ -22,8 +22,8 @@ export default class SwiperNavigation extends Component {
   }
 
   render() {
-    let prevButton = <Icon name="ios-chatboxes-outline" size={30} color={Colors.tintColor} />
-    let selectedPrevButton = <Icon name="ios-chatboxes" size={30} color={Colors.tintColor} />
+    let prevButton = <Icon name="ios-notifications-outline" size={30} color={Colors.tintColor} />
+    let selectedPrevButton = <Icon name="ios-notifications" size={30} color={Colors.tintColor} />
 
     let nextButton = <Icon name="ios-apps-outline" size={30} color={Colors.tintColor} />
     let selectedNextButton = <Icon name="ios-apps" size={30} color={Colors.tintColor} />

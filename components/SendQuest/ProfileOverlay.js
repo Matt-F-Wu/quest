@@ -61,7 +61,7 @@ export default class ProfileOverlay extends Component {
                 <View style={styles.innerContainer}>
                     
                     <Image 
-                      source={require('../../assets/images/profileImages/woman8.png')}
+                      source={require('../../assets/images/profileImages/ian.jpg')}
                       style={styles.profileImg}
                     />
 

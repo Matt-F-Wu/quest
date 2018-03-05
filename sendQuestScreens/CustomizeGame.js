@@ -40,19 +40,19 @@ export default class CustomizeGame extends React.Component {
   }
 
   sendQuest(indoor){
-    fetch(PUSH_ENDPOINT + username, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        data: {
-          value: 'Some data',
-          indoor: indoor,
-        },
-      }),
-    });
+    // fetch(PUSH_ENDPOINT + username, {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     data: {
+    //       value: 'Some data',
+    //       indoor: indoor,
+    //     },
+    //   }),
+    // });
     const { navigate } = this.props.navigation;
     Alert.alert("Quest sent successfully!");
 
