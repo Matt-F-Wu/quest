@@ -205,7 +205,7 @@ export default class CustomizeGame extends React.Component {
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
       <Text style={styles.titleText}>Choose Navigation Theme:</Text>
       <View style={{height: 120}}>
-      <ListView horizontal={true} 
+      <ListView horizontal={true} style={}
         dataSource={this.state.navObjSource}
         renderRow={this.renderRow}
         removeClippedSubviews={false}
@@ -213,7 +213,7 @@ export default class CustomizeGame extends React.Component {
       </View>
       <Text style={styles.titleText}>Choose Adversaries:</Text>
       <View style={{height: 120}}>
-      <ListView horizontal={true}
+      <ListView horizontal={true} style={}
         dataSource={this.state.advObjSource}
         renderRow={this.renderRow}
         removeClippedSubviews={false}
@@ -221,7 +221,7 @@ export default class CustomizeGame extends React.Component {
       </View>
       <Text style={styles.titleText}>Choose Gift Wrap:</Text>
       <View style={{height: 120}}>
-      <ListView horizontal={true}
+      <ListView horizontal={true} style={}
         dataSource={this.state.goalObjSource}
         renderRow={this.renderRow}
         removeClippedSubviews={false}
@@ -246,5 +246,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',  
     fontSize: 16,
     margin: 10,
-  }
+  },
+  listStyle: {
+    backgroundColor: 'transparent',
+  },
 });

@@ -5,7 +5,7 @@ const u_styles = StyleSheet.create({
   rowStyle: {
     flexDirection: 'row',
     height: 120,
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
     borderBottomColor: Colors.tintColor,
     borderBottomWidth: 1,
     alignItems: 'center',
@@ -34,7 +34,7 @@ const s_styles = StyleSheet.create({
   rowStyle: {
     flexDirection: 'row',
     height: 120,
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
     borderBottomColor: '#333333',
     borderBottomWidth: 1,
     alignItems: 'center',
