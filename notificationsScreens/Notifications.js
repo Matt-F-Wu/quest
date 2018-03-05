@@ -18,6 +18,7 @@ const questsArr = [
 	    image: require('../assets/images/profileImages/woman7.png'),
 	    progress: 'unopened',
 	    received: true,
+	    has_ghost: false, indoor: true, goal: 'portal',
 	},
 	{
 	    name: 'Grace', 
@@ -32,6 +33,7 @@ const questsArr = [
 	    image: require('../assets/images/profileImages/man2.png'),
 	    progress: 'unopened',
 	    received: true,
+	    has_ghost: true, indoor: false, goal: 'gift',
     },
     {
     	name: 'Katie', 
@@ -150,7 +152,7 @@ export default class Notifications extends React.Component {
             		renderItem={({ item }) => (
             			<QuestListItem name={item.name} date={item.date} 
             				image={item.image} progress={item.progress} received={item.received}
-            				onPress={() => {navigate('CameraNav', {has_ghost: false, indoor: true})}}/>
+            				onPress={() => {if(item.received) {navigate('CameraNav', {has_ghost: item.has_ghost, indoor: item.indoor, goal: item.goal});} }}/>
             		)}
           		/>
 			</View>

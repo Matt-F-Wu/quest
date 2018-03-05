@@ -98,13 +98,13 @@ export default class App extends React.Component {
   }
 
   async preloadAssetsAsync() {
-    //Hao: Should do slective loading, but I am running out of time
+    //Hao: Should do slective loading to save memory in the future
     await Promise.all([
       require('../assets/images/coin.png'),
       require('../assets/images/crosshair.png'),
       require('../assets/images/ghost.png'),
-      require('../assets/images/quest-present-side.png'),
-      require('../assets/images/quest-present-top-bottom.png'),
+      require('../assets/textures/quest-present-side.png'),
+      require('../assets/textures/quest-present-top-bottom.png'),
       require('../assets/images/blueFlame.gif'),
       require('../assets/images/burst.gif'),
       require('../assets/images/ghost_entrance.gif'),
@@ -112,6 +112,7 @@ export default class App extends React.Component {
       require('../assets/textures/city_globe.jpg'),
       require('../assets/textures/rainbow_metallic.jpg'),
       require('../assets/objects/heart/heart-reformed.obj'),
+      require('../assets/textures/portal.jpg'),
     ].map((module) => Expo.Asset.fromModule(module).downloadAsync()));
 
     this.setState({ loaded: true, overlay_gif: Asset.fromModule(require('../assets/images/burst.gif')).localUri });
@@ -283,10 +284,10 @@ export default class App extends React.Component {
   }
 
   async _createARGoal(){
-    if(this.props.navigation.state.params.portal){
+    if(this.props.navigation.state.params.goal == 'portal'){
       let portal = new THREE.Group();
-      let frame_top_geometry = new THREE.BoxBufferGeometry( 20, 500, 20 );
-      let frame_side_geometry = new THREE.BoxBufferGeometry( 500, 20, 20 );
+      let frame_top_geometry = new THREE.BoxBufferGeometry( 0.6, 0.05, 0.05 );
+      let frame_side_geometry = new THREE.BoxBufferGeometry( 0.05, 1.2, 0.05 );
       let frame_texture = await ExpoTHREE.createTextureAsync({
         asset: Asset.fromModule(require('../assets/textures/rainbow_metallic.jpg')),
       });
@@ -295,22 +296,34 @@ export default class App extends React.Component {
       let sideR = new THREE.Mesh(frame_side_geometry, frame_material);
       let top = new THREE.Mesh(frame_top_geometry, frame_material);
       let bottom = new THREE.Mesh(frame_top_geometry, frame_material);
+
+      let mem_texture = await ExpoTHREE.createTextureAsync({
+        asset: Asset.fromModule(require('../assets/textures/portal.jpg')),
+      });
+      let mem_material = new THREE.MeshBasicMaterial( { map: mem_texture, side: THREE.DoubleSide } );
+
+      let mem_geometry = new THREE.PlaneBufferGeometry(0.6, 1.2); 
+      let mem = new THREE.Mesh(mem_geometry, mem_material);
+      portal.add(mem);
       portal.add(sideL);
       portal.add(sideR);
       portal.add(top);
       portal.add(bottom);
-      sideL.position.set(-0.25, 0, 0);
-      sideR.position.set(0.25, 0, 0);
-      top.position.set(0, 0.25, 0);
-      bottom.position.set(0, -0.25, 0);
+
+      mem.position.set(0, 0, 0);
+      sideL.position.set(-0.3, 0, 0);
+      sideR.position.set(0.3, 0, 0);
+      top.position.set(0, 0.6, 0);
+      bottom.position.set(0, -0.6, 0);
+      
       return portal;
     }
 
     var b_t_texture = await ExpoTHREE.createTextureAsync({
-      asset: Asset.fromModule(require('../assets/images/quest-present-top-bottom.png')),
+      asset: Asset.fromModule(require('../assets/textures/quest-present-top-bottom.png')),
     });
     var b_s_texture = await ExpoTHREE.createTextureAsync({
-      asset: Asset.fromModule(require('../assets/images/quest-present-side.png')),
+      asset: Asset.fromModule(require('../assets/textures/quest-present-side.png')),
     });
     
     var b_geometry = new THREE.BoxBufferGeometry( 200, 200, 200 );
@@ -555,7 +568,7 @@ export default class App extends React.Component {
       }
 
       let angleToCoin;
-      if(showArrows){
+      if(showArrows && this.state.obj_list[0]){
         angleToCoin = utils.horizontalAngleBetween(camera_direction, this.state.obj_list[0].position.clone().sub(camera_position));
         group.position.copy(camera_position);
         //set arrow to point to left when condition is true
@@ -612,6 +625,7 @@ export default class App extends React.Component {
         //Temporarily, show ghost once, aka born once only
         if(this.props.navigation.state.params.has_ghost){
           ghost_uta.born(ghost_uta, this.relativeToCamera(zero_vector, camera_position, camera_direction, 0.8));
+          scene.add( ghost_uta.obj );
         }
       }
       

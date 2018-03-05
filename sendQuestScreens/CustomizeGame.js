@@ -5,6 +5,7 @@ import {
   Text,
   Alert,
   StyleSheet,
+  ListView
 } from 'react-native';
 import { MapView } from 'expo';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -14,12 +15,18 @@ import {RkButton} from 'react-native-ui-kitten';
 
 // Constant imports
 import Colors from '../constants/Colors';
+import Styles from '../constants/Styles';
+import Touchables from '../components/Touchables';
 
 const username = 'HaoWu';
 const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/sendq/';
-
-var pinLoc = {latitude: 37.4223618, longitude: -122.1823528};
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 var self;
+var selected = {
+  nav: 'coin',
+  adv: undefined,
+  goal: 'gift'};
+
 export default class CustomizeGame extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Design the Game',
@@ -33,13 +40,125 @@ export default class CustomizeGame extends React.Component {
       ),
   });
 
+  state = {
+    navData: [
+        {
+          cate: 'nav', 
+          index: 1,
+          image: require('../assets/images/coin.png'),
+          selected: true,
+        },
+        {
+          cate: 'nav', 
+          index: 2,
+          image: require('../assets/images/emoji-fire.png'),
+          selected: false,
+        },
+        {
+          cate: 'nav',
+          index: 3, 
+          image: require('../assets/images/emoji-heart.png'),
+          selected: false,
+        },
+        {
+          cate: 'nav',
+          index: 4, 
+          image: require('../assets/images/emoji-heart-eyes.png'),
+          selected: false,
+        },
+      ],
+
+  advData: [
+        {
+          cate: 'adv', 
+          index: 1,
+          image: require('../assets/images/none.png'),
+          selected: true,
+        },
+        {
+          cate: 'adv', 
+          index: 2,
+          image: require('../assets/images/ghost.png'),
+          selected: false,
+        },
+        {
+          cate: 'adv', 
+          index: 3,
+          image: require('../assets/images/monster.png'),
+          selected: false,
+        },
+        {
+          cate: 'adv',
+          index: 4, 
+          image: require('../assets/images/fox.jpg'),
+          selected: false,
+        },
+      ],
+
+  goalData: [
+        {
+          cate: 'goal', 
+          index: 1, 
+          image: require('../assets/textures/quest-present-top-bottom.png'),
+          selected: true,
+        },
+        {
+          cate: 'goal', 
+          index: 2,
+          image: require('../assets/textures/portal.jpg'),
+          selected: false,
+        },
+        {
+          cate: 'goal',
+          index: 3, 
+          image: require('../assets/textures/crate.gif'),
+          selected: false,
+        },
+      ]
+    };
 
   constructor(props) {
     super(props);
     self = this;
   }
 
+  componentWillMount(){
+    //console.debug("About to set state!");
+    this.setState({
+      navObjSource: ds.cloneWithRows(this.state.navData),
+      advObjSource: ds.cloneWithRows(this.state.advData),
+      goalObjSource: ds.cloneWithRows(this.state.goalData),
+    });
+    //console.debug("Now: " + this.state.advObjSource);
+  }
+
+  setValues(key, value, index){
+    selected[key] = value;
+    for(let i = 0; i < this.state[key + "Data"].length; i++){
+      if(this.state[key + "Data"][i].index == index){
+        this.state[key + "Data"][i].selected = true;
+        console.debug(this.state[key + "Data"][i]);
+      }else{
+        this.state[key + "Data"][i].selected = false;
+      }
+    }
+    //this.state[key + "ObjSource"] = ds.cloneWithRows(this.state[key + "Data"]);
+    console.debug("Select item");
+  }
+
+  renderRow = (item) => {
+    return (
+      <Touchables key={item.index} 
+        onClick={() => {this.setValues(item.cate, item.value, item.index);}}
+        hasImage={true} 
+        title={""} subTitle={""}
+        text={""} styles={item.selected? Styles.s_styles : Styles.u_styles} 
+        image={item.image}/>
+      );
+  }
+
   sendQuest(indoor){
+    let params = this.props.navigation.state.params;
     fetch(PUSH_ENDPOINT + username, {
       method: 'POST',
       headers: {
@@ -48,8 +167,12 @@ export default class CustomizeGame extends React.Component {
       },
       body: JSON.stringify({
         data: {
-          value: 'Some data',
-          indoor: indoor,
+          value: 'A wonderful message',
+          indoor: params.indoor,
+          hideout: params.hideout,
+          nav: selected.nav,
+          adv: selected.adv,
+          goal: selected.goal,
         },
       }),
     });
@@ -70,15 +193,30 @@ export default class CustomizeGame extends React.Component {
   }
 
   render() {
-    // const { navigate } = this.props.navigation;
+    console.debug("Render...");
+
     return (
       <View style={{ flex: 1 }}>
-      <RkButton onPress={() => this.sendQuestWrapper()} 
-          style={[{position: 'absolute', left: '15%', top: '90%', width: '20%', height: '8%', marginBottom: '2%',}, styles.button]} >
-          <Text>Skip</Text>
-      </RkButton>
-      <RkButton onPress={() => this.sendQuest(false)} 
-          style={[{position: 'absolute', left: '65%', top: '90%', width: '20%', height: '8%', marginBottom: '2%',}, styles.button]} >
+      <Text style={styles.titleText}>Choose Navigation Theme:</Text>
+      <ListView horizontal={true}
+        style={{height: 108}} 
+        dataSource={this.state.navObjSource}
+        renderRow={this.renderRow}
+      />
+      <Text style={styles.titleText}>Choose Adversaries:</Text>
+      <ListView horizontal={true}
+        style={{height: 108}}
+        dataSource={this.state.advObjSource}
+        renderRow={this.renderRow}
+      />
+      <Text style={styles.titleText}>Choose Gift Wrap:</Text>
+      <ListView horizontal={true}
+        style={{height: 108}}
+        dataSource={this.state.goalObjSource}
+        renderRow={this.renderRow}
+      />
+      <RkButton onPress={() => this.sendQuest()} 
+          style={[{position: 'absolute', left: '40%', top: '90%', width: '20%', height: '8%', marginBottom: '2%',}, styles.button]} >
           <FIcon name={'check'} color='#ffffff' size={30} />
       </RkButton>
       </View>
@@ -91,4 +229,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.tintColor,
     borderRadius: 40,
   },
+  titleText: {
+    color: Colors.tintColor,
+    fontWeight: 'bold',  
+    fontSize: 14,
+  }
 });

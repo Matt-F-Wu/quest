@@ -58,7 +58,7 @@ export default class SelectLocation extends React.Component {
   		Alert.alert("Hide at this location?", "",
         [
           {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-          {text: 'OK', onPress: () => {this.proceed()} },
+          {text: 'OK', onPress: () => {this.proceed(false)} },
         ]
       );
   	}else{
@@ -66,16 +66,16 @@ export default class SelectLocation extends React.Component {
   	}
   }
 
-  proceed(){
+  proceed(indoor){
     const { navigate } = this.props.navigation;
-    navigate('CustomizeGame', {main_remount: this.props.navigation.state.params.main_remount});
+    navigate('CustomizeGame', {main_remount: this.props.navigation.state.params.main_remount, indoor: indoor, hideout: this.state.hideout});
   }
 
   proceedWrapper(){
     Alert.alert("Skipping this step will send an Indoor Quest!", "aka a game to play at home",
         [
           {text: 'Cancel', onPress: () => console.log('Not Skipping'), style: 'cancel'},
-          {text: 'OK', onPress: () => {this.proceed()} },
+          {text: 'OK', onPress: () => {this.proceed(true)} },
         ]
       );
   }
@@ -117,7 +117,7 @@ export default class SelectLocation extends React.Component {
       </MapView>
       <RkButton onPress={() => this.proceedWrapper()} 
           style={[{position: 'absolute', left: '15%', top: '90%', width: '20%', height: '8%', marginBottom: '2%',}, styles.button]} >
-          <Text>Skip</Text>
+          <Text style={{color: 'white', fontWeight: 'bold'}}>Skip</Text>
       </RkButton>
       <RkButton onPress={() => this.proceed()} 
           style={[{position: 'absolute', left: '65%', top: '90%', width: '20%', height: '8%', marginBottom: '2%',}, styles.button]} >

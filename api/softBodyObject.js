@@ -298,8 +298,8 @@ export default class softBodyObject {
 			}
 
 			for(i = 1; i < ySegs - 1; i++){
-				this.pins.push(i);
-				this.pins.push(i + xSegs - 1);
+				this.pins.push(i*xSegs);
+				this.pins.push(i*xSegs + xSegs - 1);
 			}
 
 			for(i = 0; i < xSegs; i++){
@@ -332,7 +332,7 @@ export default class softBodyObject {
 		if (initialPosition){
 			this.object.position.set( initialPosition.x, initialPosition.y, initialPosition.z );
 		}
-		scene.add( this.object );
+		
 		var time = Date.now();
 
 		windStrength = Math.abs(Math.cos(time / 7000)*8);
