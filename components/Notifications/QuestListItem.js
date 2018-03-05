@@ -38,6 +38,11 @@ export default class QuestListItem extends React.Component {
 				progressBorderWidth: 2,
 			});
 		}
+		if (this.state.received == true) {
+			this.setState({
+				progressColor: 'transparent',
+			});
+		}
 	}
 
 	/* Set profile image to picture, or ? mark if unopened and recevied */

@@ -29,7 +29,7 @@ const questsArr = [
 	    has_ghost: true, indoor: false, goal: 'gift',
     },
     {
-    	name: 'High school Friends', 
+    	name: 'High school friends', 
     	date: 'Received 2 days ago',
     	image: require('../assets/images/profileImages/woman2.png'),
     	progress: 'unopened',
