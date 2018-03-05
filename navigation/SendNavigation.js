@@ -12,7 +12,7 @@ import SelectLocation from '../sendQuestScreens/SelectLocation';
 import AddCaption from '../sendQuestScreens/AddCaption';
 import CapturePicture from '../sendQuestScreens/CapturePicture';
 import Compose from '../sendQuestScreens/Compose';
-import Compose from '../sendQuestScreens/CustomizeGame';
+import CustomizeGame from '../sendQuestScreens/CustomizeGame';
 import CameraLandingPage from '../sendQuestScreens/CameraLandingPage';
 import ContactList from '../components/SendQuest/ContactList';
 

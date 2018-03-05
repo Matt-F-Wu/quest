@@ -17,7 +17,6 @@ const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 const radius = Dimensions.get('window').width / 3;
 
-
 data = [ 
 	{
     	name: 'Lily', 
@@ -49,7 +48,7 @@ data = [
 /*
  * Returns a view that has a center button surrounded by the favorites equally spaced on a circular boundary
  */
-makeFavoritesView = (navigation, remount, main_remount) => {
+makeFavoritesView = (self) => {
 	var favorites = [];
 
 	let n = data.length;						// Number of favorites to render
@@ -63,9 +62,8 @@ makeFavoritesView = (navigation, remount, main_remount) => {
 
 	// Render send Quest button
 	favorites.push(
-		<TouchableOpacity style={[styles.sendButtonContainerStyle, {top: sendButtonTop, left: sendButtonLeft}]}>
-			<Icon name="send-o" size={sendButtonSize} color={Colors.tintColor} 
-			      onPress={() => navigation.navigate('Compose', {remount: remount, main_remount: main_remount})}/>
+		<TouchableOpacity style={[styles.sendButtonContainerStyle, {top: sendButtonTop, left: sendButtonLeft}]} onPress={() => self.props.transition(1)}>
+			<Icon name="send-o" size={sendButtonSize} color={Colors.tintColor} />
 		</TouchableOpacity>
 	)
 
@@ -88,7 +86,7 @@ makeFavoritesView = (navigation, remount, main_remount) => {
 		// Render next favorite
 		favorites.push(
 			<TouchableOpacity style={[styles.circleContainer, {top: currTop, left: currLeft}]}
-							  onPress={() => navigation.navigate('CapturePicture', {remount: remount, main_remount: main_remount})}>
+							  onPress={() => self.props.transition(0)}>
 	 			<Image resizeMode='cover' 
 	   	   			   source={data[i].image}
 		       		   style={[styles.profileImg]} />
@@ -105,9 +103,7 @@ makeFavoritesView = (navigation, remount, main_remount) => {
 export default class FavoritesView extends React.Component {
 
 	render() {
-		var remount = this.props.remount;
-		var main_remount = this.props.main_remount;
-		let favorites = makeFavoritesView(this.props.navigation, remount, main_remount);
+		let favorites = makeFavoritesView(this);
 
 		return (
 			<View style={{width:'100%', height:'100%', justifyContent: 'center', alignItems: 'center'}}>

@@ -11,6 +11,7 @@ const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/register';
 var isShown = false;
 const notification_h = 100;
 var mounted = false;
+var notificationData;
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
@@ -24,6 +25,7 @@ export default class App extends React.Component {
 
     if(isShown) {
       toValue = -100;
+      this.swiper.setIndex(0);
     }
 
     Animated.spring(
@@ -51,9 +53,10 @@ export default class App extends React.Component {
         receivedNotification,
         lastNotificationId: receivedNotification.notificationId,
       });
-      //TODO: Notification received, do something
+      //TODO: Notification received, do something with receivedNotification.data
+      notificationData = receivedNotification.data;
       this._showNotification();
-      console.debug(receivedNotification.body.data);
+      
       //Auto collapsing the notification after 2 seconds
       setTimeout(() => {
         if(mounted && isShown){
@@ -125,7 +128,7 @@ export default class App extends React.Component {
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
-          <SwiperNavigation />
+          <SwiperNavigation ref={(ref) => this.swiper = ref} />
           <Animated.View
             style={[styles.subView,
               {transform: [{translateY: this.state.bounceValue}]}]}>

@@ -15,6 +15,11 @@ import SendNavigation from './SendNavigation';
 
 
 export default class SwiperNavigation extends Component {
+  state = {index: 1};
+
+  setIndex(i){
+    this.setState({index: i});
+  }
 
   render() {
     let prevButton = <Icon name="ios-chatboxes-outline" size={30} color={Colors.tintColor} />
@@ -26,13 +31,11 @@ export default class SwiperNavigation extends Component {
     let homeButton = <Icon name="ios-home-outline" size={55} color={Colors.tintColor} />
     let selectedHomeButton = <Icon name="ios-home" size={55} color={Colors.tintColor} />
 
-
-
     return (
       
       <Swiper 
         loop={false}
-        index={1}
+        index={this.state.index}
         showsPagination={false}
         showsButtons={true}
         prevButton={prevButton}
