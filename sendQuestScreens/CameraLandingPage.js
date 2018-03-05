@@ -32,7 +32,7 @@ export default class CameraLandingPage extends CameraBase {
       return [
           <BlurView key={'blur_overlay'} tint="dark" intensity={100} style={{position: 'absolute', height: '100%', width: '100%'}} />,
           <FavoritesView key={'favorites_view'} style={{position: 'absolute', height: '100%', width: '100%'}} 
-                         transition={(i) => {console.debug("Called: " + i); this.setState({mountCam: false}); navigate('Compose', {remount: this.remount, main_remount: this.remount, info: i})}}/>,
+                         transition={(i) => {console.debug("Called: " + i); this.setState({mountCam: false}); navigate('Compose', {remount: this.remount, main_remount: this.remount, info: i})}} />,
           <ProfileOverlay key={'p_overlay'}/>,
       ];
     }
