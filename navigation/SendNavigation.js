@@ -14,11 +14,15 @@ import CapturePicture from '../sendQuestScreens/CapturePicture';
 import Compose from '../sendQuestScreens/Compose';
 import Compose from '../sendQuestScreens/CustomizeGame';
 import CameraLandingPage from '../sendQuestScreens/CameraLandingPage';
+import ContactList from '../components/SendQuest/ContactList';
 
 const SendStackNavigator = StackNavigator(
   {
     Main: {
       screen: CameraLandingPage,
+    },
+    ContactList: {
+      screen: ContactList
     },
     Compose: {
       screen: Compose,

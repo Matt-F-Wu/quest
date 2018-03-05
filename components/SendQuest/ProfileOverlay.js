@@ -79,15 +79,17 @@ export default class ProfileOverlay extends Component {
           
 
                    <View style={styles.buttons}> 
-                    <Icon.Button name="ios-person-outline" size={50} borderRadius={12} color={Colors.tintColor} backgroundColor="transparent" onPress={this.SendAQuest}>
+                    <TouchableOpacity onPress={this.sendAQuest}>
+                    <Icon.Button name="ios-person-outline" size={50} borderRadius={12} color={Colors.tintColor} backgroundColor="transparent">
                       <Text style={{fontFamily: 'Arial', fontSize: 25, color:Colors.tintColor }}>Friends</Text>
                     </Icon.Button>
+                    </TouchableOpacity>
 
-                    <Icon2.Button name="bag" size={35} borderRadius={12} color={Colors.tintColor} backgroundColor="transparent" onPress={this.SendAQuest}>
+                    <Icon2.Button name="bag" size={35} borderRadius={12} color={Colors.tintColor} backgroundColor="transparent">
                       <Text style={{fontFamily: 'Arial', fontSize: 25, color:Colors.tintColor }}>Stash</Text>
                     </Icon2.Button>
 
-                    <Icon.Button name="ios-cart-outline" size={35} borderRadius={12} color={Colors.tintColor} backgroundColor="transparent" onPress={this.SendAQuest}>
+                    <Icon.Button name="ios-cart-outline" size={35} borderRadius={12} color={Colors.tintColor} backgroundColor="transparent">
                       <Text style={{fontFamily: 'Arial', fontSize: 25, color:Colors.tintColor }}>Shop</Text>
                     </Icon.Button>
                   </View>
