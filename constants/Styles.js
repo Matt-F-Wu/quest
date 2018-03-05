@@ -6,7 +6,7 @@ const u_styles = StyleSheet.create({
     flexDirection: 'row',
     height: 100,
     backgroundColor: 'white',
-    borderBottomColor: '#333333',
+    borderBottomColor: Colors.tintColor,
     borderBottomWidth: 1,
     alignItems: 'center',
   },
@@ -17,8 +17,8 @@ const u_styles = StyleSheet.create({
   	opacity: 0.0,
   },
   imageContainer: {
-  	width: 108,
-  	height: 108,
+  	width: 120,
+  	height: 120,
   },
   contactImg: {
   	width: 100,

@@ -142,7 +142,13 @@ export default class CustomizeGame extends React.Component {
         this.state[key + "Data"][i].selected = false;
       }
     }
-    //this.state[key + "ObjSource"] = ds.cloneWithRows(this.state[key + "Data"]);
+    if(key == 'nav'){
+      this.setState({navObjSource: ds.cloneWithRows(this.state[key + "Data"])});
+    }else if(key == "adv"){
+      this.setState({advObjSource: ds.cloneWithRows(this.state[key + "Data"])});
+    }else{
+      this.setState({goalObjSource: ds.cloneWithRows(this.state[key + "Data"])});
+    }
     console.debug("Select item");
   }
 
@@ -198,23 +204,29 @@ export default class CustomizeGame extends React.Component {
     return (
       <View style={{ flex: 1 }}>
       <Text style={styles.titleText}>Choose Navigation Theme:</Text>
-      <ListView horizontal={true}
-        style={{height: 108}} 
+      <View style={{height: 120}}>
+      <ListView horizontal={true} 
         dataSource={this.state.navObjSource}
         renderRow={this.renderRow}
+        removeClippedSubviews={false}
       />
+      </View>
       <Text style={styles.titleText}>Choose Adversaries:</Text>
+      <View style={{height: 120}}>
       <ListView horizontal={true}
-        style={{height: 108}}
         dataSource={this.state.advObjSource}
         renderRow={this.renderRow}
+        removeClippedSubviews={false}
       />
+      </View>
       <Text style={styles.titleText}>Choose Gift Wrap:</Text>
+      <View style={{height: 120}}>
       <ListView horizontal={true}
-        style={{height: 108}}
         dataSource={this.state.goalObjSource}
         renderRow={this.renderRow}
+        removeClippedSubviews={false}
       />
+      </View>
       <RkButton onPress={() => this.sendQuest()} 
           style={[{position: 'absolute', left: '40%', top: '90%', width: '20%', height: '8%', marginBottom: '2%',}, styles.button]} >
           <FIcon name={'check'} color='#ffffff' size={30} />
@@ -232,6 +244,7 @@ const styles = StyleSheet.create({
   titleText: {
     color: Colors.tintColor,
     fontWeight: 'bold',  
-    fontSize: 14,
+    fontSize: 16,
+    margin: 10,
   }
 });

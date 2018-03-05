@@ -110,14 +110,18 @@ export default class SelectLocation extends React.Component {
 
         <MapView.Marker
           coordinate = {{latitude: 37.4268463, longitude: -122.1658255}}
-          title={' is here!'}
-          image={require('../assets/images/person.png')}>
+          title={' is here!'}>
+          <Image
+            source={this.props.navigation.state.params.user_image}
+            resizeMode='cover'
+            style={{width: 80, height: 80, borderRadius: 40}}
+          />
         </MapView.Marker>
 
       </MapView>
       <RkButton onPress={() => this.proceedWrapper()} 
           style={[{position: 'absolute', left: '15%', top: '90%', width: '20%', height: '8%', marginBottom: '2%',}, styles.button]} >
-          <Text style={{color: 'white', fontWeight: 'bold'}}>Skip</Text>
+          <Text style={{color: 'white', fontWeight: 'bold', fontSize: 16}}>Skip</Text>
       </RkButton>
       <RkButton onPress={() => this.proceed()} 
           style={[{position: 'absolute', left: '65%', top: '90%', width: '20%', height: '8%', marginBottom: '2%',}, styles.button]} >

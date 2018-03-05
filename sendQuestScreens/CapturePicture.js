@@ -48,7 +48,7 @@ export default class CapturePicture extends CameraBase {
       console.debug(photo.uri);
       //unmount camera
       this.setState({mountCam: false});
-      navigate('AddCaption', {photo: photo, remount: this.remount, main_remount: this.props.navigation.state.params.main_remount});
+      navigate('AddCaption', {photo: photo, remount: this.remount, main_remount: this.props.navigation.state.params.main_remount, user_image: this.props.navigation.state.params.image});
     }
   };
 
