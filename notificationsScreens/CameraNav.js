@@ -1,5 +1,5 @@
 import Expo, { Asset, Location, Permissions, MapView } from 'expo';
-import { View, Dimensions, StyleSheet, Animated, Text, Image, Modal } from 'react-native';
+import { View, Dimensions, StyleSheet, Animated, Text, Image, Modal, Alert } from 'react-native';
 import React from 'react';
 const THREE = require('three');
 global.THREE = THREE;
@@ -63,6 +63,7 @@ export default class App extends React.Component {
     animation_opacity: 0.0,
     overlay_gif: require('../assets/images/burst.gif'),
     game_feedback: new Animated.Value(0),
+    right_env: false,
   }
 
   // TODO: AR View requires customized back button, resetting states + global variables
@@ -71,7 +72,7 @@ export default class App extends React.Component {
     style:{ position: 'absolute', backgroundColor: 'transparent', zIndex: 100, top: 0, left: 0, right: 0 },
     headerLeft: (
       <Icon name={'chevron-left'} size={32} style={{padding: 10, marginLeft: 10, color: Colors.tintColor,}}
-                            onPress={ () => {exiting = true; msg_shown = false; showArrows = true; navigation.goBack();} } />
+                            onPress={ () => {exiting = true; msg_shown = false; showArrows = true; self.setState({right_env: false, loaded: false}); navigation.goBack();} } />
       ),
   });
 
@@ -81,6 +82,8 @@ export default class App extends React.Component {
     self = this;
     if(this.props.navigation.state.params.indoor){
       obj_per_scene = 1;
+    }else{
+      obj_per_scene = 3;
     }
   }
 
@@ -169,6 +172,35 @@ export default class App extends React.Component {
                       //console.debug("nextStop: " + nextStop);
                       if(nextStop){
                         this.setState({got_route: true});
+                        //Check is the user is indoor or not, if indoor, display a message
+                        if(!this.props.navigation.state.params.indoor){
+                          const geo_key = secret.GeoCoding;
+                          const geo_url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${origin}&key=${geo_key}`;
+                          fetch(geo_url)
+                            .then(response => response.json())
+                            .then(responseJson => {
+                              if(responseJson.results.length){
+                                if(responseJson.results[0].geometry.location_type === "ROOFTOP"){
+                                  //the user is likely indoors, give the user a heads up
+                                  Alert.alert("It's beautiful outside!", "This quest is intended for outdoors, yet we detect that you are indoors, wanna go out?",
+                                    [
+                                      {text: 'Ignore', onPress: () => this.setState({right_env: true}), style: 'cancel'},
+                                      {text: "I'm out now", onPress: () => this.setState({right_env: true}) },
+                                    ]
+                                  );
+                                }else{
+                                  //already outdoors
+                                  this.setState({right_env: true});
+                                }
+                              }else{
+                                //something went wrong
+                                //console.debug("Cannot determine indoor/outdoor..." + JSON.stringify(responseJson) );
+                                this.setState({right_env: true});
+                              }
+                            }).catch(e => {console.warn(e)});
+                        }else{
+                          this.setState({right_env: true});
+                        }
                       }else{
                         /*
                         receiver deviated from route, set got_route to false
@@ -650,6 +682,7 @@ export default class App extends React.Component {
           showArrows = true;
           scene.remove(chestObj);
           console.debug("Exiting this view! msg_shown: " + msg_shown);
+          this.setState({right_env: false, loaded: false});
           /*
           Resetting animate function 
           makes sure that returning to GL view 
@@ -885,7 +918,9 @@ export default class App extends React.Component {
       </RkButton>
       
       </View>
-    ) : <Expo.AppLoading />;
+    ) : (<View style={{flex: 1, backgroundColor: Colors.backgroundColor, alignItems: 'center', justifyContent: 'center'}}>
+          <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold'}}>Loading experience...</Text>
+          </View>);
   }
 
 }
