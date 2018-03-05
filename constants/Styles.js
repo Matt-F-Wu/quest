@@ -4,11 +4,12 @@ import Colors from './Colors';
 const u_styles = StyleSheet.create({
   rowStyle: {
     flexDirection: 'row',
-    height: 100,
+    height: 120,
     backgroundColor: 'white',
     borderBottomColor: Colors.tintColor,
     borderBottomWidth: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   contentContainer: {
     flexWrap: 'wrap',
@@ -17,8 +18,8 @@ const u_styles = StyleSheet.create({
   	opacity: 0.0,
   },
   imageContainer: {
-  	width: 120,
-  	height: 120,
+  	width: 108,
+  	height: 108,
   },
   contactImg: {
   	width: 100,
@@ -32,11 +33,12 @@ const u_styles = StyleSheet.create({
 const s_styles = StyleSheet.create({
   rowStyle: {
     flexDirection: 'row',
-    height: 100,
+    height: 120,
     backgroundColor: 'white',
     borderBottomColor: '#333333',
     borderBottomWidth: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   contentContainer: {
     flexWrap: 'wrap',

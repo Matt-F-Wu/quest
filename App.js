@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Colors from './constants/Colors';
 import Touchables from './components/Touchables';
 import SwiperNavigation from './navigation/SwiperNavigation';
-
+import RootNavigator from './navigation/RootStackNavigator';
 
 const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/register';
 var isShown = false;
@@ -25,7 +25,6 @@ export default class App extends React.Component {
 
     if(isShown) {
       toValue = -100;
-      this.swiper.setIndex(0);
     }
 
     Animated.spring(
@@ -56,7 +55,7 @@ export default class App extends React.Component {
       //TODO: Notification received, do something with receivedNotification.data
       notificationData = receivedNotification.data;
       this._showNotification();
-      
+      this.swiper.oneMoreNotif();
       //Auto collapsing the notification after 2 seconds
       setTimeout(() => {
         if(mounted && isShown){
@@ -133,7 +132,7 @@ export default class App extends React.Component {
             style={[styles.subView,
               {transform: [{translateY: this.state.bounceValue}]}]}>
             <Touchables 
-              onClick={this._showNotification}
+              onClick={() => {this._showNotification(); this.swiper.setIndex(0);}}
               hasImage={true} 
               title={'Notification!'} subTitle={'Someone just sent you a new Quest!'}
               text={'Click to embark on your journey'} styles={styles} 

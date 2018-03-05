@@ -15,26 +15,33 @@ import SendNavigation from './SendNavigation';
 
 
 export default class SwiperNavigation extends Component {
-  state = {index: 1};
+  state = {index: 1, num_notif: 0};
 
   setIndex(i){
-    this.setState({index: i});
+    //Hao: This doesn't actually work, but have no time to fix this...
+    this.swiper.scrollBy(i);
+  }
+
+  oneMoreNotif(){
+    let cur = this.state.num_notif;
+    this.setState({num_notif: cur + 1});
   }
 
   render() {
-    let prevButton = <Icon name="ios-notifications-outline" size={30} color={Colors.tintColor} />
-    let selectedPrevButton = <Icon name="ios-notifications" size={30} color={Colors.tintColor} />
+    let prevButton = <Icon name="ios-notifications-outline" size={30} color={Colors.tintColor} />;
+    let selectedPrevButton = <Icon name="ios-notifications" size={30} color={Colors.tintColor} />;
 
-    let nextButton = <Icon name="ios-apps-outline" size={30} color={Colors.tintColor} />
-    let selectedNextButton = <Icon name="ios-apps" size={30} color={Colors.tintColor} />
+    let nextButton = <Icon name="ios-apps-outline" size={30} color={Colors.tintColor} />;
+    let selectedNextButton = <Icon name="ios-apps" size={30} color={Colors.tintColor} />;
 
-    let homeButton = <Icon name="ios-home-outline" size={55} color={Colors.tintColor} />
-    let selectedHomeButton = <Icon name="ios-home" size={55} color={Colors.tintColor} />
+    let homeButton = <Icon name="ios-home-outline" size={55} color={Colors.tintColor} />;
+    let selectedHomeButton = <Icon name="ios-home" size={55} color={Colors.tintColor} />;
 
     return (
       
-      <Swiper 
+      <Swiper ref={(ref) => this.swiper = ref} 
         loop={false}
+        num_notif={this.state.num_notif}
         index={this.state.index}
         showsPagination={false}
         showsButtons={true}

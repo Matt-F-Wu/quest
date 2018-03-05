@@ -24,7 +24,7 @@ export default class ContactList extends Component {
 	/*TODO: make a contact list here*/
   data = [  
   {
-    name: 'Alejandrina', 
+    name: 'Alex', 
     index: 1,
     location: 'Stanford, CA',
     time: '2 weeks ago', 

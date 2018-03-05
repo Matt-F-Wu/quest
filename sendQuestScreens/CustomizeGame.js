@@ -202,7 +202,7 @@ export default class CustomizeGame extends React.Component {
     console.debug("Render...");
 
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
       <Text style={styles.titleText}>Choose Navigation Theme:</Text>
       <View style={{height: 120}}>
       <ListView horizontal={true} 
