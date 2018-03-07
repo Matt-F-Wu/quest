@@ -881,7 +881,7 @@ export default class App extends React.Component {
       </FadeOutView>
 
       <ExpandableView style={{position: 'absolute', backgroundColor: Colors.blackMask}}
-        config={{initialWidth: 0, initialHeight: 0, endWidth: screenWidth * 0.8, endHeight: screenHeight * 0.8, anchorX: screenWidth * 0.1, anchorY: screenHeight * 0.2}}
+        config={{initialWidth: 0, initialHeight: 0, endWidth: screenWidth * 0.8, endHeight: screenHeight * 0.8, anchorX: screenWidth * 0.1, anchorY: screenHeight * 0.8}}
         expand={showDash}>
         
         <View style={styles.innerContainer}>

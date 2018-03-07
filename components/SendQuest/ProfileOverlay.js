@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Modal, TouchableWithoutFeedback, TouchableOpacity, Text, Stylesheet, View, Image} from 'react-native';
+import {TouchableWithoutFeedback, TouchableOpacity, Text, StyleSheet, View, Image, Dimensions} from 'react-native';
+import ExpandableView from '../ExpandableView';
 import * as Animatable from 'react-native-animatable';
 
 // Color, layout
@@ -21,69 +22,64 @@ const modalColor = 'rgba(0, 0, 0, .75)';
 const modalAnimation = 'fade';
 const overlayAnimation = 'fadeInDown';
 const animationDuration = 1000;
-const profileIconSize = 45;
 
-
+var screenWidth = 0;
+var screenHeight = 0;
 
 export default class ProfileOverlay extends Component {
   state = {
     modalVisible: false,
   };
 
-  openModal() {
-    this.setState({modalVisible:true});
+  toggleModal() {
+    let nv = !this.state.modalVisible;
+    //console.debug(nv + " Trying to open: " + screenWidth + " " + screenHeight);
+    this.setState({modalVisible:nv});
   }
 
   closeModal() {
     this.setState({modalVisible:false});
   }
 
+  componentDidMount(){
+    screenWidth = Dimensions.get('window').width;
+    screenHeight = Dimensions.get('window').height;
+  }
+
   render() {
-    return (
-        <View style={styles.container}>
-          
-          <Modal
-          visible={this.state.modalVisible}
-          transparent={true}
-          backgroundColor={modalColor}
-          animationType={modalAnimation}
-          onDismiss={() => this.closeModal()}>
-           
-            <TouchableWithoutFeedback onPress= {() => this.closeModal()} >
-              <Animatable.View 
-              animation={overlayAnimation}
-              duration={animationDuration} 
-              easing='ease'
-              useNativeDriver style={styles.overlayContainer}>
-              
+    return (  
+        <ExpandableView style={{position: 'absolute', backgroundColor: Colors.blackMask}}
+          config={{initialWidth: 0, initialHeight: 0, endWidth: screenWidth, endHeight: screenHeight, anchorX: 0, anchorY: 0}}
+          expand={this.state.modalVisible}
+          down={true}>
+         
+          <TouchableWithoutFeedback onPress= {() => {console.debug("Touched outside..."); this.closeModal();}} >
+            
+              <View style={styles.innerContainer}>
+                  
+                  <Image 
+                    source={require('../../assets/images/profileImages/ian.jpg')}
+                    style={styles.profileImg}
+                  />
 
-              
-                <View style={styles.innerContainer}>
-                    
-                    <Image 
-                      source={require('../../assets/images/profileImages/ian.jpg')}
-                      style={styles.profileImg}
-                    />
-
-
-                    <View style={styles.info}>
-                      <Text style={styles.text}> ianjones763 | Coins: 525 </Text>
-                      <View style={styles.settings}>
-                        <Icon3 name="bicycle" size={25} color={Colors.tintColor} />
-                        <Icon4 name="more-vertical" size={25} color={Colors.tintColor}  />
-                        <Icon5 name="car-side" size={35} color={Colors.tintColor}  />
-                        <Icon4 name="more-vertical" size={25} color={Colors.tintColor}  />
-                        <Icon2 name="settings" size={25} color={Colors.tintColor} />
-                      </View>
+                  <View style={styles.info}>
+                    <Text style={styles.text}> ianjones763 | Coins: 525 </Text>
+                    <View style={styles.settings}>
+                      <Icon3 name="bicycle" size={25} color={Colors.tintColor} />
+                      <Icon4 name="more-vertical" size={25} color={Colors.tintColor}  />
+                      <Icon5 name="car-side" size={35} color={Colors.tintColor}  />
+                      <Icon4 name="more-vertical" size={25} color={Colors.tintColor}  />
+                      <Icon2 name="settings" size={25} color={Colors.tintColor} />
                     </View>
-          
-
-                   <View style={styles.buttons}> 
-                    <TouchableOpacity onPress={this.sendAQuest}>
-                    <Icon.Button name="ios-person-outline" size={50} borderRadius={12} color={Colors.tintColor} backgroundColor="transparent">
+                  </View>
+         
+                  <View style={styles.buttons}>
+                    <Icon.Button name="ios-person-outline" size={50} borderRadius={12} 
+                      color={Colors.tintColor} 
+                      backgroundColor="transparent"
+                      onPress={() => {this.props.toProfile(); console.debug("Go!!!")}}>
                       <Text style={{fontFamily: 'Arial', fontSize: 25, color:Colors.tintColor }}>Friends</Text>
                     </Icon.Button>
-                    </TouchableOpacity>
 
                     <Icon2.Button name="bag" size={35} borderRadius={12} color={Colors.tintColor} backgroundColor="transparent">
                       <Text style={{fontFamily: 'Arial', fontSize: 25, color:Colors.tintColor }}>Stash</Text>
@@ -94,54 +90,24 @@ export default class ProfileOverlay extends Component {
                     </Icon.Button>
                   </View>
 
-
-
-                </View>
-             
-              </Animatable.View>
+              </View>
+      
+          </TouchableWithoutFeedback>
         
-            </TouchableWithoutFeedback>
-          
-          </Modal>
-
-          <TouchableOpacity style={styles.profileIcon}>
-            <Icon6 style={{position:'absolute', top: 5}} name="user" size={profileIconSize} color={Colors.tintColor} onPress={() => this.openModal()} />
-          </TouchableOpacity>   
-
-        </View>
+        </ExpandableView>   
     );
   }
 }
 
 
 
-const styles = {
-
-  // COPY LANDING PAGE STYLES
-
-  container: { 
-    height: Layout.headerHeight,
-    position:'absolute',
-    width: 57,
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    flexDirection: 'column',
-    backgroundColor: 'transparent',
-  },
-
+const styles = StyleSheet.create({
   innerContainer: {
     height: '100%',
     alignItems: 'center',
     marginHorizontal: 100,
     marginBottom: 50,
   },
-
-  profileIcon: {
-    height: profileIconSize + 5,
-    width: profileIconSize,
-    backgroundColor: 'transparent',
-  },
-
 
   // OVERLAY STYLES
 
@@ -179,4 +145,4 @@ const styles = {
     justifyContent: 'center',
   },
 
-};
+});
