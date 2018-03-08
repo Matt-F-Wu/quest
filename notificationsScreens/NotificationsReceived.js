@@ -15,7 +15,7 @@ var refresh = false;
 const questsArrBase = [
 	{
       id: 0,
-      key: '0',
+      key: '00',
 	    name: 'Your class mate', 
 	    date: 'Received at 10:01 AM',
 	    progress: 'in progress',
@@ -24,7 +24,7 @@ const questsArrBase = [
 	},
 	{
       id: 1,
-      key: '1',
+      key: '01',
 	    name: 'You met at a bar', 
 	    date: 'Received 1 day ago', 
 	    progress: 'unopened',
@@ -33,7 +33,7 @@ const questsArrBase = [
   },
   {
       id: 2,
-      key: '2',
+      key: '02',
     	name: 'High school friends', 
     	date: 'Received 2 days ago',
     	progress: 'unopened',
@@ -46,6 +46,7 @@ export default class NotificationsReceived extends React.Component {
 	//Hao Wu: removing header here
   state = {
     questsArr: [],
+    counter: 0,
   }
 
 	static navigationOptions = ({navigation}) =>({
@@ -114,6 +115,7 @@ export default class NotificationsReceived extends React.Component {
 				/>
 
       		<FlatList
+            key={this.state.counter}
             onPress={()=>{this.setState({ refresh: !refresh})}} 
             contentContainerStyle={styles.contentContainer}
         		data={this.state.questsArr}
@@ -126,7 +128,8 @@ export default class NotificationsReceived extends React.Component {
         				onPress={() => {
                   if(item.received) {
                     let n_qA = this.state.questsArr.map((q) => {if(q.id === item.id){q.progress = 'in progress';} return q;});
-                    this.setState({questsArr: []}, () => n_qA.forEach((q) => this.state.questsArr.push(q)));
+                    this.setState({questsArr: n_qA, counter: this.state.counter + 1});
+                    //Hao: ^change key to trigger re-render, this trick took me 3 hours to find
                     
                     AsyncStorage.mergeItem(item.id, 
                       JSON.stringify({progress: 'in progress'}), 
