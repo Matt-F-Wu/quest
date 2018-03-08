@@ -18,6 +18,7 @@
     "react-native-atoz-listview": "0.0.7",
     "react-native-camera": "^0.12.0",
     "react-native-elements": "^0.19.0",
+    "react-native-event-listeners": "^1.0.3",
     "react-native-fast-image": "^2.0.1",
     "react-native-lookback": "^2.2.0",
     "react-native-maps": "^0.18.3",

@@ -1,6 +1,6 @@
 import React from 'react';
-import {Text, View, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
-
+import {Text, View, FlatList, StyleSheet, TouchableOpacity, AsyncStorage} from 'react-native';
+import { EventRegister } from 'react-native-event-listeners';
 // Search bar
 import { SearchBar } from 'react-native-elements';
 
@@ -10,49 +10,101 @@ import Colors from '../constants/Colors';
 // Component imports
 import QuestListItem from '../components/Notifications/QuestListItem';
 
-
-const questsArr = [
+import utils from '../api/utils';
+var refresh = false;
+const questsArrBase = [
 	{
+      id: 0,
+      key: '0',
 	    name: 'Your class mate', 
 	    date: 'Received at 10:01 AM',
-	    image: require('../assets/images/profileImages/woman7.png'),
 	    progress: 'in progress',
 	    received: true,
 	    has_ghost: false, indoor: true, goal: 'portal',
 	},
 	{
+      id: 1,
+      key: '1',
 	    name: 'You met at a bar', 
 	    date: 'Received 1 day ago', 
-	    image: require('../assets/images/profileImages/man2.png'),
 	    progress: 'unopened',
 	    received: true,
 	    has_ghost: true, indoor: false, goal: 'gift',
-    },
-    {
+  },
+  {
+      id: 2,
+      key: '2',
     	name: 'High school friends', 
     	date: 'Received 2 days ago',
-    	image: require('../assets/images/profileImages/woman2.png'),
     	progress: 'unopened',
     	received: true,
-    },
+  },
 ];
 
 
 export default class NotificationsReceived extends React.Component {
-	//Hao Wu: removing header here 
-	static navigationOptions = {
-      header: null,
-  	};
+	//Hao Wu: removing header here
+  state = {
+    questsArr: [],
+  }
 
-	static navigationOptions = {
-    	header: null,
-  	};
+	static navigationOptions = ({navigation}) =>({
+    header: null,
+  });
+
+  componentWillMount() {
+    this.populateReNotif();
+    this.listener = EventRegister.addEventListener('ReceivedQuest', (data) => {
+        this.populateReNotif();
+    });
+  }
+
+  componentWillUnmount() {
+    EventRegister.removeEventListener(this.listener)
+  }
+
+  populateReNotif = async () => {
+    console.debug("***Populate Received Notifications***");
+    //clear old and repopulate
+    let questsArr = [];
+    //questsArrBase.forEach((p) => questsArr.push(p));
+    try {
+      let keys = await AsyncStorage.getAllKeys();
+      let pairs = await AsyncStorage.multiGet(keys);
+      if (pairs !== null){
+        // We have data!!
+        pairs.forEach(
+          (p) => {
+            if(p[0].startsWith('@ReceivedQuests')){
+              let data = JSON.parse(p[1]);
+              questsArr.push(
+              {
+                id: p[0],
+                name: data.hintText || 'Mystery', 
+                date: utils.timeDiffOutput(Date.now(), data.timestamp), 
+                progress: data.progress || 'unopened', 
+                received: true, 
+                has_ghost: data.adv !== '',
+                indoor: data.indoor,
+                nav: data.nav,
+                adv: data.adv,
+                goal: data.goal,
+                captionText: data.captionText,
+              });
+              //console.debug("Pushed...");
+            }
+        });
+        this.setState({questsArr: questsArr});
+      }
+    } catch (error) {
+      console.debug(error);
+    }
+  }
 
 	render() {
+    console.debug(this.state.questsArr);
 		const { navigate } = this.props.navigation;
-
 		return (
-
 			<View style={styles.container}>
 				<SearchBar
 					round
@@ -61,16 +113,29 @@ export default class NotificationsReceived extends React.Component {
 					placeholder='Recent Quests' 
 				/>
 
-          		<FlatList contentContainerStyle={styles.contentContainer}
-            		data={questsArr}
-            		numColumns={1}
-            		keyExtractor={item => item.name}  // Key is concatenation of name, date, image url
-            		renderItem={({ item }) => (
-            			<QuestListItem name={item.name} date={item.date} 
-            				image={item.image} progress={item.progress} received={item.received}
-            				onPress={() => {if(item.received) {navigate('CameraNav', {has_ghost: item.has_ghost, indoor: item.indoor, goal: item.goal});} }}/>
-            		)}
-          		/>
+      		<FlatList
+            onPress={()=>{this.setState({ refresh: !refresh})}} 
+            contentContainerStyle={styles.contentContainer}
+        		data={this.state.questsArr}
+            extraData={this.state.refresh}
+        		numColumns={1}
+        		keyExtractor={item => item.id}  // Key is concatenation of name, date, image url
+        		renderItem={({ item }) => (
+        			<QuestListItem name={item.name} date={item.date} 
+        				image={item.image} progress={item.progress} received={item.received}
+        				onPress={() => {
+                  if(item.received) {
+                    let n_qA = this.state.questsArr.map((q) => {if(q.id === item.id){q.progress = 'in progress';} return q;});
+                    this.setState({questsArr: []}, () => n_qA.forEach((q) => this.state.questsArr.push(q)));
+                    
+                    AsyncStorage.mergeItem(item.id, 
+                      JSON.stringify({progress: 'in progress'}), 
+                      () => {navigate('CameraNav', {has_ghost: item.has_ghost, indoor: item.indoor, goal: item.goal});});
+                    
+                  } 
+                } }/>
+        		)}
+      		/>
 			</View>
 		)
 	}

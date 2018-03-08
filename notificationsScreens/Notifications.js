@@ -15,7 +15,7 @@ export default TabNavigator(
   { 
     NotificationsReceived: {
       screen: NotificationsReceived,
-      navigationOptions: { title: 'Received' }
+      navigationOptions: { title: 'Received'},
     },
     NotificationsSent: {
       screen: NotificationsSent,

@@ -83,9 +83,10 @@ export default class QuestListItem extends React.Component {
  				</View>
 
 			 	<View style={styles.textView}>
-		            <Text style={{fontFamily: Fonts.bodyFont, fontSize: Fonts.bodyFontSize, color: Colors.tintColor}}>{this.state.name}</Text>
+		            <Text style={{fontFamily: Fonts.bodyFont, fontSize: Fonts.bodyFontSize, color: this.state.progress == 'unopened'? Colors.tintColor : 'orange'}}>{this.state.name}</Text>
 		            <Text style={{fontFamily: Fonts.accentFont, fontSize: Fonts.accentFontSize, color: Colors.accentColor}}>{this.state.date}</Text>
-		            <Icon name="chevron-right" size={37} color={Colors.accentColor} style={{position:'absolute', top: 10, right: 10}}/>
+		            <Text style={{fontFamily: Fonts.accentFont, fontSize: Fonts.accentFontSize, color: this.state.progress == 'unopened'? Colors.tintColor : 'orange'}}>{this.state.progress}</Text>
+		            <Icon name="chevron-right" size={37} color={Colors.accentColor} style={{position:'absolute', top: 30, right: 10}}/>
       			</View>
 
 		  	</TouchableOpacity>
@@ -103,7 +104,6 @@ const styles = StyleSheet.create({
   	},
 
 	progressImageView: {
-	  	flex: 1,
 	  	justifyContent: 'center',
 	  	alignItems: 'center',
 	},
@@ -125,10 +125,11 @@ const styles = StyleSheet.create({
 	},
 
 	textView: {
-	  	height: 70,
-	  	alignSelf: 'flex-end',
-	  	flex: 2,
+		flex: 1,
+	  	height: '100%',
+	  	marginLeft: 20,
 	  	borderBottomWidth: 1,
 	  	borderBottomColor: Colors.accentColor,
+	  	justifyContent: 'center',
 	},
 });

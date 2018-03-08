@@ -33,34 +33,6 @@ const questsArr = [
 	    progress: 'unopened',
 	    received: false,
 	},
-	{
-	    name: 'Austin', 
-	    date: 'Completed 1 month ago', 
-	    image: require('../assets/images/profileImages/man8.png'),
-	    progress: 'completed',
-	    received: false,
-	},
-	{
-	    name: 'Alison', 
-	    date: 'Completed 1 year ago', 
-	    image: require('../assets/images/profileImages/woman5.png'),
-	    progress: 'completed',
-	    received: false,
-	},
-	{
-	    name: 'Samantha', 
-	    date: 'Completed 1 year ago', 
-	    image: require('../assets/images/profileImages/woman6.png'),
-	    progress: 'completed',
-	    received: false,
-	},
-	{
-	    name: 'George', 
-	    date: 'Completed 1 year ago', 
-	    image: require('../assets/images/profileImages/man9.png'),
-	    progress: 'completed',
-	    received: false,
-	},
 ];
 
 
@@ -68,10 +40,6 @@ export default class NotificationsSent extends React.Component {
 	//Hao Wu: removing header here 
 	static navigationOptions = {
       header: null,
-  	};
-
-	static navigationOptions = {
-    	header: null,
   	};
 
 	render() {

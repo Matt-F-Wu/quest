@@ -247,7 +247,6 @@ export default class extends Component {
   componentWillUpdate (nextProps, nextState) {
     // If the index has changed, we notify the parent via the onIndexChanged callback
     if (this.state.index !== nextState.index) {
-     console.debug("next state: " + nextState.index);
      this.props.onIndexChanged(nextState.index) 
     }
   }
@@ -660,7 +659,7 @@ export default class extends Component {
     let button = null
     let bottomMargin = 0
     // Highlight button if on that page currently
-    console.debug("Index at: " + this.state.index);
+    //console.debug("Index at: " + this.state.index);
     if (this.state.index == 1) {
       button = null
     } else {

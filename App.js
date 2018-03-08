@@ -1,10 +1,11 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View, Animated, Text } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Animated, Text, AsyncStorage } from 'react-native';
 import { AppLoading, Asset, Font, Permissions, Notifications } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from './constants/Colors';
 import Touchables from './components/Touchables';
 import SwiperNavigation from './navigation/SwiperNavigation';
+import { EventRegister } from 'react-native-event-listeners';
 
 const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/register';
 var isShown = false;
@@ -42,19 +43,31 @@ export default class App extends React.Component {
   componentWillMount() {
     console.debug("Main frame mount!");
 
+    //Hao: clear storage, TODO: might need to remove this line
+    AsyncStorage.clear(()=>{console.debug("Storage cleared")});
+
     mounted = true;
 
     this.registerForPushNotificationsAsync();
     
-    this._notificationSubscription = Notifications.addListener((receivedNotification) => {
+    this._notificationSubscription = Notifications.addListener(async (receivedNotification) => {
       this.setState({
         receivedNotification,
         lastNotificationId: receivedNotification.notificationId,
       });
       //TODO: Notification received, do something with receivedNotification.data
       notificationData = receivedNotification.data;
+      let timestamp = Date.now();
+      notificationData.timestamp = timestamp;
+      try {
+        //Store a key value pair for each requests received
+        await AsyncStorage.setItem('@ReceivedQuests:' + timestamp, JSON.stringify(notificationData));
+      } catch (error) {
+        // Error saving data
+      }
       this._showNotification();
       this.swiper.oneMoreNotif();
+      EventRegister.emit('ReceivedQuest', 'TODO');
       //Auto collapsing the notification after 2 seconds
       setTimeout(() => {
         if(mounted && isShown){
