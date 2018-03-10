@@ -39,6 +39,15 @@ export default class App extends React.Component {
 
     isShown = !isShown;
   }
+
+  componentDidMount() {
+    Alert.alert("Who are you?",
+        [
+          {text: 'Hao', onPress: () => {global.user = 'HaoWu'; this.registerForPushNotificationsAsync();} },
+          {text: 'Ian', onPress: () => {global.user = 'IanJones'; this.registerForPushNotificationsAsync();} },
+        ]
+    );
+  }
   
   componentWillMount() {
     console.debug("Main frame mount!");
@@ -46,12 +55,7 @@ export default class App extends React.Component {
     //Hao: clear storage, TODO: might need to remove this line
     AsyncStorage.clear(()=>{console.debug("Storage cleared")});
 
-    Alert.alert("Who are you?",
-        [
-          {text: 'Hao', onPress: () => {global.user = 'HaoWu'; this.registerForPushNotificationsAsync();} },
-          {text: 'Ian', onPress: () => {global.user = 'IanJones'; this.registerForPushNotificationsAsync();} },
-        ]
-    );
+    global.user = 'HaoWu';
 
     mounted = true;
     

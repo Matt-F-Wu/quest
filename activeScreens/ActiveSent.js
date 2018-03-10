@@ -9,7 +9,7 @@ import Colors from '../constants/Colors';
 import Fonts from '../constants/Fonts';
 
 // Component imports
-import QuestListItem from '../components/Notifications/QuestListItem';
+import QuestListItem from '../components/Active/QuestListItem';
 import utils from '../api/utils';
 
 const questsArr = [
