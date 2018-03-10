@@ -71,7 +71,7 @@ export default class QuestListItem extends React.Component {
 
 
 	render() {
-		let bc = this.props.highlight? Colors.blurOrange : 'transparent';
+		let bc = this.props.highlight? Colors.blurPrimary : 'transparent';
 
 		return (
 
@@ -88,6 +88,7 @@ export default class QuestListItem extends React.Component {
 		            <Text style={{fontFamily: Fonts.accentFont, fontSize: Fonts.accentFontSize, color: Colors.accentColor}}>{this.state.date}</Text>
 		            <Text style={{fontFamily: Fonts.accentFont, fontSize: Fonts.accentFontSize, color: this.state.progress == 'unopened'? Colors.tintColor : 'orange'}}>{this.state.progress}</Text>
 		            <Icon name="chevron-right" size={37} color={Colors.accentColor} style={{position:'absolute', top: 30, right: 10}}/>
+		            {this.props.isNew? <View style={{position:'absolute', top: 70, right: 20, width: 12, height: 12, borderRadius: 6, backgroundColor: 'rgba(255, 0, 0, 0.6)'}}></View> : null}
       			</View>
 
 		  	</TouchableOpacity>

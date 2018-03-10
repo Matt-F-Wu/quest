@@ -59,6 +59,8 @@ export default class App extends React.Component {
       notificationData = receivedNotification.data;
       let timestamp = Date.now();
       notificationData.timestamp = timestamp;
+      // Mark this notification as newly arrived
+      notificationData.new = true;
       let key_name = notificationData.sender? '@ReceivedQuests:' + timestamp : '@QuestsHelp:' + notificationData.key;
       try {
         //Store a key value pair for each requests received

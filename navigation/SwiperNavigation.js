@@ -19,12 +19,11 @@ export default class SwiperNavigation extends Component {
 
   setIndex(i){
     //Hao: This doesn't actually work, but have no time to fix this...
-    this.swiper.scrollBy(i);
+    this.swiper.setIndex(i);
   }
 
   oneMoreNotif(){
-    let cur = this.state.num_notif;
-    this.setState({num_notif: cur + 1});
+    this.swiper.oneMoreNotif();
   }
 
   render() {
@@ -41,7 +40,6 @@ export default class SwiperNavigation extends Component {
       
       <Swiper ref={(ref) => this.swiper = ref} 
         loop={false}
-        num_notif={this.state.num_notif}
         index={this.state.index}
         showsPagination={false}
         showsButtons={true}

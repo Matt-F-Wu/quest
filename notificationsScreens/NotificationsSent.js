@@ -90,7 +90,7 @@ export default class NotificationsSent extends React.Component {
               let help = await AsyncStorage.getItem('@QuestsHelp:' + q.sender + q.date);
               //console.debug(">>>" + help);
               if (help !== null){
-                  q.help = help;
+                  q.help = JSON.parse(help);
               }
             } catch (error) {
             // Error retrieving data
@@ -129,6 +129,7 @@ export default class NotificationsSent extends React.Component {
             			<QuestListItem name={item.receiver} date={utils.timeDiffOutput(Date.now(), item.date)} 
             				image={item.image} progress={item.progress} received={false}
                     highlight={!!item.help}
+                    isNew={!!item.help && item.help.new}
             				onPress={() => {}}/>
             		)}
           		/>

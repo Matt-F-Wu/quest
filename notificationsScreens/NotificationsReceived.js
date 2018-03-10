@@ -58,6 +58,10 @@ export default class NotificationsReceived extends React.Component {
     this.listener = EventRegister.addEventListener('ReceivedQuest', (data) => {
         this.populateReNotif();
     });
+    this.clearListener = EventRegister.addEventListener('ClearNew', (data) => {
+        this.state.questsArr.forEach((q) => {q.new = false});
+        this.setState({counter: this.state.counter + 1});
+    });
   }
 
   componentWillUnmount() {
@@ -93,6 +97,7 @@ export default class NotificationsReceived extends React.Component {
                 adv: data.adv,
                 goal: data.goal,
                 captionText: data.captionText,
+                new: data.new,
               });
               //console.debug("Pushed...");
             }
@@ -123,7 +128,7 @@ export default class NotificationsReceived extends React.Component {
         		numColumns={1}
         		keyExtractor={item => item.id}  // Key is concatenation of name, date, image url
         		renderItem={({ item }) => (
-        			<QuestListItem name={item.name} date={item.date} 
+        			<QuestListItem name={item.name} date={item.date} isNew={item.new}
         				image={item.image} progress={item.progress} received={item.received}
         				onPress={() => {
                   if(item.received) {
