@@ -41,7 +41,7 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    Alert.alert("Who are you?",
+    Alert.alert("Who are you?", "",
         [
           {text: 'Hao', onPress: () => {global.user = 'HaoWu'; this.registerForPushNotificationsAsync();} },
           {text: 'Ian', onPress: () => {global.user = 'IanJones'; this.registerForPushNotificationsAsync();} },
