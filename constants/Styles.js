@@ -6,7 +6,7 @@ const u_styles = StyleSheet.create({
     flexDirection: 'row',
     height: 120,
     backgroundColor: 'transparent',
-    borderBottomColor: '#333333',
+    borderBottomColor: Colors.accentColor,
     borderBottomWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',

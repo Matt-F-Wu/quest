@@ -29,7 +29,7 @@ const questsArr = [
   },
   {
     name: 'Bob', 
-    date: 'Received 3 weeks ago', 
+    date: 'Sent 3 weeks ago', 
     img: require('../../assets/images/galleryImages/gallery6.jpg')
   },
   {
@@ -39,7 +39,7 @@ const questsArr = [
   },
   {
     name: 'Samantha', 
-    date: 'Received 1 year ago', 
+    date: 'Sent 1 year ago', 
     img: require('../../assets/images/galleryImages/gallery11.jpg')
   },
 ];
@@ -57,7 +57,7 @@ export default class GalleryFavTab extends Component {
   };
 
   static navigationOptions = {
-    tabBarLabel: 'Favorites'
+    tabBarLabel: 'Sent'
   }
 
   openModal = (item) => {

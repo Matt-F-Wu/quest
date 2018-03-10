@@ -6,6 +6,7 @@ import { SearchBar } from 'react-native-elements';
 
 // Colors
 import Colors from '../constants/Colors';
+import Fonts from '../constants/Fonts';
 
 // Component imports
 import QuestListItem from '../components/Notifications/QuestListItem';
@@ -14,6 +15,7 @@ import utils from '../api/utils';
 const questsArr = [
 	{
 	    name: 'Grace', 
+	    nameSize: Fonts.sentNameFontSize,
 	    date: 'Sent at 9:35 AM', 
 	    image: require('../assets/images/profileImages/woman1.png'),
 	    progress: 'in progress',
@@ -21,6 +23,7 @@ const questsArr = [
 	},
     {
     	name: 'Cole', 
+   		nameSize: Fonts.sentNameFontSize,
     	date: 'Sent 1 week ago', 
     	image: require('../assets/images/profileImages/man4.png'),
     	progress: 'unopened',
@@ -28,6 +31,7 @@ const questsArr = [
     },
 	{
 	    name: 'Jon', 
+	   	nameSize: Fonts.sentNameFontSize,
 	    date: 'Sent 1 weeks ago', 
 	    image: require('../assets/images/profileImages/man7.png'),
 	    progress: 'unopened',

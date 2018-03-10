@@ -8,17 +8,17 @@ import Fonts from '../constants/Fonts';
 import Layout from '../constants/Layout';
 
 // Component imports
-import NotificationsReceived from './NotificationsReceived';
-import NotificationsSent from './NotificationsSent';
+import ActiveReceived from './ActiveReceived';
+import ActiveSent from './ActiveSent';
 
 export default TabNavigator(
   { 
-    NotificationsReceived: {
-      screen: NotificationsReceived,
-      navigationOptions: { title: 'Received'},
+    ActiveReceived: {
+      screen: ActiveReceived,
+      navigationOptions: { title: 'Received' }
     },
-    NotificationsSent: {
-      screen: NotificationsSent,
+    ActiveSent: {
+      screen: ActiveSent,
       navigationOptions: { title: 'Sent' }
     },
   },

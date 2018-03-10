@@ -119,10 +119,14 @@ const styles = StyleSheet.create({
 
   profileImg: {
     top: 100,
+    marginBottom: 10,
     height: 175,
     width: 175,
     resizeMode: 'cover',
-    borderRadius: 20,
+    borderRadius: 20,    // rectangle container
+    // borderRadius: 175/2,    // Perfect circle 
+    borderColor: Colors.tintColor,
+    borderWidth: 1,
   },
 
   info: {

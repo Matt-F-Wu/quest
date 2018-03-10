@@ -6,6 +6,7 @@ import { SearchBar } from 'react-native-elements';
 
 // Colors
 import Colors from '../constants/Colors';
+import Fonts from '../constants/Fonts';
 
 // Component imports
 import QuestListItem from '../components/Notifications/QuestListItem';
@@ -17,6 +18,7 @@ const questsArrBase = [
       id: 0,
       key: '00',
 	    name: 'Your class mate', 
+      nameSize: Fonts.receivedNameFontSize,
 	    date: 'Received at 10:01 AM',
 	    progress: 'in progress',
 	    received: true,
@@ -120,7 +122,6 @@ export default class NotificationsReceived extends React.Component {
 					containerStyle={styles.searchBarStyle}
 					placeholder='Recent Quests' 
 				/>
-
       		<FlatList
             key={this.state.counter}
             contentContainerStyle={styles.contentContainer}

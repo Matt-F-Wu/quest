@@ -15,6 +15,7 @@ export default class QuestListItem extends React.Component {
 		super(props);
 		this.state = {
 			name: this.props.name,					// Name to be displayed
+			nameSize: this.props.nameSize,
 			date: this.props.date,					// Date received/sent
 			image: this.props.image,				// Profile picture of user
 			received: this.props.received,			// True if received, False if sent
@@ -34,7 +35,7 @@ export default class QuestListItem extends React.Component {
 			});
 		}else if(this.state.progress == 'in progress'){
 			this.setState({
-				progressColor: 'orange',
+				progressColor: Colors.secondaryTintColor,
 				progressBorderWidth: 2,
 			});
 		}
@@ -51,7 +52,7 @@ export default class QuestListItem extends React.Component {
 			this.setState({
 				profileImage: <Icon2 name="question" 
 									size={75} 
-									color={this.state.progress == 'unopened'? Colors.tintColor : 'orange'} 
+									color={this.state.progress == 'unopened'? Colors.tintColor : Colors.secondaryTintColor} 
 									style={{backgroundColor: 'transparent', alignSelf: 'center', top:3}}/>
 			});		
 	 	} else {
