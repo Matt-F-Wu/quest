@@ -8,16 +8,16 @@ import Fonts from '../constants/Fonts';
 import Layout from '../constants/Layout';
 
 // Component imports
-import GalleryTab from '../components/Gallery/GalleryAllTab';
-import FavTab from '../components/Gallery/GalleryFavTab';
+import ReceivedTab from '../components/Gallery/GalleryReceivedTab';
+import SentTab from '../components/Gallery/GallerySentTab';
 
 export default TabNavigator(
   { 
-    GalleryTab: {
-      screen: GalleryTab,
+    ReceivedTab: {
+      screen: ReceivedTab,
     },
-    FavTab: {
-      screen: FavTab,
+    SentTab: {
+      screen: SentTab,
     },
   },
   {

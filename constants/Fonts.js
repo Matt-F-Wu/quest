@@ -2,7 +2,8 @@ export default {
 	// logoFont: 'SavoyeLetPlain',
 	// logoFont: 'Baskerville',
 	// logoFont: 'Didot',
-	logoFont: 'Palatino',
+  logoFont: 'Kailasa',
+	// logoFont: 'Palatino',
   logoFontSize: 40,
 
   	// bodyFont: 'Cochin',
@@ -19,6 +20,12 @@ export default {
 	headerFont: 'Kailasa',
   headerFontSize: 20,
 	  
+  // Fonts for items ()
+  receivedNameFontSize: 20,
+
+    // Fonts for items ()
+  sentNameFontSize: 25,
+
   // Fonts for items ()
 	bodyFont: 'Kailasa',
 	bodyFontSize: 25,

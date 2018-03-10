@@ -18,10 +18,34 @@ import Touchables from '../Touchables';
 // import ContactListItem from './ContactListItem';
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
+import Styles from '../../constants/Styles';
 
 
 export default class ContactList extends Component {
 	/*TODO: make a contact list here*/
+
+  favsData = [
+  {
+    image: require('../../assets/images/profileImages/woman4.png'),
+  },
+  {
+    image: require('../../assets/images/profileImages/man8.png'),
+  },
+  {
+    image: require('../../assets/images/profileImages/woman7.png'),
+  },
+  {
+    image: require('../../assets/images/profileImages/woman6.png'),
+  },
+  {
+    image: require('../../assets/images/profileImages/man7.png'),
+  },
+  {
+    image: require('../../assets/images/profileImages/landay.jpg'),
+  },
+];
+
+
   data = [  
   {
     name: 'Alex', 
@@ -128,6 +152,13 @@ export default class ContactList extends Component {
     time: '1 year ago', 
     image: require('../../assets/images/profileImages/woman6.png'),
   },
+  {
+    name: 'James', 
+    index: 16,
+    location: 'Stanford, CA',
+    time: '3 weeks ago', 
+    image: require('../../assets/images/profileImages/landay.jpg'),
+  },
 ];
 
 
@@ -137,6 +168,7 @@ export default class ContactList extends Component {
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       dataSource: ds.cloneWithRows(this.data),
+      favsDataSource: ds.cloneWithRows(this.favsData),
     };
   }
 
@@ -177,6 +209,19 @@ export default class ContactList extends Component {
       );
   }
 
+  renderFavRow(item){
+
+    return (
+      <Touchables key={item.index} 
+              onClick={() => this.props.toMap(item)}
+              onLongPress={() => this.props.navigatorVal('Friend')} 
+              hasImage={true} 
+              title={item.name} subTitle={item.location}
+              text={item.time} styles={Styles.s_styles} 
+              image={item.image}/>
+      );
+  }
+
 	render() {
 
     return (
@@ -186,8 +231,7 @@ export default class ContactList extends Component {
           round
           // lightTheme
           containerStyle={styles.searchBarStyle}
-          placeholder='Search contacts' 
-        />
+          placeholder='Search contacts' />
 
         <ListView
           removeClippedSubviews={false}
@@ -228,6 +272,12 @@ const styles = StyleSheet.create({
   	flexDirection: 'column',
   	marginLeft: 20,
   },
+  titleText: {
+    color: Colors.tintColor,
+    fontWeight: 'bold',  
+    fontSize: 16,
+    margin: 10,
+  },
   title: {
     fontFamily: Fonts.bodyFont,
   	color: Colors.tintColor,
@@ -250,4 +300,9 @@ const styles = StyleSheet.create({
   	height: 80,
   	borderRadius: 40,
   },
+  listStyle: {
+    backgroundColor: 'transparent',
+  },
 });
+
+

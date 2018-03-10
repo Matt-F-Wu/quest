@@ -6,14 +6,16 @@ import { SearchBar } from 'react-native-elements';
 
 // Colors
 import Colors from '../constants/Colors';
+import Fonts from '../constants/Fonts';
 
 // Component imports
-import QuestListItem from '../components/Notifications/QuestListItem';
+import QuestListItem from '../components/Active/QuestListItem';
 
 
 const questsArr = [
 	{
 	    name: 'Your class mate', 
+      nameSize: Fonts.receivedNameFontSize,
 	    date: 'Received at 10:01 AM',
 	    image: require('../assets/images/profileImages/woman7.png'),
 	    progress: 'in progress',
@@ -22,7 +24,8 @@ const questsArr = [
 	},
 	{
 	    name: 'You met at a bar', 
-	    date: 'Received 1 day ago', 
+	     nameSize: Fonts.receivedNameFontSize,
+      date: 'Received 1 day ago', 
 	    image: require('../assets/images/profileImages/man2.png'),
 	    progress: 'unopened',
 	    received: true,
@@ -30,7 +33,8 @@ const questsArr = [
     },
     {
     	name: 'High school friends', 
-    	date: 'Received 2 days ago',
+      nameSize: Fonts.receivedNameFontSize,
+      date: 'Received 2 days ago',
     	image: require('../assets/images/profileImages/woman2.png'),
     	progress: 'unopened',
     	received: true,
@@ -66,7 +70,7 @@ export default class NotificationsReceived extends React.Component {
             		numColumns={1}
             		keyExtractor={item => item.name}  // Key is concatenation of name, date, image url
             		renderItem={({ item }) => (
-            			<QuestListItem name={item.name} date={item.date} 
+            			<QuestListItem name={item.name} nameSize={item.nameSize} date={item.date} 
             				image={item.image} progress={item.progress} received={item.received}
             				onPress={() => {if(item.received) {navigate('CameraNav', {has_ghost: item.has_ghost, indoor: item.indoor, goal: item.goal});} }}/>
             		)}

@@ -29,17 +29,17 @@ const questsArr = [
   },
   {
     name: 'Ian', 
-    date: 'Sent 5 days ago', 
+    date: 'Received 5 days ago', 
     img: require('../../assets/images/galleryImages/gallery2.jpg')
   },
   {
     name: 'Cole', 
-    date: 'Sent 1 week ago', 
+    date: 'Received 1 week ago', 
     img: require('../../assets/images/galleryImages/gallery3.jpg')
   },
   {
     name: 'Hao', 
-    date: 'Sent 1 week ago', 
+    date: 'Received 1 week ago', 
     img: require('../../assets/images/galleryImages/gallery4.jpg')
   },
   {
@@ -59,17 +59,17 @@ const questsArr = [
   },
   {
     name: 'Austin', 
-    date: 'Sent 1 month ago', 
+    date: 'Received 1 month ago', 
     img: require('../../assets/images/galleryImages/gallery8.jpg') 
   },
   {
     name: 'Lily', 
-    date: 'Sent 2 months ago', 
+    date: 'Received 2 months ago', 
     img: require('../../assets/images/galleryImages/gallery9.jpg')
   },
   {
     name: 'Alison', 
-    date: 'Sent 1 year ago', 
+    date: 'Received 1 year ago', 
     img: require('../../assets/images/galleryImages/gallery10.jpg') 
   },
   {
@@ -99,7 +99,7 @@ export default class GalleryAllTab extends Component {
   };
 
   static navigationOptions = {
-    tabBarLabel: 'Gallery'
+    tabBarLabel: 'Received'
   }
 
   openModal = (item) => {

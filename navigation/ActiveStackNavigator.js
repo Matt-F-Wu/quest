@@ -8,15 +8,15 @@ import Colors from '../constants/Colors';
 import Fonts from '../constants/Fonts';
 
 // Component imports
-import NotificationsLandingPage from '../notificationsScreens/Notifications';
-import CameraNav from '../notificationsScreens/CameraNav';
-import ViewQuest from '../notificationsScreens/ViewQuest';
+import ActiveLandingPage from '../activeScreens/ActiveTabNavigator';
+import CameraNav from '../activeScreens/CameraNav';
+import ViewQuest from '../activeScreens/ViewQuest';
 
 
-const NotificationsStackNavigator = StackNavigator(
+const ActiveStackNavigator = StackNavigator(
   {
     Main: {
-      screen: NotificationsLandingPage,
+      screen: ActiveLandingPage,
     },
     CameraNav: {
       screen: CameraNav,
@@ -42,10 +42,10 @@ const NotificationsStackNavigator = StackNavigator(
   }
 );
 
-export default class NotificationsNavigator extends React.Component {
+export default class ActiveNavigator extends React.Component {
 
   render() {
-    return <NotificationsStackNavigator />;
+    return <ActiveStackNavigator />;
   }
   
 }

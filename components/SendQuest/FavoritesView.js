@@ -44,8 +44,8 @@ data = [
     	image: require('../../assets/images/profileImages/man7.png'),
   	},
     {
-	    name: 'Grace', 
-	    image: require('../../assets/images/profileImages/woman1.png'),
+	    name: 'James', 
+	    image: require('../../assets/images/profileImages/landay.jpg'),
   	},
 ];
 
