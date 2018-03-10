@@ -71,10 +71,11 @@ export default class QuestListItem extends React.Component {
 
 
 	render() {
+		let bc = this.props.highlight? Colors.blurOrange : 'transparent';
 
 		return (
 
-         	<TouchableOpacity style={styles.container} onPress={this.props.onPress}>
+         	<TouchableOpacity style={[styles.container, {backgroundColor: bc}]} onPress={this.props.onPress}>
             	
             	<View style={styles.progressImageView}>
             		<View style={[styles.circleContainer, {borderColor: this.state.progressColor, borderWidth: this.state.progressBorderWidth}]}> 

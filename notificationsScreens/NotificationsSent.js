@@ -1,6 +1,6 @@
 import React from 'react';
-import {Text, View, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
-
+import {Text, View, FlatList, StyleSheet, TouchableOpacity, AsyncStorage} from 'react-native';
+import { EventRegister } from 'react-native-event-listeners';
 // Search bar
 import { SearchBar } from 'react-native-elements';
 
@@ -9,7 +9,7 @@ import Colors from '../constants/Colors';
 
 // Component imports
 import QuestListItem from '../components/Notifications/QuestListItem';
-
+import utils from '../api/utils';
 
 const questsArr = [
 	{
@@ -37,16 +37,80 @@ const questsArr = [
 
 
 export default class NotificationsSent extends React.Component {
-	//Hao Wu: removing header here 
+	//Hao Wu: removing header here
+  state = {
+    questsArr: [],
+    counter: 0,
+  }
+   
 	static navigationOptions = {
       header: null,
-  	};
+	};
+
+  componentWillMount() {
+    this.populateSeNotif();
+    this.listener = EventRegister.addEventListener('SentQuest', (data) => {
+        this.populateSeNotif();
+    });
+  }
+
+  componentWillUnmount() {
+    EventRegister.removeEventListener(this.listener);
+  }
+
+  populateSeNotif = async () => {
+    console.debug("***Populate sent Notifications***");
+    //clear old and repopulate
+    let questsArr = [];
+    //questsArrBase.forEach((p) => questsArr.push(p));
+    try {
+      let keys = await AsyncStorage.getAllKeys();
+      let pairs = await AsyncStorage.multiGet(keys);
+      if (pairs !== null){
+        // We have data!!
+        pairs.forEach(
+          (p) => {
+            if(p[0].startsWith('@SentQuests')){
+              let data = JSON.parse(p[1]);
+              questsArr.push(
+              {
+                id: p[0],
+                sender: data.sender,
+                receiver: data.receiver,
+                date: data.date,
+                progress: 'unopened',
+              });
+            }
+        });
+        var arr_ele_processed = 0;
+        questsArr.forEach(
+          async (q) => {
+            arr_ele_processed++;
+            try {
+              let help = await AsyncStorage.getItem('@QuestsHelp:' + q.sender + q.date);
+              //console.debug(">>>" + help);
+              if (help !== null){
+                  q.help = help;
+              }
+            } catch (error) {
+            // Error retrieving data
+            }
+            if(arr_ele_processed === questsArr.length){
+              console.debug("Setting states");
+              this.setState({counter: this.state.counter + 1});
+            }
+        });
+        this.setState({questsArr: questsArr});
+      }
+    } catch (error) {
+      console.debug(error);
+    }
+  }
 
 	render() {
 		const { navigate } = this.props.navigation;
-
+    console.debug("Render sent tab");
 		return (
-
 			<View style={styles.container}>
 				<SearchBar
 					round
@@ -55,14 +119,17 @@ export default class NotificationsSent extends React.Component {
 					placeholder='Recent Quests' 
 				/>
 
-          		<FlatList contentContainerStyle={styles.contentContainer}
-            		data={questsArr}
+          		<FlatList
+                key={this.state.counter} 
+                contentContainerStyle={styles.contentContainer}
+            		data={this.state.questsArr}
             		numColumns={1}
-            		keyExtractor={item => item.name}  // Key is concatenation of name, date, image url
+            		keyExtractor={item => item.receiver}  // Key is concatenation of name, date, image url
             		renderItem={({ item }) => (
-            			<QuestListItem name={item.name} date={item.date} 
-            				image={item.image} progress={item.progress} received={item.received}
-            				onPress={() => {if(item.received) {navigate('CameraNav', {has_ghost: item.has_ghost, indoor: item.indoor, goal: item.goal});} }}/>
+            			<QuestListItem name={item.receiver} date={utils.timeDiffOutput(Date.now(), item.date)} 
+            				image={item.image} progress={item.progress} received={false}
+                    highlight={!!item.help}
+            				onPress={() => {}}/>
             		)}
           		/>
 			</View>

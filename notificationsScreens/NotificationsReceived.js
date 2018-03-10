@@ -9,8 +9,8 @@ import Colors from '../constants/Colors';
 
 // Component imports
 import QuestListItem from '../components/Notifications/QuestListItem';
-
 import utils from '../api/utils';
+
 var refresh = false;
 const questsArrBase = [
 	{
@@ -61,7 +61,7 @@ export default class NotificationsReceived extends React.Component {
   }
 
   componentWillUnmount() {
-    EventRegister.removeEventListener(this.listener)
+    EventRegister.removeEventListener(this.listener);
   }
 
   populateReNotif = async () => {
@@ -81,11 +81,13 @@ export default class NotificationsReceived extends React.Component {
               questsArr.push(
               {
                 id: p[0],
-                name: data.hintText || 'Mystery', 
+                rawDate: data.date,
+                name: data.hintText || 'Mystery',
+                sender: data.sender, 
                 date: utils.timeDiffOutput(Date.now(), data.timestamp), 
                 progress: data.progress || 'unopened', 
                 received: true, 
-                has_ghost: data.adv !== '',
+                has_ghost: !!data.adv,
                 indoor: data.indoor,
                 nav: data.nav,
                 adv: data.adv,
@@ -103,7 +105,7 @@ export default class NotificationsReceived extends React.Component {
   }
 
 	render() {
-    console.debug(this.state.questsArr);
+    //console.debug(this.state.questsArr);
 		const { navigate } = this.props.navigation;
 		return (
 			<View style={styles.container}>
@@ -116,10 +118,8 @@ export default class NotificationsReceived extends React.Component {
 
       		<FlatList
             key={this.state.counter}
-            onPress={()=>{this.setState({ refresh: !refresh})}} 
             contentContainerStyle={styles.contentContainer}
         		data={this.state.questsArr}
-            extraData={this.state.refresh}
         		numColumns={1}
         		keyExtractor={item => item.id}  // Key is concatenation of name, date, image url
         		renderItem={({ item }) => (
@@ -133,7 +133,7 @@ export default class NotificationsReceived extends React.Component {
                     
                     AsyncStorage.mergeItem(item.id, 
                       JSON.stringify({progress: 'in progress'}), 
-                      () => {navigate('CameraNav', {has_ghost: item.has_ghost, indoor: item.indoor, goal: item.goal});});
+                      () => {navigate('CameraNav', {has_ghost: item.has_ghost, indoor: item.indoor, goal: item.goal, sender: item.sender, key: item.sender + item.rawDate});});
                     
                   } 
                 } }/>

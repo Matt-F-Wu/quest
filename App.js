@@ -59,15 +59,17 @@ export default class App extends React.Component {
       notificationData = receivedNotification.data;
       let timestamp = Date.now();
       notificationData.timestamp = timestamp;
+      let key_name = notificationData.sender? '@ReceivedQuests:' + timestamp : '@QuestsHelp:' + notificationData.key;
       try {
         //Store a key value pair for each requests received
-        await AsyncStorage.setItem('@ReceivedQuests:' + timestamp, JSON.stringify(notificationData));
+        await AsyncStorage.setItem(key_name, JSON.stringify(notificationData));
       } catch (error) {
         // Error saving data
       }
       this._showNotification();
       this.swiper.oneMoreNotif();
-      EventRegister.emit('ReceivedQuest', 'TODO');
+      let event_name = notificationData.sender? 'ReceivedQuest' : 'SentQuest';
+      EventRegister.emit(event_name, 'TODO');
       //Auto collapsing the notification after 2 seconds
       setTimeout(() => {
         if(mounted && isShown){

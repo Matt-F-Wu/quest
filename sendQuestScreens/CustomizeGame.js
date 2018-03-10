@@ -7,13 +7,14 @@ import {
   StyleSheet,
   ListView,
   TextInput,
+  AsyncStorage,
 } from 'react-native';
 import { MapView } from 'expo';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/Entypo';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import {RkButton} from 'react-native-ui-kitten';
-
+import { EventRegister } from 'react-native-event-listeners';
 // Constant imports
 import Colors from '../constants/Colors';
 import Styles from '../constants/Styles';
@@ -25,7 +26,7 @@ const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 var self;
 var selected = {
   nav: 'coin',
-  adv: undefined,
+  adv: '',
   goal: 'gift'};
 
 export default class CustomizeGame extends React.Component {
@@ -166,28 +167,11 @@ export default class CustomizeGame extends React.Component {
     console.debug("Select item");
   }
 
-  renderRow = (item) => {
-    return (
-      <Touchables key={item.index} 
-        onClick={() => {this.setValues(item.cate, item.value, item.index);}}
-        hasImage={true} 
-        title={""} subTitle={""}
-        text={""} styles={item.selected? Styles.s_styles : Styles.u_styles} 
-        image={item.image}/>
-      );
-  }
-
   sendQuest(indoor){
     let params = this.props.navigation.state.params;
-    fetch(PUSH_ENDPOINT + username, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    let bodyData = {
         data: {
-          value: 'A wonderful message',
+          date: Date.now(),
           indoor: params.indoor,
           hideout: params.hideout,
           nav: selected.nav,
@@ -195,9 +179,22 @@ export default class CustomizeGame extends React.Component {
           goal: selected.goal,
           hintText: this.state.hintText,
           captionText: params.captionText,
+          sender: 'HaoWu',
+          receiver: username,
         },
-      }),
+      };
+    fetch(PUSH_ENDPOINT + username, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyData),
     });
+    //asynchronously store item
+    AsyncStorage.setItem('@SentQuests:' + bodyData.data.date, JSON.stringify(bodyData.data));
+    EventRegister.emit('SentQuest', 'TODO');
+    /* TODO: The sender shouldn't be hardcoded^ */
     const { navigate } = this.props.navigation;
     Alert.alert("Quest sent successfully!");
 
@@ -211,6 +208,17 @@ export default class CustomizeGame extends React.Component {
           {text: 'Cancel', onPress: () => console.log('Not Skipping'), style: 'cancel'},
           {text: 'OK', onPress: () => {this.sendQuest(true)} },
         ]
+      );
+  }
+
+  renderRow = (item) => {
+    return (
+      <Touchables key={item.index} 
+        onClick={() => {this.setValues(item.cate, item.value, item.index);}}
+        hasImage={true} 
+        title={""} subTitle={""}
+        text={""} styles={item.selected? Styles.s_styles : Styles.u_styles} 
+        image={item.image}/>
       );
   }
 
