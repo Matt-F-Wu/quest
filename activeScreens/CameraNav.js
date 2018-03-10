@@ -1,5 +1,5 @@
 import Expo, { Asset, Location, Permissions, MapView } from 'expo';
-import { View, Dimensions, StyleSheet, Animated, Text, Image, Modal, Alert } from 'react-native';
+import { View, Dimensions, StyleSheet, Animated, Text, Image, Modal, Alert, TextInput} from 'react-native';
 import React from 'react';
 const THREE = require('three');
 global.THREE = THREE;
@@ -25,6 +25,7 @@ import ExpandableView from '../components/ExpandableView';
 import Icon from 'react-native-vector-icons/Entypo';
 
 console.disableYellowBox = true;
+const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/sendq/';
 var secret = require('../api/secret');
 var routeDecoder = require('../api/routeDecoder');
 var nextStop;
@@ -802,6 +803,33 @@ export default class App extends React.Component {
     ray_casted = false;
   }
 
+  // request help from the sender
+  requestHelp(){
+    let sender = this.props.navigation.state.params.sender;
+    fetch(PUSH_ENDPOINT + sender, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        data: {
+          requester: 'HaoWu',
+          requestText: this.state.requestText,
+          key: this.props.navigation.state.params.key,
+        },
+      }),
+    });
+    //TODO: requester shouldn't be hardcoded
+    //clear request texts
+    this.setState({requestText: ''});
+    Alert.alert("Request sent!", "",
+        [
+          {text: 'OK'},
+        ]
+    );
+  }
+
   render() {
     //console.debug("Exiting: " + exiting);
     return !exiting && this.state.loaded && this.state.got_route ? (
@@ -881,7 +909,7 @@ export default class App extends React.Component {
       </FadeOutView>
 
       <ExpandableView style={{position: 'absolute', backgroundColor: Colors.blackMask}}
-        config={{initialWidth: 0, initialHeight: 0, endWidth: screenWidth * 0.8, endHeight: screenHeight * 0.8, anchorX: screenWidth * 0.1, anchorY: screenHeight * 0.2}}
+        config={{initialWidth: 0, initialHeight: 0, endWidth: screenWidth * 0.8, endHeight: screenHeight * 0.8, anchorX: screenWidth * 0.1, anchorY: screenHeight * 0.8}}
         expand={showDash}>
         
         <View style={styles.innerContainer}>
@@ -894,16 +922,27 @@ export default class App extends React.Component {
           <View style={styles.row}>
             <Text style={{fontSize: 24, color: Colors.tintColor}}>Time spent: </Text><Text style={styles.gf_text}>1.2 hours</Text>
           </View>
-          <View style={styles.row}>
-            <RkButton style={{flex: 1, backgroundColor: Colors.tintColor, borderRadius: 5, marginRight: 5}}
-                onPress={() => {showDash = false;}}>
-              <Text style={{fontSize: 16, color: Colors.noticeText}}>Request hints</Text>
-            </RkButton>
-            <RkButton style={{flex: 1, backgroundColor: Colors.tintColor, borderRadius: 5}}
-                onPress={() => {showDash = false;}}>
-              <Text style={{fontSize: 16, color: Colors.noticeText}}>About Game</Text>
-            </RkButton>
+
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.titleText}
+              onChangeText={(text) => this.setState({requestText: text})}
+              value={this.state.requestText}
+              placeholder={'your request to the sender...'}
+              placeholderTextColor={Colors.accentColor}
+            />
           </View>
+
+          <RkButton style={{padding: 15, backgroundColor: Colors.tintColor, borderRadius: 5, marginBottom: 15}}
+              onPress={() => this.requestHelp()}>
+            <Text style={{fontSize: 16, color: Colors.noticeText}}>Request hints</Text>
+          </RkButton>
+
+          <RkButton style={{padding: 15, backgroundColor: Colors.tintColor, borderRadius: 5, marginBottom: 15}}
+              onPress={() => {showDash = false;}}>
+            <Text style={{fontSize: 16, color: Colors.noticeText}}>About Game</Text>
+          </RkButton>
+          
         </View>
       
       </ExpandableView>
@@ -950,6 +989,19 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     marginBottom: 15,
+  },
+  inputContainer: {
+    width: '100%',
+    borderBottomColor: Colors.tintColor,
+    borderBottomWidth: 2,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 15,
+  },
+  titleText: {
+    color: Colors.tintColor,
+    fontWeight: 'bold',  
+    fontSize: 16,
   },
 });
 

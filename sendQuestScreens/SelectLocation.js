@@ -68,7 +68,7 @@ export default class SelectLocation extends React.Component {
 
   proceed(indoor){
     const { navigate } = this.props.navigation;
-    navigate('CustomizeGame', {main_remount: this.props.navigation.state.params.main_remount, indoor: indoor, hideout: this.state.hideout});
+    navigate('CustomizeGame', {main_remount: this.props.navigation.state.params.main_remount, indoor: indoor, hideout: this.state.hideout, name: this.props.navigation.state.params.name, captionText: this.props.navigation.state.params.captionText});
   }
 
   proceedWrapper(){

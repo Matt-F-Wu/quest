@@ -72,10 +72,11 @@ export default class QuestListItem extends React.Component {
 
 
 	render() {
+		let bc = this.props.highlight? Colors.blurPrimary : 'transparent';
 
 		return (
 
-         	<TouchableOpacity style={styles.container} onPress={this.props.onPress}>
+         	<TouchableOpacity style={[styles.container, {backgroundColor: bc}]} onPress={this.props.onPress}>
             	
             	<View style={styles.progressImageView}>
             		<View style={[styles.circleContainer, {borderColor: this.state.progressColor, borderWidth: this.state.progressBorderWidth}]}> 
@@ -84,9 +85,11 @@ export default class QuestListItem extends React.Component {
  				</View>
 
 			 	<View style={styles.textView}>
-		            <Text style={{fontFamily: Fonts.bodyFont, fontSize:this.state.nameSize, color: Colors.tintColor}}>{this.state.name}</Text>
+		            <Text style={{fontFamily: Fonts.bodyFont, fontSize: Fonts.bodyFontSize, color: this.state.progress == 'unopened'? Colors.tintColor : 'orange'}}>{this.state.name}</Text>
 		            <Text style={{fontFamily: Fonts.accentFont, fontSize: Fonts.accentFontSize, color: Colors.accentColor}}>{this.state.date}</Text>
-		            <Icon name="chevron-right" size={37} color={Colors.accentColor} style={{position:'absolute', top: 10, right: 10}}/>
+		            <Text style={{fontFamily: Fonts.accentFont, fontSize: Fonts.accentFontSize, color: this.state.progress == 'unopened'? Colors.tintColor : 'orange'}}>{this.state.progress}</Text>
+		            <Icon name="chevron-right" size={37} color={Colors.accentColor} style={{position:'absolute', top: 30, right: 10}}/>
+		            {this.props.isNew? <View style={{position:'absolute', top: 70, right: 20, width: 12, height: 12, borderRadius: 6, backgroundColor: 'rgba(255, 0, 0, 0.6)'}}></View> : null}
       			</View>
 
 		  	</TouchableOpacity>
@@ -104,7 +107,6 @@ const styles = StyleSheet.create({
   	},
 
 	progressImageView: {
-	  	flex: 1,
 	  	justifyContent: 'center',
 	  	alignItems: 'center',
 	},
@@ -126,10 +128,11 @@ const styles = StyleSheet.create({
 	},
 
 	textView: {
-	  	height: 70,
-	  	alignSelf: 'flex-end',
-	  	flex: 2,
+		flex: 1,
+	  	height: '100%',
+	  	marginLeft: 20,
 	  	borderBottomWidth: 1,
 	  	borderBottomColor: Colors.accentColor,
+	  	justifyContent: 'center',
 	},
 });

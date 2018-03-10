@@ -5,14 +5,16 @@ import {
   Text,
   Alert,
   StyleSheet,
-  ListView
+  ListView,
+  TextInput,
+  AsyncStorage,
 } from 'react-native';
 import { MapView } from 'expo';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/Entypo';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import {RkButton} from 'react-native-ui-kitten';
-
+import { EventRegister } from 'react-native-event-listeners';
 // Constant imports
 import Colors from '../constants/Colors';
 import Styles from '../constants/Styles';
@@ -24,7 +26,7 @@ const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 var self;
 var selected = {
   nav: 'coin',
-  adv: undefined,
+  adv: '',
   goal: 'gift'};
 
 export default class CustomizeGame extends React.Component {
@@ -41,27 +43,32 @@ export default class CustomizeGame extends React.Component {
   });
 
   state = {
+    hintText: '',
     navData: [
         {
-          cate: 'nav', 
+          cate: 'nav',
+          value: 'coin', 
           index: 1,
           image: require('../assets/images/coin.png'),
           selected: true,
         },
         {
-          cate: 'nav', 
+          cate: 'nav',
+          value: 'emoji-fire', 
           index: 2,
           image: require('../assets/images/emoji-fire.png'),
           selected: false,
         },
         {
           cate: 'nav',
+          value: 'emoji-heart',
           index: 3, 
           image: require('../assets/images/emoji-heart.png'),
           selected: false,
         },
         {
           cate: 'nav',
+          value: 'emoji-heart-eyes',
           index: 4, 
           image: require('../assets/images/emoji-heart-eyes.png'),
           selected: false,
@@ -70,25 +77,29 @@ export default class CustomizeGame extends React.Component {
 
   advData: [
         {
-          cate: 'adv', 
+          cate: 'adv',
+          value: '', 
           index: 1,
           image: require('../assets/images/none.png'),
           selected: true,
         },
         {
-          cate: 'adv', 
+          cate: 'adv',
+          value: 'ghost', 
           index: 2,
           image: require('../assets/images/ghost.png'),
           selected: false,
         },
         {
           cate: 'adv', 
+          value: 'monster',
           index: 3,
           image: require('../assets/images/monster.png'),
           selected: false,
         },
         {
           cate: 'adv',
+          value: 'fox',
           index: 4, 
           image: require('../assets/images/fox.jpg'),
           selected: false,
@@ -97,19 +108,22 @@ export default class CustomizeGame extends React.Component {
 
   goalData: [
         {
-          cate: 'goal', 
+          cate: 'goal',
+          value: 'present', 
           index: 1, 
           image: require('../assets/textures/quest-present-top-bottom.png'),
           selected: true,
         },
         {
-          cate: 'goal', 
+          cate: 'goal',
+          value: 'portal',
           index: 2,
           image: require('../assets/textures/portal.jpg'),
           selected: false,
         },
         {
           cate: 'goal',
+          value: 'crate',
           index: 3, 
           image: require('../assets/textures/crate.gif'),
           selected: false,
@@ -120,6 +134,7 @@ export default class CustomizeGame extends React.Component {
   constructor(props) {
     super(props);
     self = this;
+    username = this.props.navigation.state.params.name;
   }
 
   componentWillMount(){
@@ -152,36 +167,34 @@ export default class CustomizeGame extends React.Component {
     console.debug("Select item");
   }
 
-  renderRow = (item) => {
-    return (
-      <Touchables key={item.index} 
-        onClick={() => {this.setValues(item.cate, item.value, item.index);}}
-        hasImage={true} 
-        title={""} subTitle={""}
-        text={""} styles={item.selected? Styles.s_styles : Styles.u_styles} 
-        image={item.image}/>
-      );
-  }
-
   sendQuest(indoor){
     let params = this.props.navigation.state.params;
+    let bodyData = {
+        data: {
+          date: Date.now(),
+          indoor: params.indoor,
+          hideout: params.hideout,
+          nav: selected.nav,
+          adv: selected.adv,
+          goal: selected.goal,
+          hintText: this.state.hintText,
+          captionText: params.captionText,
+          sender: 'HaoWu',
+          receiver: username,
+        },
+      };
     fetch(PUSH_ENDPOINT + username, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        data: {
-          value: 'A wonderful message',
-          indoor: params.indoor,
-          hideout: params.hideout,
-          nav: selected.nav,
-          adv: selected.adv,
-          goal: selected.goal,
-        },
-      }),
+      body: JSON.stringify(bodyData),
     });
+    //asynchronously store item
+    AsyncStorage.setItem('@SentQuests:' + bodyData.data.date, JSON.stringify(bodyData.data));
+    EventRegister.emit('SentQuest', 'TODO');
+    /* TODO: The sender shouldn't be hardcoded^ */
     const { navigate } = this.props.navigation;
     Alert.alert("Quest sent successfully!");
 
@@ -198,11 +211,30 @@ export default class CustomizeGame extends React.Component {
       );
   }
 
+  renderRow = (item) => {
+    return (
+      <Touchables key={item.index} 
+        onClick={() => {this.setValues(item.cate, item.value, item.index);}}
+        hasImage={true} 
+        title={""} subTitle={""}
+        text={""} styles={item.selected? Styles.s_styles : Styles.u_styles} 
+        image={item.image}/>
+      );
+  }
+
   render() {
-    console.debug("Render...");
 
     return (
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
+      <View style={styles.inputContainer}>
+        <TextInput
+            style={styles.titleText}
+            onChangeText={(text) => this.setState({hintText: text})}
+            value={this.state.hintText}
+            placeholder={'Send a hint of who you are (optional)'}
+            placeholderTextColor={Colors.accentColor}
+        />
+      </View>
       <Text style={styles.titleText}>Choose Navigation Theme:</Text>
       <View style={{height: 120}}>
       <ListView horizontal={true} style={styles.listStyle}
@@ -250,4 +282,15 @@ const styles = StyleSheet.create({
   listStyle: {
     backgroundColor: 'transparent',
   },
+  inputText: {
+    color: Colors.tintColor,
+    fontWeight: 'bold',  
+    fontSize: 16,
+  },
+  inputContainer: {
+    borderBottomColor: Colors.tintColor,
+    borderBottomWidth: 2,
+    margin: 10,
+    width: '100%',
+  }
 });

@@ -16,7 +16,7 @@ import {
   Platform,
   ActivityIndicator
 } from 'react-native'
-
+import { EventRegister } from 'react-native-event-listeners';
 /**
  * Default styles
  * @type {StyleSheetPropType}
@@ -235,6 +235,11 @@ export default class extends Component {
     this.setState({index: i});
   }
 
+  oneMoreNotif(){
+    let cur = this.state.num_notif;
+    this.setState({num_notif: cur + 1});
+  }
+
   componentDidMount () {
     this.autoplay()
   }
@@ -247,7 +252,6 @@ export default class extends Component {
   componentWillUpdate (nextProps, nextState) {
     // If the index has changed, we notify the parent via the onIndexChanged callback
     if (this.state.index !== nextState.index) {
-     console.debug("next state: " + nextState.index);
      this.props.onIndexChanged(nextState.index) 
     }
   }
@@ -259,7 +263,8 @@ export default class extends Component {
     const initState = {
       autoplayEnd: false,
       loopJump: false,
-      offset: {}
+      offset: {},
+      num_notif: 0,
     }
 
     initState.total = props.children ? props.children.length || 1 : 0
@@ -459,6 +464,16 @@ export default class extends Component {
       }
     }
 
+    //Hao: if index is 0, remove notification number
+    
+    if(index === 0){
+      this.state.num_notif = 0;
+    }else if(this.state.index === 0){
+      // We are leaving the notification page to some other screen
+      EventRegister.emit('ClearNew', '');
+    }
+    
+
     const newState = {}
     newState.index = index
     newState.loopJump = loopJump
@@ -650,7 +665,7 @@ export default class extends Component {
         onPress={() => button !== null && this.scrollBy(newIndex)}>
         <View style={{flexDirection: 'column'}}>
           {button}
-          {this.props.num_notif? <Text style={{backgroundColor: 'red', color: 'white', textAlign: 'center', textAlignVertical: 'center'}}>{this.props.num_notif}</Text> : null}
+          {this.state.num_notif? <Text style={{backgroundColor: 'red', color: 'white', textAlign: 'center', textAlignVertical: 'center'}}>{this.state.num_notif}</Text> : null}
         </View>
       </TouchableOpacity>
     )
@@ -660,7 +675,7 @@ export default class extends Component {
     let button = null
     let bottomMargin = 0
     // Highlight button if on that page currently
-    console.debug("Index at: " + this.state.index);
+    //console.debug("Index at: " + this.state.index);
     if (this.state.index == 1) {
       button = null
     } else {

@@ -67,7 +67,7 @@ makeFavoritesView = (self) => {
 
 	// Render send Quest button
 	favorites.push(
-		<TouchableOpacity style={[styles.sendButtonContainerStyle, {top: sendButtonTop, left: sendButtonLeft}]} onPress={() => self.props.transition(1)}>
+		<TouchableOpacity key={'c_button'} style={[styles.sendButtonContainerStyle, {top: sendButtonTop, left: sendButtonLeft}]} onPress={() => self.props.transition(1)}>
 			<Icon name="send-o" size={sendButtonSize} color={Colors.tintColor} />
 		</TouchableOpacity>
 	)
@@ -90,7 +90,7 @@ makeFavoritesView = (self) => {
 
 		// Render next favorite
 		favorites.push(
-			<TouchableOpacity style={[styles.circleContainer, {top: currTop, left: currLeft}]}
+			<TouchableOpacity key={'s_button' + i} style={[styles.circleContainer, {top: currTop, left: currLeft}]}
 							  onPress={() => self.props.transition(0)}>
 	 			<Image resizeMode='cover' 
 	   	   			   source={data[i].image}
