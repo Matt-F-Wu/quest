@@ -179,7 +179,7 @@ export default class CustomizeGame extends React.Component {
           goal: selected.goal,
           hintText: this.state.hintText,
           captionText: params.captionText,
-          sender: 'HaoWu',
+          sender: global.user,
           receiver: username,
         },
       };
@@ -200,15 +200,6 @@ export default class CustomizeGame extends React.Component {
 
     self.props.navigation.popToTop();
     self.props.navigation.state.params.main_remount({ mountCam: true });
-  }
-
-  sendQuestWrapper(){
-    Alert.alert("Skipping this step will send an Indoor Quest!", "aka a game to play at home",
-        [
-          {text: 'Cancel', onPress: () => console.log('Not Skipping'), style: 'cancel'},
-          {text: 'OK', onPress: () => {this.sendQuest(true)} },
-        ]
-      );
   }
 
   renderRow = (item) => {

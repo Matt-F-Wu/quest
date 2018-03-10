@@ -87,11 +87,11 @@ export default class ContactList extends Component {
     image: require('../../assets/images/profileImages/hao.jpg'),
   },
   {
-    name: 'Ian', 
+    name: 'IanJones', 
     index: 10,
     location: 'Thousand Oaks, CA',
     time: '5 days ago', 
-    image: require('../../assets/images/profileImages/man3.png'),
+    image: require('../../assets/images/profileImages/ian.jpg'),
   },  
   {
     name: 'Jon', 

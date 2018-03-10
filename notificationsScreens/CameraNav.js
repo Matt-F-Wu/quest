@@ -814,7 +814,7 @@ export default class App extends React.Component {
       },
       body: JSON.stringify({
         data: {
-          requester: 'HaoWu',
+          requester: global.user,
           requestText: this.state.requestText,
           key: this.props.navigation.state.params.key,
         },

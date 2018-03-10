@@ -24,8 +24,8 @@ const radius = Dimensions.get('window').width / 3;
 
 data = [ 
 	{
-    	name: 'Lily', 
-	    image: require('../../assets/images/profileImages/woman4.png'),
+    	name: 'Ian', 
+	    image: require('../../assets/images/profileImages/ian.jpg'),
   	},
   	{
 	    name: 'Austin',

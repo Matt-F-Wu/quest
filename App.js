@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View, Animated, Text, AsyncStorage } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Animated, Text, AsyncStorage, Alert } from 'react-native';
 import { AppLoading, Asset, Font, Permissions, Notifications } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from './constants/Colors';
@@ -46,9 +46,14 @@ export default class App extends React.Component {
     //Hao: clear storage, TODO: might need to remove this line
     AsyncStorage.clear(()=>{console.debug("Storage cleared")});
 
-    mounted = true;
+    Alert.alert("Who are you?",
+        [
+          {text: 'Hao', onPress: () => {global.user = 'HaoWu'; this.registerForPushNotificationsAsync();} },
+          {text: 'Ian', onPress: () => {global.user = 'IanJones'; this.registerForPushNotificationsAsync();} },
+        ]
+    );
 
-    this.registerForPushNotificationsAsync();
+    mounted = true;
     
     this._notificationSubscription = Notifications.addListener(async (receivedNotification) => {
       this.setState({
@@ -122,7 +127,7 @@ export default class App extends React.Component {
           value: token,
         },
         user: {
-          username: 'HaoWu',
+          username: global.user,
         },
       }),
     });
