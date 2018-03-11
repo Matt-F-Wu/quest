@@ -24,7 +24,7 @@ const radius = Dimensions.get('window').width / 3;
 
 data = [ 
 	{
-    	name: 'Ian', 
+    	name: 'IanJones', 
 	    image: require('../../assets/images/profileImages/ian.jpg'),
   	},
   	{
@@ -67,7 +67,7 @@ makeFavoritesView = (self) => {
 
 	// Render send Quest button
 	favorites.push(
-		<TouchableOpacity key={'c_button'} style={[styles.sendButtonContainerStyle, {top: sendButtonTop, left: sendButtonLeft}]} onPress={() => self.props.transition(1)}>
+		<TouchableOpacity key={'c_button'} style={[styles.sendButtonContainerStyle, {top: sendButtonTop, left: sendButtonLeft}]} onPress={() => self.props.defaultRoute()}>
 			<Icon name="send-o" size={sendButtonSize} color={Colors.tintColor} />
 		</TouchableOpacity>
 	)
@@ -91,7 +91,7 @@ makeFavoritesView = (self) => {
 		// Render next favorite
 		favorites.push(
 			<TouchableOpacity key={'s_button' + i} style={[styles.circleContainer, {top: currTop, left: currLeft}]}
-							  onPress={() => self.props.transition(0)}>
+							  onPress={() => self.props.selectFavourite(data[i].name, data[i].image)}>
 	 			<Image resizeMode='cover' 
 	   	   			   source={data[i].image}
 		       		   style={[styles.profileImg]} />

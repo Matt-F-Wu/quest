@@ -914,31 +914,49 @@ export default class App extends React.Component {
         
         <View style={styles.innerContainer}>
           <View style={styles.row}>
-            <Text style={{fontSize: 24, color: Colors.tintColor}}>Points: </Text><Text style={styles.gf_text}>30</Text>
+            <Text style={{fontSize: 18, color: Colors.tintColor}}>Points: </Text><Text style={styles.value_text}>30</Text>
           </View>
           <View style={styles.row}>
-            <Text style={{fontSize: 24, color: Colors.tintColor}}>To destination: </Text><Text style={styles.gf_text}>2.2 miles</Text>
+            <Text style={{fontSize: 18, color: Colors.tintColor}}>To destination: </Text><Text style={styles.value_text}>2.2 miles</Text>
           </View>
           <View style={styles.row}>
-            <Text style={{fontSize: 24, color: Colors.tintColor}}>Time spent: </Text><Text style={styles.gf_text}>1.2 hours</Text>
+            <Text style={{fontSize: 18, color: Colors.tintColor}}>Time spent: </Text><Text style={styles.value_text}>12 minutes</Text>
           </View>
+          
+          <View
+            style={{
+              borderColor: Colors.tintColor,
+              borderWidth: 1,
+              marginBottom: 20,
+              borderStyle: 'dashed',
+            }}
+          />
 
-          <View style={styles.inputContainer}>
+          <View style={[styles.inputContainer, styles.row]}>
             <TextInput
-              style={styles.titleText}
+              style={styles.textInput}
               onChangeText={(text) => this.setState({requestText: text})}
               value={this.state.requestText}
-              placeholder={'your request to the sender...'}
+              placeholder={'Your request to the sender...'}
               placeholderTextColor={Colors.accentColor}
             />
           </View>
 
-          <RkButton style={{padding: 15, backgroundColor: Colors.tintColor, borderRadius: 5, marginBottom: 15}}
+          <RkButton style={{padding: 15, backgroundColor: Colors.tintColor, borderRadius: 5, marginBottom: 20, alignSelf: 'center'}}
               onPress={() => this.requestHelp()}>
             <Text style={{fontSize: 16, color: Colors.noticeText}}>Request hints</Text>
           </RkButton>
+          
+          <View
+            style={{
+              borderColor: Colors.tintColor,
+              borderWidth: 1,
+              marginBottom: 15,
+              borderStyle: 'dashed',
+            }}
+          />
 
-          <RkButton style={{padding: 15, backgroundColor: Colors.tintColor, borderRadius: 5, marginBottom: 15}}
+          <RkButton style={{padding: 15, backgroundColor: Colors.tintColor, borderRadius: 5, marginBottom: 15, alignSelf: 'center'}}
               onPress={() => {showDash = false;}}>
             <Text style={{fontSize: 16, color: Colors.noticeText}}>About Game</Text>
           </RkButton>
@@ -991,17 +1009,24 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   inputContainer: {
-    width: '100%',
     borderBottomColor: Colors.tintColor,
     borderBottomWidth: 2,
-    marginLeft: 10,
-    marginRight: 10,
-    marginBottom: 15,
   },
   titleText: {
     color: Colors.tintColor,
     fontWeight: 'bold',  
     fontSize: 16,
   },
+  value_text: {
+    backgroundColor: Colors.tintColor,
+    color: Colors.noticeText,
+    paddingLeft: 5,
+    paddingRight: 5,
+    fontSize: 18,
+  },
+  textInput: {
+    color: Colors.tintColor,
+    fontSize: 18,
+  }
 });
 

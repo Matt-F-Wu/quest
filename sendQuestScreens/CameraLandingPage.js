@@ -22,11 +22,10 @@ export default class CameraLandingPage extends CameraBase {
   	customize(num){
   		this.setState({has_refresh: false, 
   					   has_label: true, textLabel:'Quest'});
-      //console.debug("states: " + this.state.has_label + " " + this.state.has_refresh );
   	}
 
     debugPrint(){
-      //console.debug("states: " + this.state.has_label + " " + this.state.has_refresh ); 
+      //console.debug("Camera state: " + this.state.mountCam);
     }
 
     makeChildren(){
@@ -35,7 +34,8 @@ export default class CameraLandingPage extends CameraBase {
       return [
           <BlurView key={'blur_overlay'} tint="dark" intensity={100} style={{position: 'absolute', height: '100%', width: '100%'}} />,
           <FavoritesView key={'favorites_view'} style={{position: 'absolute', height: '100%', width: '100%'}} 
-                         transition={(i) => {console.debug("Called: " + i); this.setState({mountCam: false}); navigate('Compose', {remount: this.remount, main_remount: this.remount, info: i})}} />,
+                         defaultRoute={() => {this.setState({mountCam: false}); navigate('Compose', {remount: this.remount, main_remount: this.remount});}}
+                         selectFavourite={(name, user_image) => {this.setState({mountCam: false}); navigate('CapturePicture', {remount: this.remount, main_remount: this.remount, name: name, user_image: user_image, favourite: true})}} />,
           <ProfileOverlay key={'p_overlay'} ref={(ref) => this.profile = ref} toProfile={() => navigate('ContactList')}/>,
           <TouchableOpacity style={{position: 'absolute', marginTop: 15, marginLeft: 5, width: 45, height: 50, backgroundColor: 'transparent'}} key={'p_button'}>
               <Icon6 name="user" size={profileIconSize} color={Colors.tintColor} onPress={() => this.profile.toggleModal()} />

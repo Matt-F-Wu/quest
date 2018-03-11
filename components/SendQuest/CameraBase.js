@@ -129,43 +129,35 @@ export default class CameraBase extends React.Component {
     if (this.state.mountCam){
       return (
           <Camera style={{ flex: 1 }} type={this.state.type} ref={ref => { this.camera = ref; }} >
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-              }}>
-
-              {this.makeChildren()}
-              
-              <TouchableOpacity
-                style={{
-                  flex: 0.1,
-                  alignSelf: 'flex-start',
-                  position: 'absolute',
-                  left: 333,
-                  marginTop: '2%',
-                  alignItems: 'center',
-                  backgroundColor: 'transparent',
-                }}
-                onPress={() => {
-                  this.setState({
-                    type: this.state.type === Camera.Constants.Type.back
-                      ? Camera.Constants.Type.front
-                      : Camera.Constants.Type.back,
-                  });
-                }}>
-                {this.state.has_refresh ? <Icon name='refresh' color={Colors.tintColor} size={30}/> : null}     
-              </TouchableOpacity>
-            </View>
+              {this.state.has_refresh ? 
+                <TouchableOpacity
+                  style={{
+                    flex: 0.1,
+                    alignSelf: 'flex-start',
+                    position: 'absolute',
+                    left: 333,
+                    marginTop: '2%',
+                    alignItems: 'center',
+                    backgroundColor: 'transparent',
+                  }}
+                  onPress={() => {
+                    this.setState({
+                      type: this.state.type === Camera.Constants.Type.back
+                        ? Camera.Constants.Type.front
+                        : Camera.Constants.Type.back,
+                    });
+                  }}>
+                  <Icon name='refresh' color={Colors.tintColor} size={30}/>     
+                </TouchableOpacity> : null}
           </Camera>
         );
     } else{
-      return (<Text>Camera Unmounted</Text>);
+      return (<View style={{flex: 1}}><Text style={{color: 'white'}}>Camera Unmounted</Text></View>);
     }
   }
 
   debugPrint(){
-
+    
   }
 
   render() {
@@ -178,8 +170,10 @@ export default class CameraBase extends React.Component {
     } else {
       return (
         <View style={{flex: 1, backgroundColor: Colors.backgroundColor}}>
-
           {this._renderCam()}
+          <View style={{position: 'absolute', width:'100%', height: '100%'}}>
+            {this.makeChildren()}
+          </View>
           {this._renderObjects()}
           {this._renderButton()}
           {this._renderTextLabel()}

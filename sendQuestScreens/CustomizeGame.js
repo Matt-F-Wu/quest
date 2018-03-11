@@ -9,7 +9,6 @@ import {
   TextInput,
   AsyncStorage,
 } from 'react-native';
-import { MapView } from 'expo';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/Entypo';
 import FIcon from 'react-native-vector-icons/FontAwesome';
@@ -276,12 +275,12 @@ const styles = StyleSheet.create({
   inputText: {
     color: Colors.tintColor,
     fontWeight: 'bold',  
-    fontSize: 16,
+    fontSize: 18,
   },
   inputContainer: {
     borderBottomColor: Colors.tintColor,
     borderBottomWidth: 2,
     margin: 10,
-    width: '100%',
+    marginTop: 20,
   }
 });
