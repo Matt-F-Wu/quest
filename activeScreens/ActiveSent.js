@@ -82,6 +82,7 @@ export default class NotificationsSent extends React.Component {
                 sender: data.sender,
                 receiver: data.receiver,
                 date: data.date,
+                hideout: data.hideout,
                 progress: 'unopened',
               });
             }
@@ -132,9 +133,25 @@ export default class NotificationsSent extends React.Component {
             		renderItem={({ item }) => (
             			<QuestListItem name={item.receiver} date={utils.timeDiffOutput(Date.now(), item.date)} 
             				image={item.image} progress={item.progress} received={false}
-                    highlight={!!item.help}
                     isNew={!!item.help && item.help.new}
-            				onPress={() => {}}/>
+            				onPress={() => {
+                      for(let i = 0; i < this.state.questsArr.length; i++){
+                        if(this.state.questsArr[i].id === item.id){
+                          if(item.help && item.help.new){
+                            this.state.questsArr[i].help.new = false;
+                            this.setState({counter: this.state.counter + 1});
+                            //Hao: ^change key to trigger re-render, this trick took me 3 hours to find
+                            AsyncStorage.mergeItem('@QuestsHelp:' + item.sender + item.date, 
+                              JSON.stringify({new: false}), 
+                              () => {navigate('Monitor', {cur_location: item.help.cur_location, hideout: item.hideout, requestText: item.help.requestText});});
+                          }else{
+                            navigate('Monitor', {cur_location: {coords: {latitude: 37.4268463, longitude: -122.1658255}}, hideout: item.hideout});
+                          }
+                          break;
+                        }
+                      }
+                    } 
+                  }/>
             		)}
           		/>
 			</View>

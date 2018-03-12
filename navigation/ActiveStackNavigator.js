@@ -9,6 +9,7 @@ import Fonts from '../constants/Fonts';
 
 // Component imports
 import ActiveLandingPage from '../activeScreens/ActiveTabNavigator';
+import Monitor from '../activeScreens/Monitor';
 import CameraNav from '../activeScreens/CameraNav';
 import ViewQuest from '../activeScreens/ViewQuest';
 
@@ -20,6 +21,9 @@ const ActiveStackNavigator = StackNavigator(
     },
     CameraNav: {
       screen: CameraNav,
+    },
+    Monitor: {
+      screen: Monitor,
     },
     ViewQuest: {
       screen: ViewQuest,

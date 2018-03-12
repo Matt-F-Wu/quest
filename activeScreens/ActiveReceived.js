@@ -68,6 +68,7 @@ export default class NotificationsReceived extends React.Component {
 
   componentWillUnmount() {
     EventRegister.removeEventListener(this.listener);
+    EventRegister.removeEventListener(this.clearListener);
   }
 
   populateReNotif = async () => {
@@ -89,7 +90,8 @@ export default class NotificationsReceived extends React.Component {
                 id: p[0],
                 rawDate: data.date,
                 name: data.hintText || 'Mystery',
-                sender: data.sender, 
+                sender: data.sender,
+                hideout: data.hideout, 
                 date: utils.timeDiffOutput(Date.now(), data.timestamp), 
                 progress: data.progress || 'unopened', 
                 received: true, 
@@ -138,8 +140,8 @@ export default class NotificationsReceived extends React.Component {
                     //Hao: ^change key to trigger re-render, this trick took me 3 hours to find
                     
                     AsyncStorage.mergeItem(item.id, 
-                      JSON.stringify({progress: 'in progress'}), 
-                      () => {navigate('CameraNav', {has_ghost: item.has_ghost, indoor: item.indoor, goal: item.goal, sender: item.sender, key: item.sender + item.rawDate});});
+                      JSON.stringify({progress: 'in progress', new: false}), 
+                      () => {navigate('CameraNav', {has_ghost: item.has_ghost, indoor: item.indoor, goal: item.goal, sender: item.sender, hideout: item.hideout, key: item.sender + item.rawDate});});
                     
                   } 
                 } }/>

@@ -1,5 +1,5 @@
 import Expo, { Asset, Location, Permissions, MapView } from 'expo';
-import { View, Dimensions, StyleSheet, Animated, Text, Image, Modal, Alert, TextInput} from 'react-native';
+import { View, Dimensions, StyleSheet, Animated, Text, Image, Alert, TextInput} from 'react-native';
 import React from 'react';
 const THREE = require('three');
 global.THREE = THREE;
@@ -159,7 +159,8 @@ export default class App extends React.Component {
           TODO: the destination should be passed in as a prop, 
           right now hard code to be somewhere in main quad
           */
-          const destination = '37.4274821,-122.1702636';
+          let hideout = this.props.navigation.state.params.hideout;
+          const destination = hideout.latitude + ',' + hideout.longitude;
           const APIKEY = secret.GMapAPIKey;
           const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&key=${APIKEY}&mode=${mode}`;
 
@@ -172,7 +173,7 @@ export default class App extends React.Component {
                       //add origin to the head
                       c_arr.unshift({latitude: location.coords.latitude, longitude: location.coords.longitude});
                       //push destination to the tail
-                      c_arr.push({latitude: 37.4274821, longitude: -122.1702636}); // definition below
+                      //c_arr.push({latitude: 37.4274821, longitude: -122.1702636}); // definition below
                       this.setState({
                           coords: c_arr,
                       });
@@ -842,6 +843,7 @@ export default class App extends React.Component {
         data: {
           requester: global.user,
           requestText: this.state.requestText,
+          cur_location: this.state.cur_location,
           key: this.props.navigation.state.params.key,
         },
       }),

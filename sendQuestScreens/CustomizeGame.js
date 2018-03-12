@@ -247,7 +247,7 @@ export default class CustomizeGame extends React.Component {
       <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }}>
       <View style={styles.inputContainer}>
         <TextInput
-            style={styles.titleText}
+            style={styles.inputText}
             onChangeText={(text) => this.setState({hintText: text})}
             value={this.state.hintText}
             placeholder={'Send a hint of who you are (optional)'}
@@ -307,6 +307,7 @@ const styles = StyleSheet.create({
     color: Colors.tintColor,
     fontWeight: 'bold',  
     fontSize: 18,
+    margin: 10,
   },
   inputContainer: {
     borderBottomColor: Colors.tintColor,
