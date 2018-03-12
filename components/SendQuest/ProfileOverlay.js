@@ -53,7 +53,10 @@ export default class ProfileOverlay extends Component {
           expand={this.state.modalVisible}
           down={true}>
          
-          <TouchableWithoutFeedback onPress= {() => {console.debug("Touched outside..."); this.closeModal();}} >
+          <TouchableWithoutFeedback 
+            style={{width: '100%', height: '100%', alignItems: 'center'}}
+            onPress= {() => {console.debug("Touched outside..."); 
+            this.closeModal();}} >
             
               <View style={styles.innerContainer}>
                   
@@ -105,7 +108,6 @@ const styles = StyleSheet.create({
   innerContainer: {
     height: '100%',
     alignItems: 'center',
-    marginHorizontal: 100,
     marginBottom: 50,
   },
 

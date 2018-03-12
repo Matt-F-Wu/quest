@@ -103,8 +103,7 @@ export default class App extends React.Component {
 
   async preloadAssetsAsync() {
     //Hao: Should do slective loading to save memory in the future
-    await Promise.all([
-      require('../assets/images/coin.png'),
+    let resourceArr = [
       require('../assets/images/crosshair.png'),
       require('../assets/images/ghost.png'),
       require('../assets/textures/quest-present-side.png'),
@@ -112,12 +111,22 @@ export default class App extends React.Component {
       require('../assets/images/blueFlame.gif'),
       require('../assets/images/burst.gif'),
       require('../assets/images/ghost_entrance.gif'),
-      require('../assets/textures/waternormals.jpg'),
-      require('../assets/textures/city_globe.jpg'),
       require('../assets/textures/rainbow_metallic.jpg'),
-      require('../assets/objects/heart/heart-reformed.obj'),
       require('../assets/textures/portal.jpg'),
-    ].map((module) => Expo.Asset.fromModule(module).downloadAsync()));
+    ];
+    if(this.props.navigation.state.params.indoor){
+      resourceArr.push.apply(resourceArr, [
+          require('../assets/textures/waternormals.jpg'),
+          require('../assets/textures/city_globe.jpg'),
+          require('../assets/objects/heart/heart-reformed.obj'),
+          require('../assets/objects/key/sg-golden-key.obj'),
+        ]);
+    }else{
+      resourceArr.push.apply(resourceArr, [
+          require('../assets/images/coin.png'),
+        ]);
+    }
+    await Promise.all(resourceArr.map((module) => Expo.Asset.fromModule(module).downloadAsync()));
 
     this.setState({ loaded: true, overlay_gif: Asset.fromModule(require('../assets/images/burst.gif')).localUri });
   }
@@ -217,7 +226,7 @@ export default class App extends React.Component {
       });
   };
 
-  _addARNavObj(scene, num, coinTexture){
+  async _addARNavObj(scene, num, coinTexture){
     
     var angle2N = routeDecoder.findHeading({latitude: this.state.cur_location.coords.latitude, 
       longitude: this.state.cur_location.coords.longitude}, nextStop);
@@ -232,21 +241,29 @@ export default class App extends React.Component {
       Object custimization begins:
       Defines what the AR object is, for now, it is just coins
     */
+    var navObj;
+    if(!this.props.navigation.state.params.indoor){
+      var top_material = new THREE.MeshBasicMaterial( { map: coinTexture } );
+      // show copy to save memory, same as using clone()
+      var bottom_material = top_material;
+      var side_material = new THREE.MeshBasicMaterial( { color: 0xFFD700 } );
+      //array of materials
+      var materials = [side_material, top_material, bottom_material];
+      //TODO: take 1/10 of the screen roughly, tune later
+      var geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.02, 100);
+      
+      navObj = new THREE.Mesh(geometry, materials);
+    }else{
+      navObj = await this._addARKey();
+      Tools.scaleLongestSideToSize(navObj, 0.15);
+    }
     
-    const top_material = new THREE.MeshBasicMaterial( { map: coinTexture } );
-    // show copy to save memory, same as using clone()
-    const bottom_material = top_material;
-    const side_material = new THREE.MeshBasicMaterial( { color: 0xFFD700 } );
-    //array of materials
-    const materials = [side_material, top_material, bottom_material];
-    //TODO: take 1/10 of the screen roughly, tune later
-    const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.02, 100);
     /*
       Object custimization ends
     */
     var i;
     for(i = 0; i < num; i++){
-      let cube = new THREE.Mesh(geometry, materials);
+      let cube = navObj.clone();
       cube.position.x = matched_position[1] * (1.0 + i);
       cube.position.z = matched_position[0] * (1.0 + i);
       cube.rotation.x = Math.PI / 5.0 * 2.0;
@@ -289,19 +306,28 @@ export default class App extends React.Component {
     return waterMesh;
   }
 
-  async _addARHeart(){
-    const modelAsset = Asset.fromModule(require('../assets/objects/heart/heart-reformed.obj'));
+  async _parseObj(obj_file, tint){
+    // Hao: Can only construct pure color object with this function
+    const modelAsset = Asset.fromModule(obj_file);
     await modelAsset.downloadAsync();
     const loader = new THREE.OBJLoader();
     const model = loader.parse(
       await Expo.FileSystem.readAsStringAsync(modelAsset.localUri));
-    const heart_material = new THREE.MeshPhongMaterial( { color: 0xFFB6C1 } );
+    const heart_material = new THREE.MeshPhongMaterial( { color: tint } );
     model.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           child.material = heart_material;
         }
       });
     return model;
+  }
+
+  _addARHeart(){
+    return this._parseObj(require('../assets/objects/heart/heart-reformed.obj'), 0xFFB6C1);
+  }
+
+  _addARKey(){
+    return this._parseObj(require('../assets/objects/key/sg-golden-key.obj'), 0xFFD700);
   }
 
   async _addARGlobe(){
@@ -428,7 +454,7 @@ export default class App extends React.Component {
     });
 
     
-    this._addARNavObj(scene, obj_per_scene, coinTexture);
+    await this._addARNavObj(scene, obj_per_scene, coinTexture);
     //console.debug(" msg_shown: " + msg_shown + " animation_opacity: " + this.state.animation_opacity);
 
     var ghost_texture = await ExpoTHREE.createTextureAsync({

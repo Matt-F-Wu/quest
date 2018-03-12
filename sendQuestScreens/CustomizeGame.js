@@ -25,6 +25,7 @@ const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 var self;
 var selected = {
   nav: 'coin',
+  env: 'ocean city',
   adv: '',
   goal: 'gift'};
 
@@ -70,6 +71,30 @@ export default class CustomizeGame extends React.Component {
           value: 'emoji-heart-eyes',
           index: 4, 
           image: require('../assets/images/emoji-heart-eyes.png'),
+          selected: false,
+        },
+      ],
+
+  envData: [
+        {
+          cate: 'env',
+          value: 'ocean city', 
+          index: 1, 
+          image: require('../assets/textures/quest-present-top-bottom.png'),
+          selected: true,
+        },
+        {
+          cate: 'env',
+          value: 'dream land',
+          index: 2,
+          image: require('../assets/textures/portal.jpg'),
+          selected: false,
+        },
+        {
+          cate: 'env',
+          value: 'forest',
+          index: 3, 
+          image: require('../assets/textures/crate.gif'),
           selected: false,
         },
       ],
@@ -142,6 +167,7 @@ export default class CustomizeGame extends React.Component {
       navObjSource: ds.cloneWithRows(this.state.navData),
       advObjSource: ds.cloneWithRows(this.state.advData),
       goalObjSource: ds.cloneWithRows(this.state.goalData),
+      envObjSource: ds.cloneWithRows(this.state.envData),
     });
     //console.debug("Now: " + this.state.advObjSource);
   }
@@ -158,6 +184,8 @@ export default class CustomizeGame extends React.Component {
     }
     if(key == 'nav'){
       this.setState({navObjSource: ds.cloneWithRows(this.state[key + "Data"])});
+    }else if(key == "env"){
+      this.setState({envObjSource: ds.cloneWithRows(this.state[key + "Data"])});
     }else if(key == "adv"){
       this.setState({advObjSource: ds.cloneWithRows(this.state[key + "Data"])});
     }else{
@@ -174,6 +202,7 @@ export default class CustomizeGame extends React.Component {
           indoor: params.indoor,
           hideout: params.hideout,
           nav: selected.nav,
+          env: selected.env,
           adv: selected.adv,
           goal: selected.goal,
           hintText: this.state.hintText,
@@ -225,10 +254,12 @@ export default class CustomizeGame extends React.Component {
             placeholderTextColor={Colors.accentColor}
         />
       </View>
-      <Text style={styles.titleText}>Choose Navigation Theme:</Text>
+      <Text style={styles.titleText}>
+        {this.props.navigation.state.params.indoor? 'Choose VR environment:' : 'Choose Navigation Theme:'}
+      </Text>
       <View style={{height: 120}}>
       <ListView horizontal={true} style={styles.listStyle}
-        dataSource={this.state.navObjSource}
+        dataSource={this.props.navigation.state.params.indoor? this.state.envObjSource : this.state.navObjSource}
         renderRow={this.renderRow}
         removeClippedSubviews={false}
       />
