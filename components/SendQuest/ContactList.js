@@ -232,12 +232,12 @@ export default class ContactList extends Component {
     
     return (
       <Touchables key={item.index} 
-              onClick={() => this.toMap(item)}
-              onLongPress={() => this.seeFriend(item)} 
-              hasImage={true} 
-              title={item.name} subTitle={item.location}
-              text={item.time} styles={styles} 
-              image={item.image}/>
+        onClick={() => this.toMap(item)}
+        onLongPress={() => this.seeFriend(item)} 
+        hasImage={true} 
+        title={item.name} subTitle={item.location}
+        text={item.time} styles={styles} 
+        image={item.image}/>
       );
   }
 
@@ -270,7 +270,8 @@ export default class ContactList extends Component {
           placeholder='Search contacts' />
 
         <View style={{height: 120}}>
-          <ListView horizontal={true} style={styles.listStyle}
+          <ListView horizontal={true} 
+            style={styles.listStyle}
             dataSource={this.state.favsDataSource}
             renderRow={this.renderFavouriteRow}
             removeClippedSubviews={false}
