@@ -28,8 +28,8 @@ data = [
 	    image: require('../../assets/images/profileImages/ian.jpg'),
   	},
   	{
-	    name: 'Austin',
-	    image: require('../../assets/images/profileImages/man8.png'),
+	    name: 'HaoWu',
+	    image: require('../../assets/images/profileImages/hao.jpg'),
   	},
   	{
 	    name: 'Nicole', 

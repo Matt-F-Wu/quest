@@ -11,6 +11,7 @@ import softBodyObject from '../api/softBodyObject.js';
 import HGD from '../api/handGestureDetection';
 import utils from '../api/utils';
 import Arrows from './ARUtils/Arrows';
+import Wave from './ARUtils/Wave';
 import Claws from './ARUtils/Claws';
 import Tools from './ARUtils/Tools';
 import BlueOverlay from './ARUtils/BlueOverlay';
@@ -53,7 +54,7 @@ var screenHeight = 0;
 // Water related consts
 const WATER_Y = -0.15;
 //globe related consts
-const sphere_r = 5;
+const sphere_r = 2.5;
 export default class App extends React.Component {
   state = {
     loaded: false,
@@ -279,8 +280,10 @@ export default class App extends React.Component {
   async _addARWater(camera, renderer){
     // First add lighting
     const dirLight = new THREE.DirectionalLight(0xdddddd);
-    dirLight.position.set(1, 1, 1);
+    dirLight.position.set(0, 1, 0);
     scene.add(dirLight);
+    const ambLight = new THREE.AmbientLight(0x505050);
+    scene.add(ambLight);
     // water
     const waterNormals = await ExpoTHREE.createTextureAsync({
       asset: Expo.Asset.fromModule(require('../assets/textures/waternormals.jpg')),
@@ -298,7 +301,7 @@ export default class App extends React.Component {
       noiseScale: 0.005,
     });
     const waterMesh = new THREE.Mesh(
-      new THREE.PlaneBufferGeometry(30, 30, 10, 10),
+      new THREE.PlaneGeometry(sphere_r * 2, sphere_r * 2, 150, 150),
       water.material,
     );
     waterMesh.add(water);
@@ -569,6 +572,12 @@ export default class App extends React.Component {
       scene.add(globe);
       let waterMesh = await this._addARWater(camera, renderer);
       scene.add(waterMesh);
+      let water_uta = new MovableObject(waterMesh);
+      water_uta.live = (s) => {
+        Wave.animateWater(Date.now(), s.obj, WATER_Y);
+        return true;
+      };
+      utas.push(water_uta);
       let heart = await this._addARHeart();
       Tools.scaleLongestSideToSize(heart, 0.08);
       let i; 
@@ -576,11 +585,11 @@ export default class App extends React.Component {
       for(i = 0; i < 6; i++){
         let h = heart.clone();
         //randomly put it somewhere, 0 -> 1, so need to scale
-        h.position.set(Math.random() * sphere_r / 2, WATER_Y + Math.random() * 0.03, Math.random() * sphere_r / 2);
+        h.position.set(Math.random() * sphere_r / 2, WATER_Y - 0.05 + Math.random() * 0.03, Math.random() * sphere_r / 2);
         let h_uta = new MovableObject(h);
         h_uta.live = (s) => {
           
-          if(s.obj.position.y > WATER_Y + 0.03 || s.obj.position.y < WATER_Y - 0.03){
+          if(s.obj.position.y > WATER_Y - 0.05 + 0.03 || s.obj.position.y < WATER_Y - 0.05 - 0.03){
             if(!s.up){
               s.up = true;
             }else{
@@ -589,9 +598,9 @@ export default class App extends React.Component {
           }
 
           if(s.up){
-            s.obj.position.y += 0.002;  
+            s.obj.position.y += 0.008;  
           }else{
-            s.obj.position.y -= 0.002;
+            s.obj.position.y -= 0.008;
           }
 
           s.obj.rotation.x += Math.random() / 20;

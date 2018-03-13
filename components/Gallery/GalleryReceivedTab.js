@@ -23,14 +23,14 @@ const animationDuration = 1000;
 
 const questsArr = [
   {
-    name: 'Katie', 
+    name: 'Hao', 
     date: 'Received 4 days ago',
-    img: require('../../assets/images/galleryImages/gallery1.jpg')
+    img: require('../../assets/images/galleryImages/hao_vacation.jpg')
   },
   {
     name: 'Ian', 
     date: 'Received 5 days ago', 
-    img: require('../../assets/images/galleryImages/gallery2.jpg')
+    img: require('../../assets/images/galleryImages/ian_gallery.jpg')
   },
   {
     name: 'Cole', 

@@ -19,27 +19,33 @@ const questsArrBase = [
       key: '00',
 	    name: 'Your class mate', 
       nameSize: Fonts.receivedNameFontSize,
+      timestamp: Date.now(),
 	    date: 'Received at 10:01 AM',
 	    progress: 'in progress',
 	    received: true,
+      hideout: {latitude: 37.4223618, longitude: -122.1823528},
 	    has_ghost: false, indoor: true, goal: 'portal',
 	},
 	{
       id: 1,
       key: '01',
-	    name: 'You met at a bar', 
+	    name: 'You met at a bar',
+      timestamp: Date.now(), 
 	    date: 'Received 1 day ago', 
 	    progress: 'unopened',
 	    received: true,
+      hideout: {latitude: 37.4223618, longitude: -122.1823528},
 	    has_ghost: true, indoor: false, goal: 'gift',
   },
   {
       id: 2,
       key: '02',
-    	name: 'High school friends', 
+    	name: 'High school friends',
+      timestamp: Date.now(), 
     	date: 'Received 2 days ago',
     	progress: 'unopened',
     	received: true,
+      hideout: {latitude: 37.4223618, longitude: -122.1823528},
   },
 ];
 
@@ -143,6 +149,7 @@ export default class NotificationsReceived extends React.Component {
                       JSON.stringify({progress: 'in progress', new: false}), 
                       () => {navigate('CameraNav', {has_ghost: item.has_ghost, indoor: item.indoor, goal: item.goal, sender: item.sender, hideout: item.hideout, key: item.sender + item.rawDate});});
                     
+                    //navigate('CameraNav', {has_ghost: item.has_ghost, indoor: item.indoor, goal: item.goal, sender: item.sender, hideout: item.hideout, key: item.sender + item.rawDate});
                   } 
                 } }/>
         		)}
