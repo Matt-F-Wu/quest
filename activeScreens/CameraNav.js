@@ -24,7 +24,7 @@ import FadeOutView from '../components/FadeOutView';
 import ExpandableView from '../components/ExpandableView';
 //import * as CANNON from 'cannon';
 import Icon from 'react-native-vector-icons/Entypo';
-
+import { EventRegister } from 'react-native-event-listeners';
 console.disableYellowBox = true;
 const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/sendq/';
 var secret = require('../api/secret');
@@ -94,6 +94,13 @@ export default class App extends React.Component {
     exiting = false;
     this.preloadAssetsAsync();
     this._getLocationAsync();
+    this.listener = EventRegister.addEventListener('HelpResponse', (data) => {
+        Alert.alert("Response: ", data.responseText,
+        [
+          {text: 'OK'},
+        ]
+    );
+    });
     console.debug("Will mount...")
   }
 

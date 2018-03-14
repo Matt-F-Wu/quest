@@ -129,26 +129,7 @@ export default class CameraBase extends React.Component {
     if (this.state.mountCam){
       return (
           <Camera style={{ flex: 1 }} type={this.state.type} ref={ref => { this.camera = ref; }} >
-              {this.state.has_refresh ? 
-                <TouchableOpacity
-                  style={{
-                    flex: 0.1,
-                    alignSelf: 'flex-start',
-                    position: 'absolute',
-                    left: 333,
-                    marginTop: '2%',
-                    alignItems: 'center',
-                    backgroundColor: 'transparent',
-                  }}
-                  onPress={() => {
-                    this.setState({
-                      type: this.state.type === Camera.Constants.Type.back
-                        ? Camera.Constants.Type.front
-                        : Camera.Constants.Type.back,
-                    });
-                  }}>
-                  <Icon name='refresh' color={Colors.tintColor} size={30}/>     
-                </TouchableOpacity> : null}
+              
           </Camera>
         );
     } else{
@@ -177,6 +158,26 @@ export default class CameraBase extends React.Component {
           {this._renderObjects()}
           {this._renderButton()}
           {this._renderTextLabel()}
+          {this.state.has_refresh ? 
+                <TouchableOpacity
+                  style={{
+                    flex: 0.1,
+                    alignSelf: 'flex-start',
+                    position: 'absolute',
+                    left: 333,
+                    marginTop: '2%',
+                    alignItems: 'center',
+                    backgroundColor: 'transparent',
+                  }}
+                  onPress={() => {
+                    this.setState({
+                      type: this.state.type === Camera.Constants.Type.back
+                        ? Camera.Constants.Type.front
+                        : Camera.Constants.Type.back,
+                    });
+                  }}>
+                  <Icon name='refresh' color={Colors.tintColor} size={30}/>     
+                </TouchableOpacity> : null}
         </View>
       );
     }

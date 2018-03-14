@@ -6,6 +6,7 @@ import {RkButton} from 'react-native-ui-kitten';
 import Icon from 'react-native-vector-icons/Entypo';
 var secret = require('../api/secret');
 var routeDecoder = require('../api/routeDecoder');
+const PUSH_ENDPOINT = 'https://quest-back-end.herokuapp.com/sendq/';
 
 export default class Monitor extends React.Component {
 	static navigationOptions  = ({ navigation, screenProps }) => ({
@@ -21,6 +22,7 @@ export default class Monitor extends React.Component {
 		cur_location: null,
 		coords: [],
 		got_route: false,
+		hintText: '',
 	}
 
 	constructor(props) {
@@ -50,6 +52,32 @@ export default class Monitor extends React.Component {
 		      });
 		  }
 		}).catch(e => {console.warn(e)});
+    }
+
+    respond(){
+    	let receiver = this.props.navigation.state.params.receiver;
+	    fetch(PUSH_ENDPOINT + receiver, {
+	      method: 'POST',
+	      headers: {
+	        Accept: 'application/json',
+	        'Content-Type': 'application/json',
+	      },
+	      body: JSON.stringify({
+	        data: {
+	          responder: global.user,
+	          responseText: this.state.hintText,
+	          key: global.user + Date.now(),
+	        },
+	      }),
+	    });
+	    //TODO: requester shouldn't be hardcoded
+	    //clear request texts
+	    this.setState({hintText: ''});
+	    Alert.alert("Response sent!", "",
+	        [
+	          {text: 'OK'},
+	        ]
+	    );
     }
 
 	render(){
@@ -93,7 +121,7 @@ export default class Monitor extends React.Component {
 							placeholderTextColor={Colors.accentColor}
 						/>
 						<RkButton style={{padding: 15, backgroundColor: Colors.tintColor, borderRadius: 5, marginBottom: 15, alignSelf: 'center'}}
-						  onPress={() => {showDash = false;}}>
+						  onPress={() => this.respond()}>
 							<Text style={{fontSize: 16, color: Colors.noticeText}}>Send</Text>
 						</RkButton>
 					</View>

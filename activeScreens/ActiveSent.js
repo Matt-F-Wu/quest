@@ -143,7 +143,7 @@ export default class NotificationsSent extends React.Component {
                             //Hao: ^change key to trigger re-render, this trick took me 3 hours to find
                             AsyncStorage.mergeItem('@QuestsHelp:' + item.sender + item.date, 
                               JSON.stringify({new: false}), 
-                              () => {navigate('Monitor', {cur_location: item.help.cur_location, hideout: item.hideout, requestText: item.help.requestText});});
+                              () => {navigate('Monitor', {cur_location: item.help.cur_location, hideout: item.hideout, requestText: item.help.requestText, receiver: item.receiver});});
                           }else{
                             navigate('Monitor', {cur_location: {coords: {latitude: 37.4268463, longitude: -122.1658255}}, hideout: item.hideout});
                           }

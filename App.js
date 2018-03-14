@@ -66,6 +66,11 @@ export default class App extends React.Component {
       });
       //TODO: Notification received, do something with receivedNotification.data
       notificationData = receivedNotification.data;
+      //TODO: temporarily handle help response with only CameraNav, no actual writing to AsyncStorage
+      if(notificationData.responder){
+        EventRegister.emit('HelpResponse', notificationData);
+        return;
+      }
       let timestamp = Date.now();
       notificationData.timestamp = timestamp;
       // Mark this notification as newly arrived
